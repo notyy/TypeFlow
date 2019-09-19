@@ -1,5 +1,5 @@
 package com.notyy.visualfp.domain
 
 trait Element {
-  def label: Option[String]
+  def label: String
 }

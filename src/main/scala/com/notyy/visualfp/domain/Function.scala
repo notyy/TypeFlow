@@ -10,7 +10,7 @@ trait Function extends Element {
   def outputPattern: OutputPattern
 }
 
-case class PureFunction(label: Option[String],
+case class PureFunction(label: String,
                         inputs: Vector[InputType], inputPattern: InputPattern,
                         outputs: Vector[OutputTypeValue], outputPattern: OutputPattern) extends Element
 
