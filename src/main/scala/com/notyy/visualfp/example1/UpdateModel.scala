@@ -12,9 +12,12 @@ object UpdateModel {
   case class ModelUpdateFailed(modelName: String, msg: String) extends Result
   def execute(modifiedModel: Model): Result = {
     Try {
+      val elements = modifiedModel.elements.map(element => s"class ${element.name} <<${element.elementType}>>")
+      val connections = modifiedModel.connections.map(connection => s"${connection.from} -> ${connection.to}")
       val modelStr =
         s"""@startuml
-          |${modifiedModel.elements.map(element => s"class ${element.name} <<${element.elementType}>>").reduce(_+"\n"+_)}
+          |${if(elements.isEmpty) "" else elements.reduce(_+"\n"+_)}
+          |${if(connections.isEmpty) "" else connections.reduce(_+"\n"+_)}
           |@enduml
           |""".stripMargin
       val file = new File(s"./localOutput/${modifiedModel.name}.puml")
@@ -24,7 +27,10 @@ object UpdateModel {
       ModelUpdateSuccess(modifiedModel.name)
     } match {
       case Success(rs) => rs
-      case Failure(exception) => ModelUpdateFailed(modifiedModel.name, exception.getMessage)
+      case Failure(exception) => {
+        exception.printStackTrace()
+        ModelUpdateFailed(modifiedModel.name, exception.getMessage)
+      }
     }
   }
 }

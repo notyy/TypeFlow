@@ -1,5 +1,5 @@
 package com.notyy.visualfp.example1
-import com.notyy.visualfp.example1.UserInputIntepreter.{AddElementCommand, CreateModelCommand, QuitCommand, UnknownCommand}
+import com.notyy.visualfp.example1.UserInputIntepreter.{AddElementCommand, ConnectElementCommand, CreateModelCommand, QuitCommand, UnknownCommand}
 
 import scala.io.StdIn
 import scala.util.{Failure, Success}
@@ -12,6 +12,7 @@ object CommandLineUI extends App {
       |:q to quit
       |""".stripMargin
 
+  @scala.annotation.tailrec
   def askForCommand(): Unit = {
     print(" >")
     //this block of code is actually used as flow engine. it should be externalized later.
@@ -29,6 +30,12 @@ object CommandLineUI extends App {
       case addElementCommand: AddElementCommand => {
         val savedModel = ReadModel.execute(addElementCommand.modelName)
         val modifiedModel = AddModelElement.execute(savedModel,addElementCommand)
+        val updateRs = UpdateModel.execute(modifiedModel)
+        WrapOutput.execute(updateRs)
+      }
+      case connectElementCommand: ConnectElementCommand => {
+        val savedModel = ReadModel.execute(connectElementCommand.modelName)
+        val modifiedModel = ConnectModelElement.execute(savedModel, connectElementCommand)
         val updateRs = UpdateModel.execute(modifiedModel)
         WrapOutput.execute(updateRs)
       }
