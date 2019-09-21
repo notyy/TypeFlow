@@ -1,5 +1,5 @@
 package com.notyy.visualfp.example1
-import com.notyy.visualfp.example1.UserInputIntepreter.{CreateModelCommand, QuitCommand, UnknownCommand}
+import com.notyy.visualfp.example1.UserInputIntepreter.{AddElementCommand, CreateModelCommand, QuitCommand, UnknownCommand}
 
 import scala.io.StdIn
 import scala.util.{Failure, Success}
@@ -21,10 +21,16 @@ object CommandLineUI extends App {
     val output = command match {
       case UnknownCommand(_) => WrapOutput.execute(command)
       case QuitCommand => WrapOutput.execute(command)
-      case cmd: CreateModelCommand => {
-        val unsavedModel = CreateModel.execute(cmd)
+      case createModelCommand: CreateModelCommand => {
+        val unsavedModel = CreateModel.execute(createModelCommand)
         val saveRs = SaveNewModel.execute(unsavedModel)
         WrapOutput.execute(saveRs)
+      }
+      case addElementCommand: AddElementCommand => {
+        val savedModel = ReadModel.execute(addElementCommand.modelName)
+        val modifiedModel = AddModelElement.execute(savedModel,addElementCommand)
+        val updateRs = UpdateModel.execute(modifiedModel)
+        WrapOutput.execute(updateRs)
       }
     }
     val resp = UserOutputEndpoint.execute(output)

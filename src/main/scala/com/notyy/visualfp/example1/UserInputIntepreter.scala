@@ -5,14 +5,18 @@ object UserInputIntepreter {
   case class UnknownCommand(input: String) extends Result
   case object QuitCommand extends Result
   case class CreateModelCommand(modelName: String) extends Result
-  case class ModifyModelCommand(command: String) extends Result
 
-  private val MarkPattern = """(.*) (.*)""".r
+  trait ModifyModelCommand extends Result
+  case class AddElementCommand(elementType: String, elementName: String, modelName: String) extends Result
+
+  private val CreateModelPattern = """(.*) (.*)""".r
+  private val AddElementPattern = """Add (.*) (.*) in (.*)""".r
 
   def execute(input: String): Result = {
     input match {
       case ":q" => QuitCommand
-      case (MarkPattern("CreateModel",modelName)) => CreateModelCommand(modelName)
+      case (CreateModelPattern("CreateModel",modelName)) => CreateModelCommand(modelName)
+      case (AddElementPattern(elementType, elementName, modelName)) => AddElementCommand(elementType,elementName,modelName)
       case _ => UnknownCommand(input)
     }
   }
