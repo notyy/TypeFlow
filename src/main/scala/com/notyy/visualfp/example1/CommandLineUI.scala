@@ -1,7 +1,8 @@
 package com.notyy.visualfp.example1
-import com.notyy.visualfp.example1.UserInputIntepreter.{QuitCommand, UnknownCommand}
+import com.notyy.visualfp.example1.UserInputIntepreter.{CreateModelCommand, QuitCommand, UnknownCommand}
 
 import scala.io.StdIn
+import scala.util.{Failure, Success}
 
 object CommandLineUI extends App {
   val welcomeStr =
@@ -13,12 +14,18 @@ object CommandLineUI extends App {
 
   def askForCommand(): Unit = {
     print(" >")
+    //this block of code is actually used as flow engine. it should be externalized later.
     val input  = UserInputEndpoint.execute()
     CommandRecorder.execute(input)
     val command = UserInputIntepreter.execute(input)
     val output = command match {
       case UnknownCommand(_) => WrapOutput.execute(command)
       case QuitCommand => WrapOutput.execute(command)
+      case cmd: CreateModelCommand => {
+        val unsavedModel = CreateModel.execute(cmd)
+        val saveRs = SaveNewModel.execute(unsavedModel)
+        WrapOutput.execute(saveRs)
+      }
     }
     val resp = UserOutputEndpoint.execute(output)
     if(resp == "quit") System.exit(0)
