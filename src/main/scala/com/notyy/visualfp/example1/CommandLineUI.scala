@@ -15,7 +15,7 @@ object CommandLineUI extends App {
   @scala.annotation.tailrec
   def askForCommand(): Unit = {
     print(" >")
-    //this block of code is actually used as flow engine. it should be externalized later.
+    //TODO this block of code is actually used as flow engine. it should be externalized later.
     val input  = UserInputEndpoint.execute()
     CommandRecorder.execute(input)
     val command = UserInputIntepreter.execute(input)
