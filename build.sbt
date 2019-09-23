@@ -61,13 +61,13 @@ libraryDependencies ++= Seq(
   // "org.scala-lang" % "scala-compiler" % "2.12.3",
   "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "test",
   "org.json4s" %% "json4s-native" % "3.6.7",
-  "org.hamcrest" % "hamcrest-junit" %"2.0.0.0",
-  "org.mockito" % "mockito-core" % "2.7.22",
+//  "org.hamcrest" % "hamcrest-junit" %"2.0.0.0",
+//  "org.mockito" % "mockito-core" % "2.7.22",
   // "org.quartz-scheduler" % "quartz" % "2.2.3",
   // "org.quartz-scheduler" % "quartz-jobs" % "2.2.3",
-  "com.typesafe.slick" %% "slick" % "3.3.2",
-  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.2",
-  "com.github.dreamhead" % "moco-core" % "0.11.1" exclude("org.apache.httpcomponents", "httpclient"),
+//  "com.typesafe.slick" %% "slick" % "3.3.2",
+//  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.2",
+//  "com.github.dreamhead" % "moco-core" % "0.11.1" exclude("org.apache.httpcomponents", "httpclient"),
   "org.typelevel" %% "cats-core" % "2.0.0"
 )
 
