@@ -1,0 +1,29 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  TypeFlow: # service name
+    Type: 'Aliyun::Serverless::Service'
+#    hello: # function name
+#      Type: 'Aliyun::Serverless::Function'
+#      Properties:
+#        Handler: com.notyy.typeflow.HelloHttp::handleRequest
+#        Runtime: java8
+#        CodeUri: 'oss://type-flow/experiment-assembly-0.0.1.jar'
+#      Events:
+#        http-test: # trigger name
+#          Type: HTTP # http trigger
+#          Properties:
+#            AuthType: ANONYMOUS
+#            Methods: ['GET', 'POST', 'PUT']
+    UserInputIntepreter: # function name
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: com.notyy.visualfp.example1.aliyun.UserInputInterpreterHandler::handleRequest
+        Runtime: java8
+        CodeUri: 'oss://type-flow/visualfp-assembly-0.0.1.jar'
+#    PutOSS:
+#      Type: 'Aliyun::Serverless::Function'
+#      Properties:
+#        Handler: com.notyy.typeflow.PutOSS::handleRequest
+#        Runtime: java8
+#        CodeUri: 'oss://type-flow/experiment-assembly-0.0.1.jar'
