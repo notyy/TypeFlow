@@ -6,7 +6,7 @@ object UserInputIntepreter {
   case object QuitCommand extends Result
   case class CreateModelCommand(modelName: String) extends Result
 
-  trait ModifyModelCommand extends Result
+  sealed trait ModifyModelCommand extends Result
   case class AddElementCommand(elementType: String, elementName: String, modelName: String) extends Result
   case class ConnectElementCommand(from: String, to: String, modelName: String) extends Result
 
