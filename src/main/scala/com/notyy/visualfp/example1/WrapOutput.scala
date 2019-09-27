@@ -2,7 +2,7 @@ package com.notyy.visualfp.example1
 
 import com.notyy.visualfp.example1.SaveNewModel.{ModelCreationSuccess, ModelSaveFailed}
 import com.notyy.visualfp.example1.UpdateModel.{ModelUpdateFailed, ModelUpdateSuccess}
-import com.notyy.visualfp.example1.UserInputIntepreter.{QuitCommand, UnknownCommand}
+import com.notyy.visualfp.example1.UserInputInterpreter.{QuitCommand, UnknownCommand}
 
 object WrapOutput {
   def execute(output: Object): String = {

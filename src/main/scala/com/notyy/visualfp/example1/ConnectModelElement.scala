@@ -1,6 +1,6 @@
 package com.notyy.visualfp.example1
 
-import com.notyy.visualfp.example1.UserInputIntepreter.ConnectElementCommand
+import com.notyy.visualfp.example1.UserInputInterpreter.ConnectElementCommand
 
 object ConnectModelElement {
   def execute(savedModel: Model, connectElementCommand: ConnectElementCommand): Model = {

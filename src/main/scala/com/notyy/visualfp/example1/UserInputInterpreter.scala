@@ -1,20 +1,20 @@
 package com.notyy.visualfp.example1
 
-object UserInputIntepreter {
-  trait Result
-  case class UnknownCommand(input: String) extends Result
-  case object QuitCommand extends Result
-  case class CreateModelCommand(modelName: String) extends Result
+object UserInputInterpreter {
+  sealed trait InterpreterResult
+  case class UnknownCommand(input: String) extends InterpreterResult
+  case object QuitCommand extends InterpreterResult
+  case class CreateModelCommand(modelName: String) extends InterpreterResult
 
-  sealed trait ModifyModelCommand extends Result
-  case class AddElementCommand(elementType: String, elementName: String, modelName: String) extends Result
-  case class ConnectElementCommand(from: String, to: String, modelName: String) extends Result
+  sealed trait ModifyModelCommand extends InterpreterResult
+  case class AddElementCommand(elementType: String, elementName: String, modelName: String) extends InterpreterResult
+  case class ConnectElementCommand(from: String, to: String, modelName: String) extends InterpreterResult
 
   private val CreateModelPattern = """(.*) (.*)""".r
   private val AddElementPattern = """Add (.*) (.*) in (.*)""".r
   private val ConnectElementPattern = """Connect from (.*) to (.*) in (.*)""".r
 
-  def execute(input: String): Result = {
+  def execute(input: String): InterpreterResult = {
     input match {
       case ":q" => QuitCommand
       case (CreateModelPattern("CreateModel", modelName)) => CreateModelCommand(modelName)

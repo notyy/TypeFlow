@@ -1,5 +1,5 @@
 package com.notyy.visualfp.example1
-import com.notyy.visualfp.example1.UserInputIntepreter.{AddElementCommand, ConnectElementCommand, CreateModelCommand, QuitCommand, UnknownCommand}
+import com.notyy.visualfp.example1.UserInputInterpreter.{AddElementCommand, ConnectElementCommand, CreateModelCommand, QuitCommand, UnknownCommand}
 
 import scala.io.StdIn
 import scala.util.{Failure, Success}
@@ -18,7 +18,7 @@ object CommandLineUI extends App {
     //TODO this block of code is actually used as flow engine. it should be externalized later.
     val input  = UserInputEndpoint.execute()
     CommandRecorder.execute(input)
-    val command = UserInputIntepreter.execute(input)
+    val command = UserInputInterpreter.execute(input)
     val output = command match {
       case UnknownCommand(_) => WrapOutput.execute(command)
       case QuitCommand => WrapOutput.execute(command)

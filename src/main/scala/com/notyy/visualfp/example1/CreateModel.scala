@@ -1,6 +1,6 @@
 package com.notyy.visualfp.example1
 
-import com.notyy.visualfp.example1.UserInputIntepreter.CreateModelCommand
+import com.notyy.visualfp.example1.UserInputInterpreter.CreateModelCommand
 
 object CreateModel {
   case class UnsavedModel(modelName: String)

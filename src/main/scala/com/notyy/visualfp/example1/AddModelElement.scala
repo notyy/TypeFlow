@@ -1,6 +1,6 @@
 package com.notyy.visualfp.example1
 
-import com.notyy.visualfp.example1.UserInputIntepreter.AddElementCommand
+import com.notyy.visualfp.example1.UserInputInterpreter.AddElementCommand
 
 object AddModelElement {
   def execute(savedModel: Model, addModelElementCommand: AddElementCommand): Model = {
