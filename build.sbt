@@ -68,7 +68,11 @@ libraryDependencies ++= Seq(
 //  "com.typesafe.slick" %% "slick" % "3.3.2",
 //  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.2",
 //  "com.github.dreamhead" % "moco-core" % "0.11.1" exclude("org.apache.httpcomponents", "httpclient"),
-  "org.typelevel" %% "cats-core" % "2.0.0"
+  "org.typelevel" %% "cats-core" % "2.0.0",
+  "com.aliyun" % "aliyun-java-sdk-fc" % "1.4.0",
+  "com.aliyun.fc.runtime" % "fc-java-core" % "1.3.0",
+  "com.aliyun.oss" % "aliyun-sdk-oss" % "3.6.0",
+  "org.json4s" %% "json4s-native" % "3.6.7"
 )
 
 //   TODO reopen it later
@@ -189,3 +193,8 @@ testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
 // packAutoSettings
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature","-language:higherKinds","-language:implicitConversions")
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case x => MergeStrategy.first
+}
