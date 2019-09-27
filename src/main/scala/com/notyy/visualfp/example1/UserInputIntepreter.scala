@@ -17,8 +17,8 @@ object UserInputIntepreter {
   def execute(input: String): Result = {
     input match {
       case ":q" => QuitCommand
-      case (CreateModelPattern("CreateModel",modelName)) => CreateModelCommand(modelName)
-      case (AddElementPattern(elementType, elementName, modelName)) => AddElementCommand(elementType,elementName,modelName)
+      case (CreateModelPattern("CreateModel", modelName)) => CreateModelCommand(modelName)
+      case (AddElementPattern(elementType, elementName, modelName)) => AddElementCommand(elementType, elementName, modelName)
       case (ConnectElementPattern(from, to, modelName)) => ConnectElementCommand(from, to, modelName)
       case _ => UnknownCommand(input)
     }
