@@ -8,7 +8,7 @@ import sbt._
 // set the name of the project
 
 
-name := "visualfp"
+name := "type-flow"
 
 version := "0.0.1"
 

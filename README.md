@@ -1,2 +1,2 @@
-# visualFP
-a visualization modeling tool inspired by functional programming paradigm.
+# TypeFlow
+a special programming paradigm between functional programming and structure programming.

@@ -20,13 +20,13 @@ Resources:
       Properties:
         Handler: com.notyy.visualfp.example1.aliyun.UserInputInterpreterHandler::handleRequest
         Runtime: java8
-        CodeUri: 'oss://type-flow/visualfp-assembly-0.0.1.jar'
+        CodeUri: 'oss://type-flow/type-flow-assembly-0.0.1.jar'
     HttpInputEndpoint: # function name
       Type: 'Aliyun::Serverless::Function'
       Properties:
         Handler: com.notyy.visualfp.example1.aliyun.HttpInputEndpoint::handleRequest
         Runtime: java8
-        CodeUri: 'oss://type-flow/visualfp-assembly-0.0.1.jar'
+        CodeUri: 'oss://type-flow/type-flow-assembly-0.0.1.jar'
       Events:
         http-test: # trigger name
           Type: HTTP # http trigger
