@@ -1,10 +1,13 @@
 package com.notyy.visualfp.example1
 
-import com.notyy.visualfp.example1.UserInputInterpreter.ConnectElementCommand
+import com.notyy.visualfp.example1.UserInputInterpreter.ConnectInstanceCommand
 
 object ConnectModelElement {
-  def execute(savedModel: Model, connectElementCommand: ConnectElementCommand): Model = {
-    val connection = Connection(connectElementCommand.from ,connectElementCommand.to)
-    savedModel.copy(connections = savedModel.connections.appended(connection))
+  def execute(savedModel: Model, connectElementCommand: ConnectInstanceCommand): Model = {
+    val connection = Connection(connectElementCommand.fromInstanceId,connectElementCommand.outputIndex ,connectElementCommand.toInstanceId)
+    //TODO temporary put here, will deal with it later
+    val flowIndex = savedModel.flows.indexWhere(_.name == connectElementCommand.flowName)
+    val updatedFlow = savedModel.flows(flowIndex).copy(connections = savedModel.flows(flowIndex).connections.appended(connection))
+    savedModel.copy(flows = savedModel.flows.updated(flowIndex,updatedFlow))
   }
 }
