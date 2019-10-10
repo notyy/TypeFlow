@@ -73,9 +73,6 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-native" % "3.6.7"
 )
 
-//   TODO reopen it later
-//testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
-
 logBuffered := false
 
 // reduce the maximum number of errors shown by the Scala compiler
