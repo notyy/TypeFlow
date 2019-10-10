@@ -10,14 +10,14 @@ object UserInputInterpreter {
   case class AddInputEndpointCommand(modelName: String, name: String, outputType: OutputType) extends ModifyModelCommand
   case class ConnectInstanceCommand(fromInstanceId: String, outputIndex: Int, toInstanceId: String, modelName: String,flowName: String) extends ModifyModelCommand
 
-  private val CreateModelPattern = """(.*) (.*)""".r
+  private val CreateModelPattern = """createModel (.*)""".r
   private val AddDefinitionPattern = """add (.*) (.*) haveOutputs (.*) toModel (.*)""".r
-  private val ConnectElementPattern = """Connect from (.*)(.*) to (.*) inFlow (.*).(.*)""".r
+  private val ConnectElementPattern = """connect from (.*)(.*) to (.*) inFlow (.*).(.*)""".r
 
   def execute(input: String): InterpreterResult = {
     input match {
       case ":q" => QuitCommand
-      case (CreateModelPattern("CreateModel", modelName)) => CreateModelCommand(modelName)
+      case (CreateModelPattern(modelName)) => CreateModelCommand(modelName)
       case (AddDefinitionPattern(definitionType, definitionName, outputTypes, modelName)) => definitionType match {
         case "InputEndpoint" => AddInputEndpointCommand(modelName,definitionName,OutputType(outputTypes))
       }

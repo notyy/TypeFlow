@@ -15,18 +15,11 @@ object SaveNewModel {
 
   def execute(model: UnsavedModel): SaveNewModelResult = {
     Try {
-      val file = new File(s"./localOutput/${model.modelName}.puml")
+      val file = new File(s"./localOutput/${model.modelName}.typeflow")
       if (file.exists() && file.isFile) {
         file.delete()
       }
       file.createNewFile()
-      val modelStr =
-        """@startuml
-          |@enduml
-          |""".stripMargin
-      val writer = new PrintWriter(file)
-      writer.println(modelStr)
-      writer.flush()
       ModelCreationSuccess(model.modelName)
     } match {
       case Success(rs) => rs
