@@ -1,9 +1,6 @@
 package com.github.notyy.typeflow.example1
 
-import UserInputInterpreter.{AddInputEndpointCommand, ConnectInstanceCommand, CreateModelCommand, QuitCommand, UnknownCommand}
-
-import scala.io.StdIn
-import scala.util.{Failure, Success}
+import com.github.notyy.typeflow.util.ReflectRunner
 
 object CommandLineUI extends App {
   val welcomeStr =
@@ -43,7 +40,8 @@ object CommandLineUI extends App {
     )
     val model: Model = Model("typeflow_editor",Vector(userInputEndpoint,userInputInterpreter,wrapOutput,outputEndpoint),Vector(minimalFlow),minimalFlow)
     val input = UserInputEndpoint.execute()
-
+    val instance = model.activeFlow.instances.find(_.id == userInputEndpoint.name).get
+    ReflectRunner.run(instance.definition,Some("com.github.notyy.typeflow.example1"),Some(input))
 //    CommandRecorder.execute(input)
 //    val command = UserInputInterpreter.execute(input)
 //    val output = command match {
