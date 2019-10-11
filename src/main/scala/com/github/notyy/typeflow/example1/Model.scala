@@ -8,7 +8,7 @@ trait Definition{
 }
 case class InputEndpoint(name: String, output: OutputType) extends Definition
 case class Function(name: String, input: InputType, outputs: Vector[Output]) extends Definition
-case class OutputEndpoint(name: String, output: OutputType, errorOutput: Vector[Output]) extends Definition
+case class OutputEndpoint(name: String, input: InputType, output: OutputType, errorOutput: Vector[Output]) extends Definition
 
 case class Output(outputType: OutputType, index: Int)
 case class OutputType(name: String)

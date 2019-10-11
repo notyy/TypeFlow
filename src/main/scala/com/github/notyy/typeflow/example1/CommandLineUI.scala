@@ -26,7 +26,7 @@ object CommandLineUI extends App {
     val wrapOutput: Function = Function("WrapOutput", InputType("java.lang.Object"),
       outputs = Vector(Output(OutputType("String"),1))
     )
-    val outputEndpoint: OutputEndpoint = OutputEndpoint("UserOutputEndpoint",OutputType("String"),Vector.empty)
+    val outputEndpoint: OutputEndpoint = OutputEndpoint("UserOutputEndpoint",InputType("String"),OutputType("String"),Vector.empty)
     val minimalFlow: Flow = Flow("minimalFlow",
       instances = Vector(
         //use definition name as default instance id
