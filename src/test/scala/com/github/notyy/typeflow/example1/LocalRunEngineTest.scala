@@ -14,7 +14,7 @@ class LocalRunEngineTest extends FunSpec with Matchers {
   val wrapOutput: Function = Function("WrapOutput", InputType("java.lang.Object"),
     outputs = Vector(Output(OutputType("java.lang.String"),1))
   )
-  val outputEndpoint: OutputEndpoint = OutputEndpoint("UserOutputEndpoint",InputType("java.lang.String"),OutputType("java.lang.String"),Vector.empty)
+  val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint",InputType("java.lang.String"),OutputType("java.lang.String"),Vector.empty)
   val minimalFlow: Flow = Flow("minimalFlow",
     instances = Vector(
       //use definition name as default instance id
