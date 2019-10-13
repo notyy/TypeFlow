@@ -25,8 +25,8 @@ class ReflectRunnerTest extends FunSpec with Matchers {
       ReflectRunner.run(mockInputEndpoint, None, None).asInstanceOf[String] shouldBe "mock input"
     }
     it("should run OutputEndpoint") {
-      val mockOutputEndpint: OutputEndpoint = OutputEndpoint("com.github.notyy.typeflow.util.MockOutputEndpoint",InputType("java.lang.String"), OutputType("java.lang.String"),Vector.empty)
-      ReflectRunner.run(mockOutputEndpint,None,Some("input")).asInstanceOf[String] shouldBe "mock output resp"
+      val mockOutputEndpint: OutputEndpoint = OutputEndpoint("com.github.notyy.typeflow.util.MockOutputEndpoint",InputType("java.lang.String"), OutputType("Unit"),Vector.empty)
+      ReflectRunner.run(mockOutputEndpint,None,Some("input")) shouldBe ()
     }
   }
 }
@@ -36,5 +36,5 @@ object MockInputEndpoint {
 }
 
 object MockOutputEndpoint {
-  def execute(input: String): Try[String] = Success("mock output resp")
+  def execute(input: String): Try[Unit] = Success("mock output resp")
 }

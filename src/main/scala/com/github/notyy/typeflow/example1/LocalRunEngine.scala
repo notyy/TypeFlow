@@ -32,24 +32,29 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
 
   def nextInstances(output: Any, outputFrom: Instance): Vector[Instance] = {
     val flow = model.activeFlow
-    outputFrom match {
+    val nIns = outputFrom match {
       case Instance(id,InputEndpoint(name, o)) => {
         val conns:Vector[Connection] = flow.connections.filter(_.fromInstanceId == outputFrom.id)
         connections2instances(conns)
       }
       case Instance(id, Function(name,inputType,outputs)) => {
+        logger.info(s"output from $id is $output, now looking for next instances")
         val outputType: OutputType = OutputType(TypeUtil.getTypeName(output))
-        logger.info(s"outputType is ${outputType.name}")
         //TODO solve this .get later
         val index = outputs.find(_.outputType == outputType).get.index
+        logger.info(s"index is $index")
         val conns = flow.connections.filter(conn => conn.fromInstanceId == outputFrom.id && conn.outputIndex == index)
+        logger.info(s"find ${conns.size} connections")
         connections2instances(conns)
       }
       case Instance(id, OutputEndpoint(_,_,_,_)) => Vector.empty
     }
+    logger.info(s"next should call:[${nIns.map(_.id).mkString(",")}]")
+    nIns
   }
 
   private def connections2instances(conns: Vector[Connection]): Vector[Instance] = {
+    logger.info(s"connections2Instances $conns")
     conns.map(_.toInstanceId).flatMap(insId => model.activeFlow.instances.filter(_.id == insId))
   }
 }

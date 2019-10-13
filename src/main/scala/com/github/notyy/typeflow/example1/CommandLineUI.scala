@@ -1,6 +1,9 @@
 package com.github.notyy.typeflow.example1
 
+import com.typesafe.scalalogging.Logger
+
 object CommandLineUI extends App {
+  private val logger = Logger("CommandLineUI")
   val welcomeStr =
     """
       |welcome to use command line user interface for TFO.
@@ -21,13 +24,14 @@ object CommandLineUI extends App {
     val wrapOutput: Function = Function("WrapOutput", InputType("java.lang.Object"),
       outputs = Vector(Output(OutputType("java.lang.String"), 1))
     )
-    val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", InputType("java.lang.String"), OutputType("java.lang.String"), Vector.empty)
+    val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", InputType("java.lang.String"), OutputType("Unit"), Vector.empty)
     val minimalFlow: Flow = Flow("minimalFlow",
       instances = Vector(
         //use definition name as default instance id
         Instance(userInputEndpoint),
         Instance(userInputInterpreter),
-        Instance(wrapOutput)
+        Instance(wrapOutput),
+        Instance(outputEndpoint)
       ),
       connections = Vector(
         Connection(userInputEndpoint.name, 1, userInputInterpreter.name),
@@ -67,6 +71,11 @@ object CommandLineUI extends App {
     //    val resp = UserOutputEndpoint.execute(output)
     //    if (resp == "quit") System.exit(0)
     askForCommand()
+  }
+
+  def onResponse(resp: String): Unit = {
+    println(resp)
+    if (resp == "quit") System.exit(0)
   }
 
   println(welcomeStr)
