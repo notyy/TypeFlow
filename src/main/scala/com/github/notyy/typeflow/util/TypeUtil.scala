@@ -7,4 +7,9 @@ object TypeUtil {
     println(s"type rawName is : $name")
     name
   }
+
+  def getTypeName(input: Any): String = {
+    val typeName = input.getClass.getName
+    if(typeName.startsWith("java.lang")) typeName else getTypeShortName(input)
+  }
 }
