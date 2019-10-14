@@ -6,7 +6,7 @@ import com.github.notyy.typeflow.editor.CreateModel.UnsavedModel
 
 import scala.util.{Failure, Success, Try}
 
-object SaveNewModel {
+object CreateNewModel {
 
   trait SaveNewModelResult
   case class ModelCreationSuccess(modelName: String) extends SaveNewModelResult

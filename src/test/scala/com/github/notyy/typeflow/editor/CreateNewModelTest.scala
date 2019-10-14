@@ -3,17 +3,17 @@ package com.github.notyy.typeflow.editor
 import java.io.File
 
 import CreateModel.UnsavedModel
-import SaveNewModel.ModelCreationSuccess
+import CreateNewModel.ModelCreationSuccess
 import org.scalatest.{FunSpec, Matchers}
 
-class SaveNewModelTest extends FunSpec with Matchers {
+class CreateNewModelTest extends FunSpec with Matchers {
     describe("SaveNewModel"){
       it("should create a new model file as $modelname.typeflow"){
         val unsavedModel = UnsavedModel("name1")
         val file = new File(s"./localOutput/${unsavedModel.modelName}.typeflow")
         file.delete()
         file shouldNot exist
-        val rs = SaveNewModel.execute(unsavedModel)
+        val rs = CreateNewModel.execute(unsavedModel)
         rs shouldBe ModelCreationSuccess(unsavedModel.modelName)
         file should exist
       }

@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.editor
 
-import SaveNewModel.{ModelCreationSuccess, ModelSaveFailed}
+import CreateNewModel.{ModelCreationSuccess, ModelSaveFailed}
 import UpdateModel.{ModelUpdateFailed, ModelUpdateSuccess}
 import UserInputInterpreter.{QuitCommand, UnknownCommand}
 

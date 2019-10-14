@@ -2,7 +2,7 @@ package com.github.notyy.typeflow.editor
 
 import java.io.{File, PrintWriter}
 
-import SaveNewModel.{ModelCreationSuccess, ModelSaveFailed}
+import CreateNewModel.{ModelCreationSuccess, ModelSaveFailed}
 
 import scala.util.{Failure, Success, Try}
 
