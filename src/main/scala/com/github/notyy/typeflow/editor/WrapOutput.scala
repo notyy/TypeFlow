@@ -1,4 +1,4 @@
-package com.github.notyy.typeflow.example1
+package com.github.notyy.typeflow.editor
 
 import SaveNewModel.{ModelCreationSuccess, ModelSaveFailed}
 import UpdateModel.{ModelUpdateFailed, ModelUpdateSuccess}

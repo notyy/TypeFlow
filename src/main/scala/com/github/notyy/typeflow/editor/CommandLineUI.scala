@@ -1,4 +1,4 @@
-package com.github.notyy.typeflow.example1
+package com.github.notyy.typeflow.editor
 
 import com.typesafe.scalalogging.Logger
 
@@ -43,7 +43,7 @@ object CommandLineUI extends App {
     val model: Model = Model("typeflow_editor", Vector(userInputEndpoint, userInputInterpreter, wrapOutput, outputEndpoint), Vector(minimalFlow), minimalFlow)
     val input = UserInputEndpoint.execute()
     val instance = model.activeFlow.instances.find(_.id == userInputEndpoint.name).get
-    val localRunEngine = LocalRunEngine(model, Some("com.github.notyy.typeflow.example1"))
+    val localRunEngine = LocalRunEngine(model, Some("com.github.notyy.typeflow.editor"))
     localRunEngine.startFlow(input, instance)
     //    CommandRecorder.execute(input)
     //    val command = UserInputInterpreter.execute(input)

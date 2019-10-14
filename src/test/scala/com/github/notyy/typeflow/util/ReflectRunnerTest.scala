@@ -1,13 +1,13 @@
 package com.github.notyy.typeflow.util
 
-import com.github.notyy.typeflow.example1.UserInputInterpreter.{QuitCommand, UnknownCommand}
-import com.github.notyy.typeflow.example1._
+import com.github.notyy.typeflow.editor.UserInputInterpreter.{QuitCommand, UnknownCommand}
+import com.github.notyy.typeflow.editor._
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.util.{Success, Try}
 
 class ReflectRunnerTest extends FunSpec with Matchers {
-  val packgePrefix = Some("com.github.notyy.typeflow.example1")
+  val packgePrefix = Some("com.github.notyy.typeflow.editor")
   describe("ReflectRunner") {
     it("should run defined function by name") {
       val userInputInterpreter: Function = Function("UserInputInterpreter", InputType("java.lang.String"),

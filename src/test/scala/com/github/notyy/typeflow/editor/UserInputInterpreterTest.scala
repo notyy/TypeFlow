@@ -1,4 +1,4 @@
-package com.github.notyy.typeflow.example1
+package com.github.notyy.typeflow.editor
 
 import UserInputInterpreter.{AddInputEndpointCommand, CreateModelCommand}
 import org.scalatest.{FunSpec, Matchers}

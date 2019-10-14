@@ -1,9 +1,9 @@
-package com.github.notyy.typeflow.example1.aliyun
+package com.github.notyy.typeflow.editor.aliyun
 
 import java.io.{InputStream, OutputStream}
 
 import com.aliyun.fc.runtime.{Context, StreamRequestHandler}
-import com.github.notyy.typeflow.example1.UserInputInterpreter
+import com.github.notyy.typeflow.editor.UserInputInterpreter
 import com.github.notyy.typeflow.util.{JSONUtil, JSonFormats}
 
 import scala.io.Source

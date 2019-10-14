@@ -1,8 +1,8 @@
-package com.github.notyy.typeflow.example1
+package com.github.notyy.typeflow.editor
 
 import java.io.File
 
-import com.github.notyy.typeflow.example1.CreateModel.UnsavedModel
+import com.github.notyy.typeflow.editor.CreateModel.UnsavedModel
 
 import scala.util.{Failure, Success, Try}
 

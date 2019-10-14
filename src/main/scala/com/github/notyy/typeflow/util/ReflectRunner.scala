@@ -2,7 +2,7 @@ package com.github.notyy.typeflow.util
 
 import java.lang.reflect.Method
 
-import com.github.notyy.typeflow.example1.{Definition, Function, InputEndpoint, OutputEndpoint}
+import com.github.notyy.typeflow.editor.{Definition, Function, InputEndpoint, OutputEndpoint}
 
 import scala.util.Try
 

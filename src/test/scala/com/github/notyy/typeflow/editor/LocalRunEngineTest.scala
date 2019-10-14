@@ -1,6 +1,6 @@
-package com.github.notyy.typeflow.example1
+package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.example1.UserInputInterpreter.QuitCommand
+import com.github.notyy.typeflow.editor.UserInputInterpreter.QuitCommand
 import org.scalatest.{FunSpec, Matchers}
 
 class LocalRunEngineTest extends FunSpec with Matchers {

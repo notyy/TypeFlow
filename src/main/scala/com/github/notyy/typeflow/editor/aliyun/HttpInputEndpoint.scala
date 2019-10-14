@@ -1,10 +1,10 @@
-package com.github.notyy.typeflow.example1.aliyun
+package com.github.notyy.typeflow.editor.aliyun
 
 import com.aliyun.fc.runtime.{Context, HttpRequestHandler}
 import com.aliyuncs.fc.client.FunctionComputeClient
 import com.aliyuncs.fc.request.InvokeFunctionRequest
-import com.github.notyy.typeflow.example1.UserInputInterpreter
-import com.github.notyy.typeflow.example1.UserInputInterpreter.UnknownCommand
+import com.github.notyy.typeflow.editor.UserInputInterpreter
+import com.github.notyy.typeflow.editor.UserInputInterpreter.UnknownCommand
 import com.github.notyy.typeflow.util.{JSONUtil, JSonFormats}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 

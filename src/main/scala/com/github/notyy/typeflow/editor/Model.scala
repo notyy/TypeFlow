@@ -1,4 +1,4 @@
-package com.github.notyy.typeflow.example1
+package com.github.notyy.typeflow.editor
 
 case class Model(name: String, definitions: Vector[Definition], flows: Vector[Flow], activeFlow: Flow)
 case class Element(elementType: String, name: String)
