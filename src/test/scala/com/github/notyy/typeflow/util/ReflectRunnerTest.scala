@@ -1,5 +1,7 @@
 package com.github.notyy.typeflow.util
 
+import com.github.notyy.typeflow.domain
+import com.github.notyy.typeflow.domain.{InputEndpoint, InputType, Output, OutputEndpoint, OutputType}
 import com.github.notyy.typeflow.editor.UserInputInterpreter.{QuitCommand, UnknownCommand}
 import com.github.notyy.typeflow.editor._
 import org.scalatest.{FunSpec, Matchers}
@@ -10,7 +12,7 @@ class ReflectRunnerTest extends FunSpec with Matchers {
   val packgePrefix = Some("com.github.notyy.typeflow.editor")
   describe("ReflectRunner") {
     it("should run defined function by name") {
-      val userInputInterpreter: Function = Function("UserInputInterpreter", InputType("java.lang.String"),
+      val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", InputType("java.lang.String"),
         outputs = Vector(
           Output(OutputType("UnknownCommand"), 1),
           Output(OutputType("QuitCommand"), 2)
@@ -36,5 +38,5 @@ object MockInputEndpoint {
 }
 
 object MockOutputEndpoint {
-  def execute(input: String): Try[Unit] = Success("mock output resp")
+  def execute(input: String): Try[Unit] = Success[Unit](())
 }

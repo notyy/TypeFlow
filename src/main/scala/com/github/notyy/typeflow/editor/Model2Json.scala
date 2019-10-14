@@ -1,5 +1,6 @@
 package com.github.notyy.typeflow.editor
 
+import com.github.notyy.typeflow.domain.Model
 import com.github.notyy.typeflow.util.JSONUtil
 
 object Model2Json {

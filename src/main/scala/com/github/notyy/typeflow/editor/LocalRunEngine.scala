@@ -1,5 +1,6 @@
 package com.github.notyy.typeflow.editor
 
+import com.github.notyy.typeflow.domain.{Connection, Function, InputEndpoint, Instance, Model, OutputEndpoint, OutputType}
 import com.github.notyy.typeflow.util.{ReflectRunner, TypeUtil}
 import com.typesafe.scalalogging.Logger
 

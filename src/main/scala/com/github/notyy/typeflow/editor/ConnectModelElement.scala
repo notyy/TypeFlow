@@ -1,6 +1,7 @@
 package com.github.notyy.typeflow.editor
 
 import UserInputInterpreter.ConnectInstanceCommand
+import com.github.notyy.typeflow.domain.{Connection, Model}
 
 object ConnectModelElement {
   def execute(savedModel: Model, connectElementCommand: ConnectInstanceCommand): Model = {

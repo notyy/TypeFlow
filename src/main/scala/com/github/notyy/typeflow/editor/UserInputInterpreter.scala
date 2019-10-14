@@ -1,5 +1,7 @@
 package com.github.notyy.typeflow.editor
 
+import com.github.notyy.typeflow.domain.OutputType
+
 object UserInputInterpreter {
   sealed trait InterpreterResult
   case class UnknownCommand(input: String) extends InterpreterResult

@@ -1,17 +1,19 @@
 package com.github.notyy.typeflow.editor
 
+import com.github.notyy.typeflow.domain
+import com.github.notyy.typeflow.domain.{Connection, Flow, InputEndpoint, InputType, Instance, Model, Output, OutputEndpoint, OutputType}
 import com.github.notyy.typeflow.editor.UserInputInterpreter.QuitCommand
 import org.scalatest.{FunSpec, Matchers}
 
 class LocalRunEngineTest extends FunSpec with Matchers {
 
   val userInputEndpoint: InputEndpoint = InputEndpoint("UserInputEndpoint", OutputType("java.lang.String"))
-  val userInputInterpreter: Function = Function("UserInputInterpreter", InputType("java.lang.String"),
+  val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", InputType("java.lang.String"),
     outputs = Vector(
       Output(OutputType("UnknownCommand"), 1),
       Output(OutputType("QuitCommand"), 2)
     ))
-  val wrapOutput: Function = Function("WrapOutput", InputType("java.lang.Object"),
+  val wrapOutput: domain.Function = domain.Function("WrapOutput", InputType("java.lang.Object"),
     outputs = Vector(Output(OutputType("java.lang.String"),1))
   )
   val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint",InputType("java.lang.String"),OutputType("java.lang.String"),Vector.empty)
@@ -29,7 +31,7 @@ class LocalRunEngineTest extends FunSpec with Matchers {
       Connection(wrapOutput.name,1,outputEndpoint.name)
     )
   )
-  val model: Model = Model("typeflow_editor",Vector(userInputEndpoint,userInputInterpreter,wrapOutput,outputEndpoint),Vector(minimalFlow),minimalFlow)
+  val model: Model = domain.Model("typeflow_editor",Vector(userInputEndpoint,userInputInterpreter,wrapOutput,outputEndpoint),Vector(minimalFlow),minimalFlow)
 
   describe("LocalRunEngine"){
     it("can find next instance by the type of input"){

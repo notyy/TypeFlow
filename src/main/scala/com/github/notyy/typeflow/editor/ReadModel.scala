@@ -1,5 +1,7 @@
 package com.github.notyy.typeflow.editor
 
+import com.github.notyy.typeflow.domain.Model
+
 import scala.io.Source
 
 object ReadModel {

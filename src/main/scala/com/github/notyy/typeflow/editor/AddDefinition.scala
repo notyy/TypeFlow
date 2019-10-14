@@ -1,6 +1,7 @@
 package com.github.notyy.typeflow.editor
 
 import UserInputInterpreter.{AddInputEndpointCommand, ModifyModelCommand}
+import com.github.notyy.typeflow.domain.{Definition, InputEndpoint, Model}
 
 object AddDefinition {
   def execute(savedModel: Model, addDefinitionCommand: ModifyModelCommand): Model = {
