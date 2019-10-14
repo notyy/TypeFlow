@@ -24,9 +24,9 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
   }
 
   private def callInstance(output: Any, instance: Instance): Any = {
-    logger.info(s"calling ${instance.id} with parameter '$output'")
+    logger.debug(s"calling ${instance.id} with parameter '$output'")
     val rs = ReflectRunner.run(instance.definition, packagePrefix, Some(output))
-    logger.info(s"result of calling ${instance.id} with parameter '$output' is '$rs'")
+    logger.debug(s"result of calling ${instance.id} with parameter '$output' is '$rs'")
     rs
   }
 
@@ -38,23 +38,23 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
         connections2instances(conns)
       }
       case Instance(id, Function(name,inputType,outputs)) => {
-        logger.info(s"output from $id is $output, now looking for next instances")
+        logger.debug(s"output from $id is $output, now looking for next instances")
         val outputType: OutputType = OutputType(TypeUtil.getTypeName(output))
         //TODO solve this .get later
         val index = outputs.find(_.outputType == outputType).get.index
-        logger.info(s"index is $index")
+        logger.debug(s"index is $index")
         val conns = flow.connections.filter(conn => conn.fromInstanceId == outputFrom.id && conn.outputIndex == index)
-        logger.info(s"find ${conns.size} connections")
+        logger.debug(s"find ${conns.size} connections")
         connections2instances(conns)
       }
       case Instance(id, OutputEndpoint(_,_,_,_)) => Vector.empty
     }
-    logger.info(s"next should call:[${nIns.map(_.id).mkString(",")}]")
+    logger.debug(s"next should call:[${nIns.map(_.id).mkString(",")}]")
     nIns
   }
 
   private def connections2instances(conns: Vector[Connection]): Vector[Instance] = {
-    logger.info(s"connections2Instances $conns")
+    logger.debug(s"connections2Instances $conns")
     conns.map(_.toInstanceId).flatMap(insId => model.activeFlow.instances.filter(_.id == insId))
   }
 }
