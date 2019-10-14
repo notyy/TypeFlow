@@ -2,8 +2,6 @@ package com.github.notyy.typeflow.editor
 
 import java.io.File
 
-import com.github.notyy.typeflow.editor.CreateModel.UnsavedModel
-
 import scala.util.{Failure, Success, Try}
 
 object CreateNewModel {
@@ -12,17 +10,17 @@ object CreateNewModel {
   case class ModelCreationSuccess(modelName: String) extends SaveNewModelResult
   case class ModelSaveFailed(modelName: String, msg: String) extends SaveNewModelResult
 
-  def execute(model: UnsavedModel): SaveNewModelResult = {
+  def execute(modelName: String): SaveNewModelResult = {
     Try {
-      val file = new File(s"./localOutput/${model.modelName}.typeflow")
+      val file = new File(s"./localOutput/$modelName.typeflow")
       if (file.exists() && file.isFile) {
         file.delete()
       }
       file.createNewFile()
-      ModelCreationSuccess(model.modelName)
+      ModelCreationSuccess(modelName)
     } match {
       case Success(rs) => rs
-      case Failure(exception) => ModelSaveFailed(model.modelName, exception.getMessage)
+      case Failure(exception) => ModelSaveFailed(modelName, exception.getMessage)
     }
   }
 }
