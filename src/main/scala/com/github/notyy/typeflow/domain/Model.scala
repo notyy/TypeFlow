@@ -6,9 +6,9 @@ case class Element(elementType: String, name: String)
 trait Definition{
   def name: String
 }
-case class InputEndpoint(name: String, output: OutputType) extends Definition
-case class Function(name: String, input: InputType, outputs: Vector[Output]) extends Definition
-case class OutputEndpoint(name: String, input: InputType, output: OutputType, errorOutput: Vector[Output]) extends Definition
+case class InputEndpoint(name: String, outputType: OutputType) extends Definition
+case class Function(name: String, inputType: InputType, outputs: Vector[Output]) extends Definition
+case class OutputEndpoint(name: String, inputType: InputType, outputType: OutputType, errorOutput: Vector[Output]) extends Definition
 
 case class Output(outputType: OutputType, index: Int)
 case class OutputType(name: String)

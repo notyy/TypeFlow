@@ -1,40 +1,4 @@
 @startuml
-'class 用户注册界面 {
-'}
-'class 输出类型 {
-'    HttpUserRegisterReq
-'}
-'
-'class UserRegInputTrans
-'class 输入类型 {
-'    HttpUserRegisterReq
-'}
-'class UserRegInputTrans_输出
-'
-'用户注册界面 -> 输出类型
-'输出类型 .r.> 输入类型
-'输入类型 -> UserRegInputTrans
-'UserRegInputTrans -> UserRegInputTrans_输出
-'
-'class ID生成器 {
-'}
-'class ID生成器_输入类型 {
-'    ID类型
-'}
-'class ID生成器_输出类型 {
-'    ID
-'}
-'ID生成器_输入类型 -> ID生成器
-'ID生成器 -> ID生成器_输出类型
-'
-'class 用户注册 {
-'}
-'class 用户注册_输入_ID
-'class 用户注册_输入_UserRegInputTrans_输出
-'用户注册_输入_ID --> 用户注册
-'用户注册_输入_UserRegInputTrans_输出 -> 用户注册
-'UserRegInputTrans_输出 .> 用户注册_输入_UserRegInputTrans_输出
-'ID生成器_输出类型 ..> 用户注册_输入_ID
 class UserInputEndpoint <<InputEndpoint>>
 class UserInputInterpreter <<Function>>
 class WrapOutput <<Function>>
@@ -42,9 +6,9 @@ class CommandLineOutputEndpoint <<OutputEndpoint>>
 
 UserInputEndpoint --> UserInput
 UserInput --> UserInputInterpreter
-UserInputInterpreter --> QuitCommand
 UserInputInterpreter --> UnknownCommand
 UnknownCommand --> WrapOutput
+UserInputInterpreter --> QuitCommand
 QuitCommand --> WrapOutput
 WrapOutput --> WrappedOutput
 WrappedOutput --> CommandLineOutputEndpoint
