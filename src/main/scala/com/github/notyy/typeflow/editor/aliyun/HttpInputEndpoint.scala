@@ -3,8 +3,7 @@ package com.github.notyy.typeflow.editor.aliyun
 import com.aliyun.fc.runtime.{Context, HttpRequestHandler}
 import com.aliyuncs.fc.client.FunctionComputeClient
 import com.aliyuncs.fc.request.InvokeFunctionRequest
-import com.github.notyy.typeflow.editor.UserInputInterpreter
-import com.github.notyy.typeflow.editor.UserInputInterpreter.UnknownCommand
+import com.github.notyy.typeflow.editor.{InterpreterResult, UnknownCommand}
 import com.github.notyy.typeflow.util.{JSONUtil, JSonFormats}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
@@ -22,7 +21,7 @@ class HttpInputEndpoint extends HttpRequestHandler{
     //        invkReq.setHeader("Content-Type", "application/json");
     invkReq.setPayload(payload.getBytes)
     val invokeResp = new String(fcClient.invokeFunction(invkReq).getPayload)
-    val rs = JSONUtil.fromJSON[UserInputInterpreter.InterpreterResult](invokeResp,JSonFormats.userInterpreterResultFormats)
+    val rs = JSONUtil.fromJSON[InterpreterResult](invokeResp,JSonFormats.userInterpreterResultFormats)
     val outStr = rs match {
       case Success(UnknownCommand(input)) => s"unknown command $input"
       case _ => s"what's this $rs"

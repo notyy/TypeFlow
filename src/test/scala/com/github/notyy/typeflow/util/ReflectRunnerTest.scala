@@ -1,9 +1,8 @@
 package com.github.notyy.typeflow.util
 
 import com.github.notyy.typeflow.domain
-import com.github.notyy.typeflow.domain.{InputEndpoint, InputType, Output, OutputEndpoint, OutputType}
-import com.github.notyy.typeflow.editor.UserInputInterpreter.{QuitCommand, UnknownCommand}
-import com.github.notyy.typeflow.editor._
+import com.github.notyy.typeflow.domain._
+import com.github.notyy.typeflow.editor.{InterpreterResult, QuitCommand, UnknownCommand, UserInput, UserInputInterpreter, WrappedOutput}
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.util.{Success, Try}
@@ -12,31 +11,33 @@ class ReflectRunnerTest extends FunSpec with Matchers {
   val packgePrefix = Some("com.github.notyy.typeflow.editor")
   describe("ReflectRunner") {
     it("should run defined function by name") {
-      val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", InputType("java.lang.String"),
+      val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", InputType("UserInput"),
         outputs = Vector(
           Output(OutputType("UnknownCommand"), 1),
           Output(OutputType("QuitCommand"), 2)
         ))
-      ReflectRunner.run(userInputInterpreter, packgePrefix, Some(":q")).
-        asInstanceOf[UserInputInterpreter.InterpreterResult] shouldBe QuitCommand
-      ReflectRunner.run(userInputInterpreter, packgePrefix, Some("badcommand")).
-        asInstanceOf[UserInputInterpreter.InterpreterResult] shouldBe UnknownCommand("badcommand")
+      ReflectRunner.run(userInputInterpreter, packgePrefix, Some(UserInput(":q"))).
+        asInstanceOf[InterpreterResult] shouldBe QuitCommand
+      ReflectRunner.run(userInputInterpreter, packgePrefix, Some(UserInput("badcommand"))).
+        asInstanceOf[InterpreterResult] shouldBe UnknownCommand("badcommand")
     }
     it("should run InputEndpoint") {
-      val mockInputEndpoint: InputEndpoint = InputEndpoint("com.github.notyy.typeflow.util.MockInputEndpoint", OutputType("java.lang.String"))
-      ReflectRunner.run(mockInputEndpoint, None, None).asInstanceOf[String] shouldBe "mock input"
+      val mockInputEndpoint: InputEndpoint = InputEndpoint("com.github.notyy.typeflow.util.MockInputEndpoint", OutputType("UserInput"))
+      val rs = ReflectRunner.run(mockInputEndpoint, None, None)
+      println(s"rs=$rs")
+      rs.asInstanceOf[UserInput] shouldBe UserInput("mock input")
     }
     it("should run OutputEndpoint") {
-      val mockOutputEndpint: OutputEndpoint = OutputEndpoint("com.github.notyy.typeflow.util.MockOutputEndpoint",InputType("java.lang.String"), OutputType("Unit"),Vector.empty)
-      ReflectRunner.run(mockOutputEndpint,None,Some("input")) shouldBe ()
+      val mockOutputEndpint: OutputEndpoint = OutputEndpoint("com.github.notyy.typeflow.util.MockOutputEndpoint",InputType("com.github.notyy.typeflow.editor.WrappedOutput"), OutputType("Unit"),Vector.empty)
+      ReflectRunner.run(mockOutputEndpint,None,Some(WrappedOutput("input"))) shouldBe ()
     }
   }
 }
 
 object MockInputEndpoint {
-  def execute(): String = "mock input"
+  def execute(): UserInput = UserInput("mock input")
 }
 
 object MockOutputEndpoint {
-  def execute(input: String): Try[Unit] = Success[Unit](())
+  def execute(input: com.github.notyy.typeflow.editor.WrappedOutput): Try[Unit] = Success[Unit](())
 }

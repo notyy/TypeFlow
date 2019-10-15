@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.util
 
-import com.github.notyy.typeflow.editor.UserInputInterpreter.{CreateModelCommand, InterpreterResult, UnknownCommand}
+import com.github.notyy.typeflow.editor.{CreateModelCommand, InterpreterResult, UnknownCommand}
 import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
 import org.scalatest.{FunSpec, Matchers}
 

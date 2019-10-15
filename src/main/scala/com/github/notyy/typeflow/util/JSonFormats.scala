@@ -1,7 +1,7 @@
 package com.github.notyy.typeflow.util
 
 import com.github.notyy.typeflow.domain.{Function, InputEndpoint, OutputEndpoint}
-import com.github.notyy.typeflow.editor.UserInputInterpreter.{CreateModelCommand, UnknownCommand}
+import com.github.notyy.typeflow.editor.{CreateModelCommand, UnknownCommand}
 import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
 
 object JSonFormats {

@@ -1,8 +1,7 @@
 package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain
-import com.github.notyy.typeflow.domain.{Connection, Flow, InputEndpoint, InputType, Instance, Model, Output, OutputEndpoint, OutputType}
-import com.github.notyy.typeflow.editor.UserInputInterpreter.QuitCommand
+import com.github.notyy.typeflow.domain._
 import org.scalatest.{FunSpec, Matchers}
 
 class LocalRunEngineTest extends FunSpec with Matchers {

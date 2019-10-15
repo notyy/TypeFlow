@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.util
 
-import com.github.notyy.typeflow.editor.UserInputInterpreter.QuitCommand
+import com.github.notyy.typeflow.editor.QuitCommand
 import org.scalatest.{FunSpec, Matchers}
 
 class TypeUtilTest extends FunSpec with Matchers {

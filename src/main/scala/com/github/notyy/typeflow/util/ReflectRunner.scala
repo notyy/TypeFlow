@@ -1,15 +1,19 @@
 package com.github.notyy.typeflow.util
 
-import com.github.notyy.typeflow.domain.{Definition, Function, InputEndpoint, OutputEndpoint}
+import com.github.notyy.typeflow.domain._
+import com.typesafe.scalalogging.Logger
 
 import scala.util.Try
 
 object ReflectRunner {
+  private val logger = Logger("ReflectRunner")
+
   def run(definition: Definition, packagePrefix: Option[String], input: Option[Any]): Any = {
+    logger.debug(s"input.getClass is ${input.map(_.getClass.getName).getOrElse("no argument")}")
     definition match {
-      case Function(name,inputType,_) => {
+      case Function(name, inputType, _) => {
         locateClass(packagePrefix, name).
-          getDeclaredMethod("execute", Class.forName(inputType.name)).
+          getDeclaredMethod("execute", Class.forName(composeInputType(packagePrefix, inputType))).
           invoke(null, input.get)
       }
       case InputEndpoint(name, output) => {
@@ -17,11 +21,20 @@ object ReflectRunner {
           getDeclaredMethod("execute").invoke(null)
       }
       case OutputEndpoint(name, inputType, outputType, errorOutput) => {
-        locateClass(packagePrefix, name).
-          getDeclaredMethod("execute",Class.forName(inputType.name)).
+//        val method = locateClass(packagePrefix, name).getDeclaredMethods.toList.head
+//        method.getParameterTypes.foreach(p => logger.debug(s"parameter name is ${p.getName}"))
+        val method = locateClass(packagePrefix, name).
+          getDeclaredMethod("execute", Class.forName(composeInputType(packagePrefix, inputType))) //Class.forName(composeInputType(packagePrefix, inputType))
+        method.
           invoke(null, input.get).asInstanceOf[Try[Any]].getOrElse(new IllegalStateException(s"error running $name"))
       }
       case _ => ???
+    }
+  }
+
+  private def composeInputType(packagePrefix: Option[String], inputType: InputType) = {
+    if(inputType.name.startsWith("java.lang")) inputType.name else {
+      packagePrefix.map(p => s"$p.${inputType.name}").getOrElse(inputType.name)
     }
   }
 
