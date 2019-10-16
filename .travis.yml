@@ -1,10 +1,8 @@
 sudo: false # 使用容器进行编译，速度更快
-#dist: trusty # 编译的操作系统是 ubuntu trusty，目前还不支持 xenial 或更高版本
 language: scala
 scala:
   -2.13.0
   -2.12.2
-
 script: sbt test
 
 #before_install:
