@@ -4,22 +4,13 @@ language: scala
 scala:
   -2.13.0
   -2.12.2
-jdk:
-  - oraclejdk7
-  - openjdk7
-  - openjdk6
+
 script: sbt test
 
-#go: 1.10.x # 指定编译时的 go 版本号
-#git:
-#  submodules: false # 不运行 git submodules 命令
-#before_install: # 安装 makefile 需要的一些包，其实也可以放在 install 阶段，看个人喜好
-#  - sudo apt-get update -qq
-#  - sudo apt-get install -qq -y make
-#install: true # 跳过 install 阶段，因为我已经定义了 before_install。其实 go 项目是需要安装依赖的，只是我放到了下面的 make mycli 命令中做
-#script: make fmt && make mycli # 先检查格式，然后编译
+#before_install:
+#install: true
 #deploy:
-#  provider: releases # 说明这个阶段要操作 repo 的 releases 页面
+#  provider: releases
 #  api_key: # 你的 github 登录 token
 #    secure: <snippet>
 #  file: mycli # 可执行文件路径
