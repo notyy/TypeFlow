@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.domain
 
-case class Model(name: String, definitions: Vector[Definition], flows: Vector[Flow], activeFlow: Flow)
+case class Model(name: String, definitions: Vector[Definition], flows: Vector[Flow], activeFlow: Option[Flow])
 
 case class Element(elementType: String, name: String)
 

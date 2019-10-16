@@ -22,7 +22,7 @@ object CommandLineUI extends App {
   def askForCommand(): Unit = {
     print(" >")
     val input = UserInputEndpoint.execute()
-    val instance = model.activeFlow.instances.find(_.id == "UserInputEndpoint").get
+    val instance = model.activeFlow.get.instances.find(_.id == "UserInputEndpoint").get
     val localRunEngine = LocalRunEngine(model, Some("com.github.notyy.typeflow.editor"))
     localRunEngine.startFlow(input, instance)
     askForCommand()

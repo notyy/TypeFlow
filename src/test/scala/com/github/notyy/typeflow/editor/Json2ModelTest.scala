@@ -9,8 +9,8 @@ class Json2ModelTest extends FunSpec with Matchers {
       val model = Json2Model.execute(json)
       model.name shouldBe "typeflow_editor"
       model.definitions.size shouldBe 4
-      model.activeFlow.name shouldBe "minimalFlow"
-      model.activeFlow.connections.size shouldBe 4
+      model.activeFlow.get.name shouldBe "minimalFlow"
+      model.activeFlow.get.connections.size shouldBe 4
     }
   }
 }
