@@ -1,0 +1,17 @@
+sudo: false # 使用容器进行编译，速度更快
+language: scala
+scala:
+  -2.13.0
+  -2.12.2
+script: sbt test
+
+#before_install:
+#install: true
+#deploy:
+#  provider: releases
+#  api_key: # 你的 github 登录 token
+#    secure: <snippet>
+#  file: mycli # 可执行文件路径
+#  skip_cleanup: true # 因为我要上传可执行文件到 release，所以不能自动把这个文件清除
+#  on: # 只有打 tag 时才运行 deploy 阶段
+#    tags: true
