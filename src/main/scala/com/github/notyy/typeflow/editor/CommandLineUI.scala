@@ -4,6 +4,7 @@ import com.github.notyy.typeflow.domain.Model
 import com.typesafe.scalalogging.Logger
 
 object CommandLineUI extends App {
+  priva
   private val logger = Logger("CommandLineUI")
   val welcomeStr =
     """
