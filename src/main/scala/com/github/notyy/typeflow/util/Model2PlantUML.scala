@@ -1,8 +1,7 @@
-package com.github.notyy.typeflow
+package com.github.notyy.typeflow.util
 
 import com.github.notyy.typeflow.domain.Model
 import com.github.notyy.typeflow.editor.PlantUML
-import com.github.notyy.typeflow.util.ModelUtil
 
 object Model2PlantUML {
   //shows the plantuml diagram of active flow

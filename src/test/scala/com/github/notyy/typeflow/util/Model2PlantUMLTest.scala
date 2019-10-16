@@ -1,6 +1,7 @@
-package com.github.notyy.typeflow
+package com.github.notyy.typeflow.util
 
-import com.github.notyy.typeflow.domain.{Connection, Flow, InputEndpoint, InputType, Instance, Model, Output, OutputEndpoint, OutputType}
+import com.github.notyy.typeflow.domain
+import com.github.notyy.typeflow.domain._
 import com.typesafe.scalalogging.Logger
 import org.scalatest.{FunSpec, Matchers}
 
