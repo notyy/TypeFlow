@@ -12,6 +12,9 @@ object CommandLineUI extends App {
       |:q to quit
       |""".stripMargin
 
+  println(welcomeStr)
+  askForCommand()
+
   @scala.annotation.tailrec
   def askForCommand(): Unit = {
     print(" >")
@@ -28,7 +31,4 @@ object CommandLineUI extends App {
     println(resp)
     if (resp == "quit") System.exit(0)
   }
-
-  println(welcomeStr)
-  askForCommand()
 }
