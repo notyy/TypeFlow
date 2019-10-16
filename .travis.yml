@@ -4,7 +4,12 @@ language: scala
 scala:
   -2.13.0
   -2.12.2
-script: true
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - openjdk6
+script: sbt test
+
 #go: 1.10.x # 指定编译时的 go 版本号
 #git:
 #  submodules: false # 不运行 git submodules 命令
