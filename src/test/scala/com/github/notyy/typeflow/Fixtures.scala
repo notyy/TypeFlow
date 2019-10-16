@@ -1,15 +1,15 @@
 package com.github.notyy.typeflow
 
-import com.github.notyy.typeflow.domain.{Connection, Flow, InputEndpoint, InputType, Instance, Model, Output, OutputEndpoint, OutputType}
+import com.github.notyy.typeflow.domain.{Connection, Flow, Input, InputEndpoint, InputType, Instance, Model, Output, OutputEndpoint, OutputType}
 
 object Fixtures {
   val userInputEndpoint: InputEndpoint = InputEndpoint("UserInputEndpoint", OutputType("UserInput"))
-  val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", InputType("UserInput"),
+  val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", inputs = Vector(Input(InputType("UserInput"),1)),
     outputs = Vector(
       Output(OutputType("UnknownCommand"), 1),
       Output(OutputType("QuitCommand"), 2)
     ))
-  val wrapOutput: domain.Function = domain.Function("WrapOutput", InputType("java.lang.Object"),
+  val wrapOutput: domain.Function = domain.Function("WrapOutput", inputs = Vector(Input(InputType("java.lang.Object"),1)),
     outputs = Vector(Output(OutputType("WrappedOutput"), 1))
   )
   val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", InputType("WrappedOutput"), OutputType("Unit"), Vector.empty)
