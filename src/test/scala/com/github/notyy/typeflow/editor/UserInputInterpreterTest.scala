@@ -25,6 +25,14 @@ class UserInputInterpreterTest extends FunSpec with Matchers {
         )
       )
     }
+    it("can understand add OutputEndpoint command, who's error output is empty") {
+      val result = UserInputInterpreter.execute(UserInput("add OutputEndpoint CommandLineOutputEndpoint haveInputType WrappedOutput haveOutputType Unit haveErrorOutputs Empty toModel SampleModel"))
+      result shouldBe AddOutputEndpointCommand("SampleModel", "CommandLineOutputEndpoint",InputType("WrappedOutput"), OutputType("Unit"),Vector.empty)
+    }
+    it("can understand add OutputEndpoint command"){
+      val result = UserInputInterpreter.execute(UserInput("add OutputEndpoint CommandLineOutputEndpoint haveInputType WrappedOutput haveOutputType Unit haveErrorOutputs X,1;Y,2 toModel SampleModel"))
+      result shouldBe AddOutputEndpointCommand("SampleModel", "CommandLineOutputEndpoint",InputType("WrappedOutput"), OutputType("Unit"),Vector(Output(OutputType("X"),1), Output(OutputType("Y"),2)))
+    }
     it("can extract inputs from user input string") {
       UserInputInterpreter.extractInputs("UserInput,1;x,2") shouldBe Vector(Input(InputType("UserInput"), 1), Input(InputType("x"), 2))
     }
