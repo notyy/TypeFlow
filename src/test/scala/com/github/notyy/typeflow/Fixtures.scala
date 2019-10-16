@@ -7,7 +7,11 @@ object Fixtures {
   val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", inputs = Vector(Input(InputType("UserInput"),1)),
     outputs = Vector(
       Output(OutputType("UnknownCommand"), 1),
-      Output(OutputType("QuitCommand"), 2)
+      Output(OutputType("QuitCommand"), 2),
+      Output(OutputType("CreateModelCommand"),3),
+      Output(OutputType("AddInputEndpointCommand"),4),
+      Output(OutputType("AddFunctionCommand"),5),
+      Output(OutputType("AddOutputEndpointCommand"),6)
     ))
   val wrapOutput: domain.Function = domain.Function("WrapOutput", inputs = Vector(Input(InputType("java.lang.Object"),1)),
     outputs = Vector(Output(OutputType("WrappedOutput"), 1))
