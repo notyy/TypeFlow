@@ -22,7 +22,7 @@ object UserInputInterpreter {
         AddOutputEndpointCommand(modelName,name,InputType(inputType), OutputType(outputType),
           if(errorOutputs == "Empty") Vector.empty else extractOutputs(errorOutputs))
       }
-      case (ConnectElementPattern(fromInstanceId,outputIndex, toInstanceId, modelName,flowName)) => ConnectInstanceCommand(fromInstanceId,outputIndex.toInt, toInstanceId, modelName,flowName)
+      case ConnectElementPattern(fromInstanceId,outputIndex, toInstanceId, modelName,flowName) => ConnectInstanceCommand(fromInstanceId,outputIndex.toInt, toInstanceId, modelName,flowName)
       case _ => UnknownCommand(input.value)
     }
   }
