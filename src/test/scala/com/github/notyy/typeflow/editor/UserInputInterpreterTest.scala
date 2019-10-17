@@ -37,6 +37,11 @@ class UserInputInterpreterTest extends FunSpec with Matchers {
       val result = UserInputInterpreter.execute(UserInput("create Flow SampleFlow toModel SampleModel"))
       result shouldBe CreateFlowCommand("SampleModel","SampleFlow")
     }
+    it("can understand add Instance Command") {
+      //add Instance of (.*) to (.*).(.*)
+      val result = UserInputInterpreter.execute(UserInput("add Instance of FunctionX to SampleModel#SampleFlow"))
+      result shouldBe AddInstanceCommand("SampleModel","SampleFlow","FunctionX")
+    }
     it("can extract inputs from user input string") {
       UserInputInterpreter.extractInputs("UserInput,1;x,2") shouldBe Vector(Input(InputType("UserInput"), 1), Input(InputType("x"), 2))
     }
