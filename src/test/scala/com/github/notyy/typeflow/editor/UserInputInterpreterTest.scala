@@ -27,11 +27,15 @@ class UserInputInterpreterTest extends FunSpec with Matchers {
     }
     it("can understand add OutputEndpoint command, who's error output is empty") {
       val result = UserInputInterpreter.execute(UserInput("add OutputEndpoint CommandLineOutputEndpoint haveInputType WrappedOutput haveOutputType Unit haveErrorOutputs Empty toModel SampleModel"))
-      result shouldBe AddOutputEndpointCommand("SampleModel", "CommandLineOutputEndpoint",InputType("WrappedOutput"), OutputType("Unit"),Vector.empty)
+      result shouldBe AddOutputEndpointCommand("SampleModel", "CommandLineOutputEndpoint", InputType("WrappedOutput"), OutputType("Unit"), Vector.empty)
     }
-    it("can understand add OutputEndpoint command"){
+    it("can understand add OutputEndpoint command") {
       val result = UserInputInterpreter.execute(UserInput("add OutputEndpoint CommandLineOutputEndpoint haveInputType WrappedOutput haveOutputType Unit haveErrorOutputs X,1;Y,2 toModel SampleModel"))
-      result shouldBe AddOutputEndpointCommand("SampleModel", "CommandLineOutputEndpoint",InputType("WrappedOutput"), OutputType("Unit"),Vector(Output(OutputType("X"),1), Output(OutputType("Y"),2)))
+      result shouldBe AddOutputEndpointCommand("SampleModel", "CommandLineOutputEndpoint", InputType("WrappedOutput"), OutputType("Unit"), Vector(Output(OutputType("X"), 1), Output(OutputType("Y"), 2)))
+    }
+    it("can understand create Flow Command") {
+      val result = UserInputInterpreter.execute(UserInput("create Flow SampleFlow toModel SampleModel"))
+      result shouldBe CreateFlowCommand("SampleModel","SampleFlow")
     }
     it("can extract inputs from user input string") {
       UserInputInterpreter.extractInputs("UserInput,1;x,2") shouldBe Vector(Input(InputType("UserInput"), 1), Input(InputType("x"), 2))
@@ -48,7 +52,7 @@ class UserInputInterpreterTest extends FunSpec with Matchers {
         )
     }
     it("can understand create model command") {
-      val result = UserInputInterpreter.execute(UserInput("createModel sampleModel"))
+      val result = UserInputInterpreter.execute(UserInput("create Model sampleModel"))
       result shouldBe CreateModelCommand("sampleModel")
     }
   }

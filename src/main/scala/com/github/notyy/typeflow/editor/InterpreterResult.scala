@@ -11,4 +11,7 @@ sealed trait AddDefinitionCommand extends InterpreterResult
 case class AddInputEndpointCommand(modelName: String, name: String, outputType: OutputType) extends AddDefinitionCommand
 case class AddFunctionCommand(modelName: String, name: String, inputs: Vector[Input], outputs: Vector[Output]) extends AddDefinitionCommand
 case class AddOutputEndpointCommand(modelName: String, name: String, inputType: InputType, outputType: OutputType, errorOutput: Vector[Output]) extends AddDefinitionCommand
-case class ConnectInstanceCommand(fromInstanceId: String, outputIndex: Int, toInstanceId: String, modelName: String,flowName: String) extends AddDefinitionCommand
+
+sealed trait FlowOperationCommand extends InterpreterResult
+case class CreateFlowCommand(modelName: String, name: String) extends FlowOperationCommand
+case class ConnectInstanceCommand(fromInstanceId: String, outputIndex: Int, toInstanceId: String, modelName: String,flowName: String) extends FlowOperationCommand
