@@ -5,16 +5,14 @@ import java.io.{File, PrintWriter}
 import scala.util.Try
 
 object SaveToFile {
-
-  case class SaveFileReq(path: String, content: String)
-
-  def execute(saveFileReq: SaveFileReq): Try[Unit] = Try {
-    val file = new File(saveFileReq.path)
+  def execute(path: Path, content: String): Try[Unit] = Try {
+    val file = new File(path.value)
     if (file.exists() && file.isFile) {
       file.delete()
     }
     val writer = new PrintWriter(file)
-    writer.print(saveFileReq.content)
+    writer.print(content)
     writer.flush()
+    writer.close()
   }
 }

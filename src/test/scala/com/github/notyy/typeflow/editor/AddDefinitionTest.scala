@@ -26,7 +26,7 @@ class AddDefinitionTest extends FunSpec with Matchers {
       afterAddWrapoutFunction.definitions.size shouldBe 3
       afterAddWrapoutFunction.definitions.exists(defi => defi.name == "WrapOutput") shouldBe true
       val afterAddOutputEndpoint = AddDefinition.execute(afterAddWrapoutFunction,
-        AddOutputEndpointCommand("testModel","CommandLineOutputEndpoint", InputType("WrappedOutput"), OutputType("Unit"), Vector.empty))
+        AddOutputEndpointCommand("testModel","CommandLineOutputEndpoint", Vector(Input(InputType("WrappedOutput"),1)), OutputType("Unit"), Vector.empty))
       afterAddFunction.definitions.size shouldBe 2
       afterAddOutputEndpoint.definitions.size shouldBe 4
       afterAddOutputEndpoint.definitions.exists(defi => defi.name == "CommandLineOutputEndpoint") shouldBe true

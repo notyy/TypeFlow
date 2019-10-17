@@ -9,7 +9,7 @@ object UserInputInterpreter {
   private val CreateModelPattern = """create Model (.*)""".r
   private val AddInputEndpointPattern = """add InputEndpoint (.*) haveOutputType (.*) toModel (.*)""".r
   private val AddFunctionPattern = """add Function (.*) haveInputs (.*) haveOutputs (.*) toModel (.*)""".r
-  private val AddOutputEndpointPattern = """add OutputEndpoint (.*) haveInputType (.*) haveOutputType (.*) haveErrorOutputs (.*) toModel (.*)""".r
+  private val AddOutputEndpointPattern = """add OutputEndpoint (.*) haveInputs (.*) haveOutputType (.*) haveErrorOutputs (.*) toModel (.*)""".r
 
   private val CreateFlowPattern = """create Flow (.*) toModel (.*)""".r
   private val AddInstancePattern = """add Instance of (.*) to (.*)\.(.*)""".r
@@ -21,8 +21,8 @@ object UserInputInterpreter {
       case CreateModelPattern(modelName) => CreateModelCommand(modelName)
       case AddInputEndpointPattern(name, outputType, modelName) => AddInputEndpointCommand(modelName, name, OutputType(outputType))
       case AddFunctionPattern(name, inputs, outputs, modelName) => AddFunctionCommand(modelName, name, extractInputs(inputs), extractOutputs(outputs))
-      case AddOutputEndpointPattern(name, inputType, outputType, errorOutputs, modelName) => {
-        AddOutputEndpointCommand(modelName,name,InputType(inputType), OutputType(outputType),
+      case AddOutputEndpointPattern(name, inputs, outputType, errorOutputs, modelName) => {
+        AddOutputEndpointCommand(modelName,name,extractInputs(inputs), OutputType(outputType),
           if(errorOutputs == "Empty") Vector.empty else extractOutputs(errorOutputs))
       }
       case CreateFlowPattern(name,modelName) => CreateFlowCommand(modelName, name)

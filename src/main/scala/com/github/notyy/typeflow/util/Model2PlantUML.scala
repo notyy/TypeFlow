@@ -12,7 +12,7 @@ object Model2PlantUML {
       val outputType = ModelUtil.findOutputType(conn.fromInstanceId, conn.outputIndex, model)
       s"${conn.fromInstanceId} --> $outputType${System.lineSeparator}" +
         s"$outputType --> ${conn.toInstanceId}"
-    }).mkString(System.lineSeparator)
+    }).mkString(System.lineSeparator).linesIterator.distinct.mkString(System.lineSeparator) //to avoid duplicated connections from same instance to it's output
     val rs = s"""
        |@startuml
        |$defBlock

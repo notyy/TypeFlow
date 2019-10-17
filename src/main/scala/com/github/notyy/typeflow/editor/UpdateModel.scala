@@ -1,11 +1,6 @@
 package com.github.notyy.typeflow.editor
 
-import java.io.{File, PrintWriter}
-
-import CreateNewModel.{ModelCreationSuccess, ModelSaveFailed}
 import com.github.notyy.typeflow.domain.Model
-
-import scala.util.{Failure, Success, Try}
 
 object UpdateModel {
   trait Result

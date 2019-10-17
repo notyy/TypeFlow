@@ -32,6 +32,7 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
   }
 
   def nextInstances(output: Any, outputFrom: Instance): Vector[Instance] = {
+    logger.debug(s"looking for nextInstance for $outputFrom.$output")
     val flow = model.activeFlow.get
     val nIns = outputFrom match {
       case Instance(id,InputEndpoint(name, o)) => {
