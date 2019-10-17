@@ -15,4 +15,4 @@ case class AddOutputEndpointCommand(modelName: String, name: String, inputType: 
 sealed trait FlowOperationCommand extends InterpreterResult
 case class CreateFlowCommand(modelName: String, name: String) extends FlowOperationCommand
 case class AddInstanceCommand(modelName: String, flowName: String,definitionName: String) extends FlowOperationCommand
-case class ConnectInstanceCommand(fromInstanceId: String, outputTypeName: String, toInstanceId: String, modelName: String, flowName: String) extends FlowOperationCommand
+case class ConnectElementCommand(fromInstanceId: String, outputTypeName: String, toInstanceId: String, modelName: String, flowName: String) extends FlowOperationCommand

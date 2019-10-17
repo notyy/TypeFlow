@@ -11,12 +11,16 @@ object Fixtures {
       Output(OutputType("CreateModelCommand"),3),
       Output(OutputType("AddInputEndpointCommand"),4),
       Output(OutputType("AddFunctionCommand"),5),
-      Output(OutputType("AddOutputEndpointCommand"),6)
+      Output(OutputType("AddOutputEndpointCommand"),6),
+      Output(OutputType("CreateFlowCommand"),7),
+      Output(OutputType("AddInstanceCommand"),8),
+      Output(OutputType("ConnectElementCommand"),9)
     ))
   val wrapOutput: domain.Function = domain.Function("WrapOutput", inputs = Vector(Input(InputType("java.lang.Object"),1)),
     outputs = Vector(Output(OutputType("WrappedOutput"), 1))
   )
   val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", InputType("WrappedOutput"), OutputType("Unit"), Vector.empty)
+
   val minimalFlow: Flow = Flow("minimalFlow",
     instances = Vector(
       //use definition name as default instance id

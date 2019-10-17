@@ -27,7 +27,7 @@ object UserInputInterpreter {
       }
       case CreateFlowPattern(name,modelName) => CreateFlowCommand(modelName, name)
       case AddInstancePattern(definitionName, modelName, flowName) => AddInstanceCommand(modelName,flowName,definitionName)
-      case ConnectElementPattern(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName) => ConnectInstanceCommand(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName)
+      case ConnectElementPattern(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName) => ConnectElementCommand(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName)
       case _ => UnknownCommand(input.value)
     }
   }
