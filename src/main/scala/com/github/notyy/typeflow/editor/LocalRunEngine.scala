@@ -32,7 +32,7 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
   }
 
   def nextInstances(output: Any, outputFrom: Instance): Vector[Instance] = {
-    val flow = model.activeFlow
+    val flow = model.activeFlow.get
     val nIns = outputFrom match {
       case Instance(id,InputEndpoint(name, o)) => {
         val conns:Vector[Connection] = flow.connections.filter(_.fromInstanceId == outputFrom.id)
@@ -56,6 +56,6 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
 
   private def connections2instances(conns: Vector[Connection]): Vector[Instance] = {
     logger.debug(s"connections2Instances $conns")
-    conns.map(_.toInstanceId).flatMap(insId => model.activeFlow.instances.filter(_.id == insId))
+    conns.map(_.toInstanceId).flatMap(insId => model.activeFlow.get.instances.filter(_.id == insId))
   }
 }

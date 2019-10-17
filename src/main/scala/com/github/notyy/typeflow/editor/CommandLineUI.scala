@@ -12,16 +12,17 @@ object CommandLineUI extends App {
       |:q to quit
       |""".stripMargin
 
+  val json = ReadFileFromResource.execute("/TypeFlowEditor.typeflow")
+  val model: Model = Json2Model.execute(json)
+
   println(welcomeStr)
   askForCommand()
 
   @scala.annotation.tailrec
   def askForCommand(): Unit = {
     print(" >")
-    val json = ReadFileFromResource.execute("/TypeFlowEditor.typeflow")
-    val model: Model = Json2Model.execute(json)
     val input = UserInputEndpoint.execute()
-    val instance = model.activeFlow.instances.find(_.id == "UserInputEndpoint").get
+    val instance = model.activeFlow.get.instances.find(_.id == "UserInputEndpoint").get
     val localRunEngine = LocalRunEngine(model, Some("com.github.notyy.typeflow.editor"))
     localRunEngine.startFlow(input, instance)
     askForCommand()
