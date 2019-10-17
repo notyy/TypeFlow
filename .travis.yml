@@ -4,6 +4,11 @@ scala:
   -2.13.0
   -2.12.2
 script: sbt test
+addons:
+  homebrew:
+    packages:
+      - graphviz
+    update: true
 
 #before_install:
 #install: true
