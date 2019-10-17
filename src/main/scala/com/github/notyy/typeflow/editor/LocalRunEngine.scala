@@ -32,15 +32,16 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
   }
 
   def nextInstances(output: Any, outputFrom: Instance): Vector[Instance] = {
-    logger.debug(s"looking for nextInstance for $outputFrom.$output")
+    logger.debug(s"looking for nextInstance for ${outputFrom.id}.$output")
     val flow = model.activeFlow.get
     val nIns = outputFrom match {
       case Instance(id,InputEndpoint(name, o)) => {
+        logger.debug(s"output from InputEndpoint $id is $output, now looking for next instances")
         val conns:Vector[Connection] = flow.connections.filter(_.fromInstanceId == outputFrom.id)
         connections2instances(conns)
       }
       case Instance(id, PureFunction(name,inputType,outputs)) => {
-        logger.debug(s"output from $id is $output, now looking for next instances")
+        logger.debug(s"output from PureFunction $id is $output, now looking for next instances")
         val outputType: OutputType = OutputType(TypeUtil.getTypeName(output))
         //TODO solve this .get later
         val index = outputs.find(_.outputType == outputType).get.index
@@ -49,7 +50,11 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
         logger.debug(s"find ${conns.size} connections")
         connections2instances(conns)
       }
-      case Instance(id, OutputEndpoint(_,_,_,_)) => Vector.empty
+      case Instance(id, OutputEndpoint(name,inputs,outputType,errorOutputs)) => {
+        logger.debug(s"output from OutputEndpoint $id is $output, now looking for next instances")
+        val conns:Vector[Connection] = flow.connections.filter(_.fromInstanceId == outputFrom.id)
+        connections2instances(conns)
+      }
     }
     logger.debug(s"next should call:[${nIns.map(_.id).mkString(",")}]")
     nIns
