@@ -4,6 +4,8 @@ import java.io.File
 
 import org.scalatest.{FunSpec, Matchers}
 
+import scala.util.Success
+
 class CreateNewModelTest extends FunSpec with Matchers {
     describe("SaveNewModel"){
       it("should create a new model file as $modelname.typeflow"){
@@ -12,7 +14,7 @@ class CreateNewModelTest extends FunSpec with Matchers {
         file.delete()
         file shouldNot exist
         val rs = CreateNewModel.execute(CreateModelCommand(modelName))
-        rs shouldBe ModelCreationSuccess(modelName)
+        rs shouldBe Success(ModelCreationSuccess(modelName))
         file should exist
       }
     }
