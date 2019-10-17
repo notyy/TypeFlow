@@ -10,9 +10,10 @@ object UserInputInterpreter {
   private val AddInputEndpointPattern = """add InputEndpoint (.*) haveOutputType (.*) toModel (.*)""".r
   private val AddFunctionPattern = """add Function (.*) haveInputs (.*) haveOutputs (.*) toModel (.*)""".r
   private val AddOutputEndpointPattern = """add OutputEndpoint (.*) haveInputType (.*) haveOutputType (.*) haveErrorOutputs (.*) toModel (.*)""".r
-  private val ConnectElementPattern = """connect from (.*)(.*) to (.*) inFlow (.*).(.*)""".r
+
   private val CreateFlowPattern = """create Flow (.*) toModel (.*)""".r
-  private val AddInstancePattern = """add Instance of (.*) to (.*)#(.*)""".r
+  private val AddInstancePattern = """add Instance of (.*) to (.*)\.(.*)""".r
+  private val ConnectElementPattern = """connect from (.*)\.(.*) to (.*) inFlow (.*)\.(.*)""".r
 
   def execute(input: UserInput): InterpreterResult = {
     input.value match {
@@ -26,7 +27,7 @@ object UserInputInterpreter {
       }
       case CreateFlowPattern(name,modelName) => CreateFlowCommand(modelName, name)
       case AddInstancePattern(definitionName, modelName, flowName) => AddInstanceCommand(modelName,flowName,definitionName)
-      case ConnectElementPattern(fromInstanceId,outputIndex, toInstanceId, modelName,flowName) => ConnectInstanceCommand(fromInstanceId,outputIndex.toInt, toInstanceId, modelName,flowName)
+      case ConnectElementPattern(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName) => ConnectInstanceCommand(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName)
       case _ => UnknownCommand(input.value)
     }
   }
