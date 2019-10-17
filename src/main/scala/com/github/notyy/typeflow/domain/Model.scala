@@ -10,7 +10,7 @@ trait Definition {
 
 case class InputEndpoint(name: String, outputType: OutputType) extends Definition
 
-case class Function(name: String, inputs: Vector[Input], outputs: Vector[Output]) extends Definition
+case class PureFunction(name: String, inputs: Vector[Input], outputs: Vector[Output]) extends Definition
 
 case class OutputEndpoint(name: String, inputType: InputType, outputType: OutputType, errorOutputs: Vector[Output]) extends Definition
 

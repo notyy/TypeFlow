@@ -4,7 +4,7 @@ import com.github.notyy.typeflow.domain.{Connection, Flow, Input, InputEndpoint,
 
 object Fixtures {
   val userInputEndpoint: InputEndpoint = InputEndpoint("UserInputEndpoint", OutputType("UserInput"))
-  val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", inputs = Vector(Input(InputType("UserInput"),1)),
+  val userInputInterpreter: domain.PureFunction = domain.PureFunction("UserInputInterpreter", inputs = Vector(Input(InputType("UserInput"),1)),
     outputs = Vector(
       Output(OutputType("UnknownCommand"), 1),
       Output(OutputType("QuitCommand"), 2),
@@ -16,7 +16,7 @@ object Fixtures {
       Output(OutputType("AddInstanceCommand"),8),
       Output(OutputType("ConnectElementCommand"),9)
     ))
-  val wrapOutput: domain.Function = domain.Function("WrapOutput", inputs = Vector(Input(InputType("java.lang.Object"),1)),
+  val wrapOutput: domain.PureFunction = domain.PureFunction("WrapOutput", inputs = Vector(Input(InputType("java.lang.Object"),1)),
     outputs = Vector(Output(OutputType("WrappedOutput"), 1))
   )
   val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", InputType("WrappedOutput"), OutputType("Unit"), Vector.empty)

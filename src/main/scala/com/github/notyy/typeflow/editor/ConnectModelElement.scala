@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{Connection, InputEndpoint, Model, OutputEndpoint,Function}
+import com.github.notyy.typeflow.domain.{Connection, InputEndpoint, Model, OutputEndpoint,PureFunction}
 
 object ConnectModelElement {
   def execute(savedModel: Model, connectElementCommand: ConnectElementCommand): Model = {
@@ -16,7 +16,7 @@ object ConnectModelElement {
     model.activeFlow.get.instances.find(_.id == instanceId).get.definition match {
       case InputEndpoint(name, outputType) => 1
       case OutputEndpoint(name, inputType, outputType, errorOutputs) => 1
-      case Function(name, inputs,outputs) => outputs.find(_.outputType.name == outputTypeName).get.index
+      case PureFunction(name, inputs,outputs) => outputs.find(_.outputType.name == outputTypeName).get.index
     }
   }
 }

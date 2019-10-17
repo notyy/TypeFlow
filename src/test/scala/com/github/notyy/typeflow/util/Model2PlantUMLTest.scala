@@ -15,8 +15,8 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
       plantUML shouldBe """
         |@startuml
         |class UserInputEndpoint <<InputEndpoint>>
-        |class UserInputInterpreter <<Function>>
-        |class WrapOutput <<Function>>
+        |class UserInputInterpreter <<PureFunction>>
+        |class WrapOutput <<PureFunction>>
         |class CommandLineOutputEndpoint <<OutputEndpoint>>
         |
         |UserInputEndpoint --> UserInput
