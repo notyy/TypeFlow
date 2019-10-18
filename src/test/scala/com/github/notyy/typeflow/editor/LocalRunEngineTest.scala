@@ -14,6 +14,7 @@ class LocalRunEngineTest extends FunSpec with Matchers {
       val localRunEngine = LocalRunEngine(model,Some("com.github.notyy.typeflow.example1"))
       localRunEngine.nextInstances(":q",Instance(Fixtures.userInputEndpoint)) shouldBe Vector(Instance(Fixtures.userInputInterpreter))
       localRunEngine.nextInstances(QuitCommand,Instance(Fixtures.userInputInterpreter)) shouldBe Vector(Instance(Fixtures.wrapOutput))
+      localRunEngine.nextInstances(ModelCreationSuccess("newModel"),Instance(Fixtures.createNewModel)) shouldBe Vector(Instance(Fixtures.wrapOutput))
     }
   }
 }

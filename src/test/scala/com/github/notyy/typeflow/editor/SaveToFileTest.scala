@@ -2,7 +2,6 @@ package com.github.notyy.typeflow.editor
 
 import java.io.File
 
-import com.github.notyy.typeflow.editor.SaveToFile.SaveFileReq
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.io.Source
@@ -15,7 +14,7 @@ class SaveToFileTest extends FunSpec with Matchers {
       val file = new File(path)
       if (file.exists()) file.delete() else ()
       val content = "test content"
-      SaveToFile.execute(SaveFileReq(path, content)) shouldBe Success(())
+      SaveToFile.execute(Path(path), content) shouldBe Success(())
       Source.fromFile(path).mkString shouldBe content
     }
   }

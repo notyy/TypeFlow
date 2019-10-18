@@ -20,11 +20,11 @@ object ReflectRunner {
         locateClass(packagePrefix, name).
           getDeclaredMethod("execute").invoke(null)
       }
-      case OutputEndpoint(name, inputType, outputType, errorOutput) => {
+      case OutputEndpoint(name, inputs, outputType, errorOutput) => {
 //        val method = locateClass(packagePrefix, name).getDeclaredMethods.toList.head
 //        method.getParameterTypes.foreach(p => logger.debug(s"parameter name is ${p.getName}"))
         val method = locateClass(packagePrefix, name).
-          getDeclaredMethod("execute", Class.forName(composeInputType(packagePrefix, inputType))) //Class.forName(composeInputType(packagePrefix, inputType))
+          getDeclaredMethod("execute", inputs.map(input => Class.forName(composeInputType(packagePrefix, input.inputType))):_*) //Class.forName(composeInputType(packagePrefix, inputType))
         method.
           invoke(null, input.get).asInstanceOf[Try[Any]].getOrElse(new IllegalStateException(s"error running $name"))
       }

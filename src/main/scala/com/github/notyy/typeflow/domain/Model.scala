@@ -12,7 +12,7 @@ case class InputEndpoint(name: String, outputType: OutputType) extends Definitio
 
 case class PureFunction(name: String, inputs: Vector[Input], outputs: Vector[Output]) extends Definition
 
-case class OutputEndpoint(name: String, inputType: InputType, outputType: OutputType, errorOutputs: Vector[Output]) extends Definition
+case class OutputEndpoint(name: String, inputs: Vector[Input], outputType: OutputType, errorOutputs: Vector[Output]) extends Definition
 
 case class Input(inputType: InputType, index: Int)
 
