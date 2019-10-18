@@ -26,33 +26,43 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
         |class GetModelPath <<PureFunction>>
         |class SaveToFile <<OutputEndpoint>>
         |class OnSaveModelSuccess <<PureFunction>>
+        |class Command2ModelName <<PureFunction>>
+        |class ReadFile <<OutputEndpoint>>
+        |class Json2Model <<PureFunction>>
         |
-        |UserInputEndpoint --> UserInput
-        |UserInput --> UserInputInterpreter
-        |UserInputInterpreter --> UnknownCommand
-        |UnknownCommand --> WrapOutput
-        |UserInputInterpreter --> QuitCommand
-        |QuitCommand --> WrapOutput
-        |UserInputInterpreter --> CreateModelCommand
-        |CreateModelCommand --> CreateNewModel
-        |CreateNewModel --> ModelCreationSuccess
-        |ModelCreationSuccess --> WrapOutput
-        |UserInputInterpreter --> AddInputEndpointCommand
-        |AddInputEndpointCommand --> AddDefinition
+        |UserInputEndpoint --> UIE::UserInput
+        |UIE::UserInput --> UserInputInterpreter
+        |UserInputInterpreter --> UII::UnknownCommand
+        |UII::UnknownCommand --> WrapOutput
+        |UserInputInterpreter --> UII::QuitCommand
+        |UII::QuitCommand --> WrapOutput
+        |UserInputInterpreter --> UII::CreateModelCommand
+        |UII::CreateModelCommand --> CreateNewModel
+        |CreateNewModel --> CNM::ModelCreationSuccess
+        |CNM::ModelCreationSuccess --> WrapOutput
+        |UserInputInterpreter --> UII::AddInputEndpointCommand
+        |UII::AddInputEndpointCommand --> AddDefinition
+        |UII::AddInputEndpointCommand --> Command2ModelName
+        |Command2ModelName --> C2MN::String
+        |C2MN::String --> ReadFile
+        |ReadFile --> RF::String
+        |RF::String --> Json2Model
+        |Json2Model --> J2M::Model
+        |J2M::Model --> AddDefinition
         |AddDefinition --> Model
         |Model --> Model2Json
         |Model --> GetModelPath
-        |GetModelPath --> Path
-        |Path --> SaveToFile
-        |Model2Json --> java.lang.String
-        |java.lang.String --> SaveToFile
+        |GetModelPath --> GMP::Path
+        |GMP::Path --> SaveToFile
+        |Model2Json --> M2J::String
+        |M2J::String --> SaveToFile
         |Model --> OnSaveModelSuccess
-        |SaveToFile --> Unit
-        |Unit --> OnSaveModelSuccess
-        |OnSaveModelSuccess --> ModelUpdateSuccess
-        |ModelUpdateSuccess --> WrapOutput
-        |WrapOutput --> WrappedOutput
-        |WrappedOutput --> CommandLineOutputEndpoint
+        |SaveToFile --> STF::Unit
+        |STF::Unit --> OnSaveModelSuccess
+        |OnSaveModelSuccess --> OSMS::ModelUpdateSuccess
+        |OSMS::ModelUpdateSuccess --> WrapOutput
+        |WrapOutput --> WO::WrappedOutput
+        |WO::WrappedOutput --> CommandLineOutputEndpoint
         |@enduml
         |""".stripMargin
     }

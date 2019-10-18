@@ -1,7 +1,7 @@
 package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{Connection, PureFunction, InputEndpoint, Instance, Model, OutputEndpoint, OutputType}
-import com.github.notyy.typeflow.util.{ReflectRunner, TypeUtil}
+import com.github.notyy.typeflow.domain.{Connection, InputEndpoint, Instance, Model, OutputEndpoint, OutputType, PureFunction}
+import com.github.notyy.typeflow.util.{ModelUtil, ReflectRunner, TypeUtil}
 import com.typesafe.scalalogging.Logger
 
 import scala.annotation.tailrec
@@ -42,9 +42,9 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
       }
       case Instance(id, PureFunction(name,inputType,outputs)) => {
         logger.debug(s"output from PureFunction $id is $output, now looking for next instances")
-        val outputType: OutputType = OutputType(TypeUtil.getTypeName(output))
+        val outputType: OutputType = OutputType(TypeUtil.getTypeShortName(output))
         //TODO solve this .get later
-        val index = outputs.find(_.outputType == outputType).get.index
+        val index = outputs.find(ot => ModelUtil.removePrefix(ot.outputType.name) == outputType.name).get.index
         logger.debug(s"index is $index")
         val conns = flow.connections.filter(conn => conn.fromInstanceId == outputFrom.id && conn.outputIndex == index)
         logger.debug(s"find ${conns.size} connections")

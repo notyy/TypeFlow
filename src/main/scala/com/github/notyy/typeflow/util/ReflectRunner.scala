@@ -13,7 +13,7 @@ object ReflectRunner {
     definition match {
       case PureFunction(name, inputs, _) => {
         locateClass(packagePrefix, name).
-          getDeclaredMethod("execute", inputs.map(input => Class.forName(composeInputType(packagePrefix, input.inputType))):_*).
+          getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*).
           invoke(null, input.get)
       }
       case InputEndpoint(name, output) => {
@@ -24,17 +24,11 @@ object ReflectRunner {
 //        val method = locateClass(packagePrefix, name).getDeclaredMethods.toList.head
 //        method.getParameterTypes.foreach(p => logger.debug(s"parameter name is ${p.getName}"))
         val method = locateClass(packagePrefix, name).
-          getDeclaredMethod("execute", inputs.map(input => Class.forName(composeInputType(packagePrefix, input.inputType))):_*) //Class.forName(composeInputType(packagePrefix, inputType))
+          getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*) //Class.forName(composeInputType(packagePrefix, inputType))
         method.
           invoke(null, input.get).asInstanceOf[Try[Any]].getOrElse(new IllegalStateException(s"error running $name"))
       }
       case _ => ???
-    }
-  }
-
-  private def composeInputType(packagePrefix: Option[String], inputType: InputType) = {
-    if(inputType.name.startsWith("java.lang")) inputType.name else {
-      packagePrefix.map(p => s"$p.${inputType.name}").getOrElse(inputType.name)
     }
   }
 

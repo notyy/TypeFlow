@@ -9,15 +9,18 @@ object ModelUtil {
 
   def definitionType(defi: Definition): String = defi.getClass.getSimpleName
 
-  def findOutputType(instanceId: String, outputIndex: Int, model: Model): String = {
-    val maybeInstance = model.activeFlow.get.instances.find(_.id == instanceId)
-    (maybeInstance.map(_.definition match {
-      case InputEndpoint(name, outputType) => outputType
-      case PureFunction(name, input, outputs) => outputs.find(_.index == outputIndex).get.outputType
-      case OutputEndpoint(name, inputType, outputType, errorOutput) => outputType
-    }).map(_.name).getOrElse{
-      logger.error(s"instance $instanceId not found")
-      "BadType"
-    })
+  def findOutputTypeRemovePrefix(instanceId: String, outputIndex: Int, model: Model): Option[String] = {
+    findOutputType(instanceId, outputIndex, model).map(removePrefix)
   }
+
+  def findOutputType(instanceId: String, outputIndex: Int, model: Model) = {
+    val maybeInstance = model.activeFlow.get.instances.find(_.id == instanceId)
+    maybeInstance.flatMap(_.definition match {
+      case InputEndpoint(name, outputType) => Some(outputType)
+      case PureFunction(name, input, outputs) => outputs.find(_.index == outputIndex).map(_.outputType)
+      case OutputEndpoint(name, inputType, outputType, errorOutput) => Some(outputType)
+    }).map(_.name)
+  }
+
+  def removePrefix(outputName: String): String = outputName.split("::").last
 }

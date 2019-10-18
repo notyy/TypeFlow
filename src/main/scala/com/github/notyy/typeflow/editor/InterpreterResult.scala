@@ -7,7 +7,9 @@ case class UnknownCommand(input: String) extends InterpreterResult
 case object QuitCommand extends InterpreterResult
 case class CreateModelCommand(modelName: String) extends InterpreterResult
 
-sealed trait AddDefinitionCommand extends InterpreterResult
+sealed trait AddDefinitionCommand extends InterpreterResult {
+  def modelName: String
+}
 case class AddInputEndpointCommand(modelName: String, name: String, outputType: OutputType) extends AddDefinitionCommand
 case class AddFunctionCommand(modelName: String, name: String, inputs: Vector[Input], outputs: Vector[Output]) extends AddDefinitionCommand
 case class AddOutputEndpointCommand(modelName: String, name: String, inputs: Vector[Input], outputType: OutputType, errorOutput: Vector[Output]) extends AddDefinitionCommand
