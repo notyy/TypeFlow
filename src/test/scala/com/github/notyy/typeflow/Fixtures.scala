@@ -3,6 +3,8 @@ package com.github.notyy.typeflow
 import com.github.notyy.typeflow.domain._
 
 object Fixtures {
+  val mp = "com.github.notyy.typeflow.domain"
+
   val userInputEndpoint: InputEndpoint = InputEndpoint("UserInputEndpoint", OutputType("UIE::UserInput"))
   val userInputInterpreter: domain.PureFunction = domain.PureFunction("UserInputInterpreter", inputs = Vector(Input(InputType("UserInput"), 1)),
     outputs = Vector(
@@ -16,19 +18,19 @@ object Fixtures {
       Output(OutputType("UII::AddInstanceCommand"), 8),
       Output(OutputType("UII::ConnectElementCommand"), 9)
     ))
-  val command2ModelName: PureFunction = PureFunction("Command2ModelName", Vector(Input(InputType("Model"), 1)), Vector(Output(OutputType("C2MN::String"), 1)))
+  val command2ModelName: PureFunction = PureFunction("Command2ModelName", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("C2MN::String"), 1)))
   val wrapOutput: domain.PureFunction = domain.PureFunction("WrapOutput", inputs = Vector(Input(InputType("Object"), 1)),
     outputs = Vector(Output(OutputType("WO::WrappedOutput"), 1))
   )
   val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", Vector(Input(InputType("CLOE::WrappedOutput"), 1)), OutputType("CLOE::Unit"), Vector.empty)
-  val createNewModel: OutputEndpoint = OutputEndpoint("CreateNewModel", Vector(Input(InputType("CreateModelCommand"), 1)), OutputType("CNM::ModelCreationSuccess"), Vector.empty)
-  val addDefinition: PureFunction = PureFunction("AddDefinition", inputs = Vector(Input(InputType("Model"), 1), Input(InputType("AD::AddDefinitionCommand"), 2)),
-    outputs = Vector(Output(OutputType("Model"), 1))
+  val createNewModel: OutputEndpoint = OutputEndpoint("CreateNewModel", Vector(Input(InputType("CreateModelCommand"), 1)), OutputType(s"CNM::$mp.ModelCreationSuccess"), Vector.empty)
+  val addDefinition: PureFunction = PureFunction("AddDefinition", inputs = Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("AD::AddDefinitionCommand"), 2)),
+    outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
   )
-  val model2Json: PureFunction = PureFunction("Model2Json", Vector(Input(InputType("Model"), 1)), Vector(Output(OutputType("M2J::String"), 1)))
+  val model2Json: PureFunction = PureFunction("Model2Json", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("M2J::String"), 1)))
   val getModelPath: PureFunction = PureFunction("GetModelPath", Vector(Input(InputType("java.lang.String"), 1)), Vector(Output(OutputType("GMP::Path"), 1)))
   val readFile: OutputEndpoint = OutputEndpoint("ReadFile", Vector(Input(InputType("Path"), 1)), OutputType("RF::String"), Vector.empty)
-  val json2Model: PureFunction = PureFunction("Json2Model",Vector(Input(InputType("java.lang.String"),1)),Vector(Output(OutputType("J2M::Model"),1)))
+  val json2Model: PureFunction = PureFunction("Json2Model",Vector(Input(InputType("java.lang.String"),1)),Vector(Output(OutputType(s"J2M::$mp.Model"),1)))
   val saveToFile: OutputEndpoint = OutputEndpoint("SaveToFile",
     inputs = Vector(
       Input(InputType("Path"), 1), Input(InputType("java.lang.String"), 2)
@@ -36,7 +38,7 @@ object Fixtures {
     outputType = OutputType("STF::Unit"),
     errorOutputs = Vector(Output(OutputType("STF::String"), 1))
   )
-  val onSaveModelSuccess: PureFunction = PureFunction("OnSaveModelSuccess", Vector(Input(InputType("Model"), 1), Input(InputType("Unit"), 2)), Vector(Output(OutputType("OSMS::ModelUpdateSuccess"), 1)))
+  val onSaveModelSuccess: PureFunction = PureFunction("OnSaveModelSuccess", Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("Unit"), 2)), Vector(Output(OutputType(s"OSMS::$mp.ModelUpdateSuccess"), 1)))
 
   val minimalFlow: Flow = Flow("minimalFlow",
     instances = Vector(

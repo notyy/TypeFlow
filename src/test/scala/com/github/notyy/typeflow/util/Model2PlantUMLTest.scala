@@ -38,8 +38,8 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
         |UII::QuitCommand --> WrapOutput
         |UserInputInterpreter --> UII::CreateModelCommand
         |UII::CreateModelCommand --> CreateNewModel
-        |CreateNewModel --> CNM::ModelCreationSuccess
-        |CNM::ModelCreationSuccess --> WrapOutput
+        |CreateNewModel --> CNM::com.github.notyy.typeflow.domain.ModelCreationSuccess
+        |CNM::com.github.notyy.typeflow.domain.ModelCreationSuccess --> WrapOutput
         |UserInputInterpreter --> UII::AddInputEndpointCommand
         |UII::AddInputEndpointCommand --> AddDefinition
         |UII::AddInputEndpointCommand --> Command2ModelName
@@ -47,20 +47,20 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
         |C2MN::String --> ReadFile
         |ReadFile --> RF::String
         |RF::String --> Json2Model
-        |Json2Model --> J2M::Model
-        |J2M::Model --> AddDefinition
-        |AddDefinition --> Model
-        |Model --> Model2Json
-        |Model --> GetModelPath
+        |Json2Model --> J2M::com.github.notyy.typeflow.domain.Model
+        |J2M::com.github.notyy.typeflow.domain.Model --> AddDefinition
+        |AddDefinition --> com.github.notyy.typeflow.domain.Model
+        |com.github.notyy.typeflow.domain.Model --> Model2Json
+        |com.github.notyy.typeflow.domain.Model --> GetModelPath
         |GetModelPath --> GMP::Path
         |GMP::Path --> SaveToFile
         |Model2Json --> M2J::String
         |M2J::String --> SaveToFile
-        |Model --> OnSaveModelSuccess
+        |com.github.notyy.typeflow.domain.Model --> OnSaveModelSuccess
         |SaveToFile --> STF::Unit
         |STF::Unit --> OnSaveModelSuccess
-        |OnSaveModelSuccess --> OSMS::ModelUpdateSuccess
-        |OSMS::ModelUpdateSuccess --> WrapOutput
+        |OnSaveModelSuccess --> OSMS::com.github.notyy.typeflow.domain.ModelUpdateSuccess
+        |OSMS::com.github.notyy.typeflow.domain.ModelUpdateSuccess --> WrapOutput
         |WrapOutput --> WO::WrappedOutput
         |WO::WrappedOutput --> CommandLineOutputEndpoint
         |@enduml
