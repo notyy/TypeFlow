@@ -22,6 +22,7 @@ class TypeUtilTest extends FunSpec with Matchers {
     }
     it("whould recognize java primitive types when composing type") {
       TypeUtil.composeInputType(Some("xyz"),InputType("String")) shouldBe "java.lang.String"
+      TypeUtil.composeInputType(Some("xyz"),InputType("Object")) shouldBe "java.lang.Object"
     }
   }
 }

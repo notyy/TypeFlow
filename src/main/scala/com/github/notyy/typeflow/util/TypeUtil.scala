@@ -14,12 +14,13 @@ object TypeUtil {
   }
 
   def composeInputType(packagePrefix: Option[String], inputType: InputType) = {
-    if (inputType.name.split('.').length > 1) {
-      inputType.name
-    } else if (PrimitiveTypeNameMap.contains(inputType.name)) {
-      PrimitiveTypeNameMap(inputType.name)
+    val inputTypeName = ModelUtil.removePrefix(inputType.name)
+    if (inputTypeName.split('.').length > 1) {
+      inputTypeName
+    } else if (PrimitiveTypeNameMap.contains(inputTypeName)) {
+      PrimitiveTypeNameMap(inputTypeName)
     } else {
-      packagePrefix.map(p => s"$p.${inputType.name}").getOrElse(inputType.name)
+      packagePrefix.map(p => s"$p.${inputTypeName}").getOrElse(inputTypeName)
     }
   }
 
@@ -32,6 +33,7 @@ object TypeUtil {
     "Float" -> "java.lang.Float",
     "Double" -> "java.lang.Double",
     "Boolean" -> "java.lang.Boolean",
-    "Character" -> "java.lang.Character"
+    "Character" -> "java.lang.Character",
+    "Object" -> "java.lang.Object"
   )
 }
