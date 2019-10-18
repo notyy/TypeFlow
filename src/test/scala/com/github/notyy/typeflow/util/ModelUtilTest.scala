@@ -14,8 +14,12 @@ class ModelUtilTest extends FunSpec with Matchers {
       ModelUtil.definitionType(PureFunction("xx",Vector.empty, Vector.empty)) shouldBe "PureFunction"
       ModelUtil.definitionType(OutputEndpoint("xx", Vector(Input(InputType("xx"),1)), OutputType("xx"), Vector.empty)) shouldBe "OutputEndpoint"
     }
-    it("can find out instance's outputType of given index") {
-      ModelUtil.findOutputType(Fixtures.userInputInterpreter.name, 1, model) shouldBe "UnknownCommand"
+    it("can find out instance's outputType of given index and remove prefix if exists") {
+      ModelUtil.findOutputTypeRemovePrefix(Fixtures.userInputInterpreter.name, 1, model) shouldBe Some("UnknownCommand")
+      ModelUtil.findOutputTypeRemovePrefix(Fixtures.getModelPath.name, 3, model) shouldBe None
+    }
+    it("can find out instance's outputType of given index and keep as is") {
+      ModelUtil.findOutputType(Fixtures.userInputInterpreter.name, 1, model) shouldBe Some("UII::UnknownCommand")
     }
   }
 }

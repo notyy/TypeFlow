@@ -9,7 +9,7 @@ object Model2PlantUML {
     val definitions = model.activeFlow.get.instances.map(_.definition)
     val defBlock = definitions.map(defi => s"class ${defi.name} <<${ModelUtil.definitionType(defi)}>>").mkString(System.lineSeparator)
     val connectionBlock = model.activeFlow.get.connections.map(conn => {
-      val outputType = ModelUtil.findOutputType(conn.fromInstanceId, conn.outputIndex, model)
+      val outputType = ModelUtil.findOutputType(conn.fromInstanceId, conn.outputIndex, model).get
       s"${conn.fromInstanceId} --> $outputType${System.lineSeparator}" +
         s"$outputType --> ${conn.toInstanceId}"
     }).mkString(System.lineSeparator).linesIterator.distinct.mkString(System.lineSeparator) //to avoid duplicated connections from same instance to it's output
