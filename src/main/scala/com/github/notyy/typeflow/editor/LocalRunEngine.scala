@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{Connection, Function, InputEndpoint, Instance, Model, OutputEndpoint, OutputType}
+import com.github.notyy.typeflow.domain.{Connection, PureFunction, InputEndpoint, Instance, Model, OutputEndpoint, OutputType}
 import com.github.notyy.typeflow.util.{ReflectRunner, TypeUtil}
 import com.typesafe.scalalogging.Logger
 
@@ -38,7 +38,7 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
         val conns:Vector[Connection] = flow.connections.filter(_.fromInstanceId == outputFrom.id)
         connections2instances(conns)
       }
-      case Instance(id, Function(name,inputType,outputs)) => {
+      case Instance(id, PureFunction(name,inputType,outputs)) => {
         logger.debug(s"output from $id is $output, now looking for next instances")
         val outputType: OutputType = OutputType(TypeUtil.getTypeName(output))
         //TODO solve this .get later

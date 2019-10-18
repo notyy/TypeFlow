@@ -11,7 +11,7 @@ class ReflectRunnerTest extends FunSpec with Matchers {
   val packgePrefix = Some("com.github.notyy.typeflow.editor")
   describe("ReflectRunner") {
     it("should run defined function by name") {
-      val userInputInterpreter: domain.Function = domain.Function("UserInputInterpreter", Vector(Input(InputType("UserInput"),1)),
+      val userInputInterpreter: domain.PureFunction = domain.PureFunction("UserInputInterpreter", Vector(Input(InputType("UserInput"),1)),
         outputs = Vector(
           Output(OutputType("UnknownCommand"), 1),
           Output(OutputType("QuitCommand"), 2)

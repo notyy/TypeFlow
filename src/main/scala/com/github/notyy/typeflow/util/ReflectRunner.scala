@@ -11,7 +11,7 @@ object ReflectRunner {
   def run(definition: Definition, packagePrefix: Option[String], input: Option[Any]): Any = {
     logger.debug(s"input.getClass is ${input.map(_.getClass.getName).getOrElse("no argument")}")
     definition match {
-      case Function(name, inputs, _) => {
+      case PureFunction(name, inputs, _) => {
         locateClass(packagePrefix, name).
           getDeclaredMethod("execute", inputs.map(input => Class.forName(composeInputType(packagePrefix, input.inputType))):_*).
           invoke(null, input.get)
