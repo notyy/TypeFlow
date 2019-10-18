@@ -1,7 +1,7 @@
 package com.github.notyy.typeflow.editor
 
 
-import com.github.notyy.typeflow.domain.{Definition, Element, Flow, Function, InputEndpoint, Model, OutputEndpoint, OutputType}
+import com.github.notyy.typeflow.domain.{Definition, Element, Flow, PureFunction, InputEndpoint, Model, OutputEndpoint, OutputType}
 import org.hamcrest.Description
 
 import scala.collection.mutable.ArrayBuffer
