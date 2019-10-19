@@ -111,7 +111,7 @@ object Fixtures {
     instances = Vector(
       Instance(numInput),
       Instance(add2),
-      Instance("1::add2",add2),
+      Instance("1::Add2",add2),
       Instance(multi3),
       Instance(addAndPrint),
       Instance(printEP)
@@ -119,8 +119,8 @@ object Fixtures {
     connections = Vector(
       Connection(numInput.name,1,add2.name,1),
       Connection(numInput.name,1,multi3.name,1),
-      Connection(numInput.name,1,"1::add2",1),
-      Connection("1::add2",1,printEP.name,1),
+      Connection(numInput.name,1,"1::Add2",1),
+      Connection("1::Add2",1,printEP.name,1),
       Connection(add2.name,1,addAndPrint.name,1),
       Connection(multi3.name,1,addAndPrint.name,2),
     )

@@ -76,8 +76,11 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
       SaveToFile.execute(Path("./localoutput/multi_param.puml"),plantUML.value)
     }
     it("will decorate output type if it's from multiple instance of same definition") {
-      val ot = Model2PlantUML.decorateOutputType("A2::Integer",Connection("1::add2",1,printEP.name,1), Fixtures.multiParamModel)
-      ot shouldBe "1::add2::A2::Integer"
+      val ot = Model2PlantUML.decorateOutputType("A2::Integer",Connection("1::Add2",1,printEP.name,1), Fixtures.multiParamModel)
+      ot shouldBe "1::Add2::A2::Integer"
+    }
+    it("will find those added instances for one definition") {
+      Model2PlantUML.filterDecoratedInstances(Fixtures.multiParamModel).map(_.id).contains("1::Add2") shouldBe true
     }
   }
 }
