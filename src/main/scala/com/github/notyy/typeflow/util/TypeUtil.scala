@@ -34,6 +34,7 @@ object TypeUtil {
     "Double" -> "java.lang.Double",
     "Boolean" -> "java.lang.Boolean",
     "Character" -> "java.lang.Character",
-    "Object" -> "java.lang.Object"
+    "Object" -> "java.lang.Object",
+    "Unit" -> "scala.runtime.BoxedUnit"
   )
 }

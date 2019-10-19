@@ -28,13 +28,13 @@ object Fixtures {
     outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
   )
   val model2Json: PureFunction = PureFunction("Model2Json", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("M2J::String"), 1)))
-  val getModelPath: PureFunction = PureFunction("GetModelPath", Vector(Input(InputType("java.lang.String"), 1)), Vector(Output(OutputType("GMP::Path"), 1)))
-  val model2ModelName: PureFunction = PureFunction("Model2ModelName", Vector(Input(InputType("Model"),1)),Vector(Output(OutputType("M2MN::String"),1)))
+  val getModelPath: PureFunction = PureFunction("GetModelPath", Vector(Input(InputType("String"), 1)), Vector(Output(OutputType("GMP::Path"), 1)))
+  val model2ModelName: PureFunction = PureFunction("Model2ModelName", Vector(Input(InputType(s"$mp.Model"),1)),Vector(Output(OutputType("M2MN::String"),1)))
   val readFile: OutputEndpoint = OutputEndpoint("ReadFile", Vector(Input(InputType("Path"), 1)), OutputType("RF::String"), Vector.empty)
-  val json2Model: PureFunction = PureFunction("Json2Model",Vector(Input(InputType("java.lang.String"),1)),Vector(Output(OutputType(s"J2M::$mp.Model"),1)))
+  val json2Model: PureFunction = PureFunction("Json2Model",Vector(Input(InputType("String"),1)),Vector(Output(OutputType(s"J2M::$mp.Model"),1)))
   val saveToFile: OutputEndpoint = OutputEndpoint("SaveToFile",
     inputs = Vector(
-      Input(InputType("Path"), 1), Input(InputType("java.lang.String"), 2)
+      Input(InputType("Path"), 1), Input(InputType("String"), 2)
     ),
     outputType = OutputType("STF::Unit"),
     errorOutputs = Vector(Output(OutputType("STF::String"), 1))
@@ -80,9 +80,9 @@ object Fixtures {
       Connection(addDefinition.name, 1, model2ModelName.name,1),
       Connection(model2ModelName.name, 1, "getModelPath2",1),
       Connection("getModelPath2", 1, saveToFile.name,1),
-      Connection(model2Json.name, 1, saveToFile.name,1),
+      Connection(model2Json.name, 1, saveToFile.name,2),
       Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
-      Connection(saveToFile.name, 1, onSaveModelSuccess.name,1),
+      Connection(saveToFile.name, 1, onSaveModelSuccess.name,2),
       Connection(onSaveModelSuccess.name, 1, wrapOutput.name,1),
       Connection(wrapOutput.name, 1, outputEndpoint.name,1),
     )
