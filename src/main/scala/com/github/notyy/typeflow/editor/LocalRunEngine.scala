@@ -67,9 +67,14 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
       case Instance(id, PureFunction(name,inputType,outputs)) => {
         logger.debug(s"outputs from PureFunction $id is $output, now looking for next instances")
         val outputType: OutputType = OutputType(TypeUtil.getTypeShortName(output))
-        logger.debug(s"outputType of parameter is $outputType")
+        logger.debug(s"outputType name of parameter is ${outputType.name}")
+        logger.debug(s"PureFunction $name's designed outputs are ${outputs.mkString(",")}")
         //TODO solve this .get later
-        val index = outputs.find(ot => ModelUtil.removePrefix(ot.outputType.name) == outputType.name).get.index
+        val index = outputs.find{ ot =>
+          val designedOutputTypeName = ModelUtil.removePrefix(ot.outputType.name).split('.').last
+          logger.debug(s"comparing designed outputTypeName $designedOutputTypeName to actually outputTypeName ${outputType.name}")
+          designedOutputTypeName == outputType.name
+        }.get.index
 //        logger.debug(s"index is $index")
         val conns = flow.connections.filter(conn => conn.fromInstanceId == outputFrom.id && conn.outputIndex == index)
 //        logger.debug(s"find ${conns.size} connections")

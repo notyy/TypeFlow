@@ -16,7 +16,7 @@ class Json2ModelTest extends FunSpec with Matchers {
       model.definitions.size shouldBe 4
       model.activeFlow.get.name shouldBe "minimalFlow"
       model.activeFlow.get.connections.foreach(println)
-      model.activeFlow.get.connections.size shouldBe 19
+      model.activeFlow.get.connections.size shouldBe 20
     }
     it("should return new model when processing empty string") {
       val tryModel = Json2Model.execute("")

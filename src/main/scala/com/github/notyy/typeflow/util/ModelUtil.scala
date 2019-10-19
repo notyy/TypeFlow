@@ -9,6 +9,10 @@ object ModelUtil {
 
   def definitionType(defi: Definition): String = defi.getClass.getSimpleName
 
+  def findOutputTypeRemovePrefixShortName(instanceId: String, outputIndex: Int, model: Model): Option[String] = {
+    findOutputTypeRemovePrefix(instanceId,outputIndex,model).map(_.split('.').last)
+  }
+
   def findOutputTypeRemovePrefix(instanceId: String, outputIndex: Int, model: Model): Option[String] = {
     findOutputType(instanceId, outputIndex, model).map(removePrefix)
   }

@@ -29,6 +29,7 @@ object Fixtures {
   )
   val model2Json: PureFunction = PureFunction("Model2Json", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("M2J::String"), 1)))
   val getModelPath: PureFunction = PureFunction("GetModelPath", Vector(Input(InputType("java.lang.String"), 1)), Vector(Output(OutputType("GMP::Path"), 1)))
+  val model2ModelName: PureFunction = PureFunction("Model2ModelName", Vector(Input(InputType("Model"),1)),Vector(Output(OutputType("M2MN::String"),1)))
   val readFile: OutputEndpoint = OutputEndpoint("ReadFile", Vector(Input(InputType("Path"), 1)), OutputType("RF::String"), Vector.empty)
   val json2Model: PureFunction = PureFunction("Json2Model",Vector(Input(InputType("java.lang.String"),1)),Vector(Output(OutputType(s"J2M::$mp.Model"),1)))
   val saveToFile: OutputEndpoint = OutputEndpoint("SaveToFile",
@@ -52,11 +53,13 @@ object Fixtures {
       Instance(model2Json),
       Instance(getModelPath),
       Instance("getModelPath1",getModelPath),
+      Instance("getModelPath2",getModelPath),
       Instance(saveToFile),
       Instance(onSaveModelSuccess),
       Instance(command2ModelName),
       Instance(readFile),
       Instance(json2Model),
+      Instance(model2ModelName)
     ),
     connections = Vector(
       Connection(userInputEndpoint.name, 1, userInputInterpreter.name,1),
@@ -74,8 +77,9 @@ object Fixtures {
       Connection(json2Model.name, 1, addDefinition.name,1),
 
       Connection(addDefinition.name, 1, model2Json.name,1),
-      Connection(addDefinition.name, 1, getModelPath.name,1),
-      Connection(getModelPath.name, 1, saveToFile.name,1),
+      Connection(addDefinition.name, 1, model2ModelName.name,1),
+      Connection(model2ModelName.name, 1, "getModelPath2",1),
+      Connection("getModelPath2", 1, saveToFile.name,1),
       Connection(model2Json.name, 1, saveToFile.name,1),
       Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
       Connection(saveToFile.name, 1, onSaveModelSuccess.name,1),
