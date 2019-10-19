@@ -8,13 +8,13 @@ import scala.util.Try
 object ReflectRunner {
   private val logger = Logger("ReflectRunner")
 
-  def run(definition: Definition, packagePrefix: Option[String], input: Option[Any]): Any = {
-    logger.debug(s"input.getClass is ${input.map(_.getClass.getName).getOrElse("no argument")}")
+  def run(definition: Definition, packagePrefix: Option[String], inputParams: Option[Vector[Any]]): Any = {
+    logger.debug(s"input.getClass is ${inputParams.map(_.map(_.getClass.getName).mkString(",")).getOrElse("no argument")}")
     definition match {
       case PureFunction(name, inputs, _) => {
         locateClass(packagePrefix, name).
           getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*).
-          invoke(null, input.get)
+          invoke(null, inputParams.get:_*)
       }
       case InputEndpoint(name, output) => {
         locateClass(packagePrefix, name).
@@ -26,7 +26,7 @@ object ReflectRunner {
         val method = locateClass(packagePrefix, name).
           getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*) //Class.forName(composeInputType(packagePrefix, inputType))
         method.
-          invoke(null, input.get).asInstanceOf[Try[Any]].getOrElse(new IllegalStateException(s"error running $name"))
+          invoke(null, inputParams.get:_*).asInstanceOf[Try[Any]].getOrElse(new IllegalStateException(s"error running $name"))
       }
       case _ => ???
     }

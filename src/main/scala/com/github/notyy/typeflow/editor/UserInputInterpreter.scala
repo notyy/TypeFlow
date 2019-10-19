@@ -13,7 +13,7 @@ object UserInputInterpreter {
 
   private val CreateFlowPattern = """create Flow (.*) toModel (.*)""".r
   private val AddInstancePattern = """add Instance of (.*) to (.*)\.(.*)""".r
-  private val ConnectElementPattern = """connect from (.*)\.(.*) to (.*) inFlow (.*)\.(.*)""".r
+  private val ConnectElementPattern = """connect from (.*)\.(.*) to (.*)\.(.*) inFlow (.*)\.(.*)""".r
 
   def execute(input: UserInput): InterpreterResult = {
     input.value match {
@@ -27,7 +27,7 @@ object UserInputInterpreter {
       }
       case CreateFlowPattern(name,modelName) => CreateFlowCommand(modelName, name)
       case AddInstancePattern(definitionName, modelName, flowName) => AddInstanceCommand(modelName,flowName,definitionName)
-      case ConnectElementPattern(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName) => ConnectElementCommand(fromInstanceId,outputTypeName, toInstanceId, modelName,flowName)
+      case ConnectElementPattern(fromInstanceId,outputTypeName, toInstanceId,toInputIndex, modelName,flowName) => ConnectElementCommand(fromInstanceId,outputTypeName, toInstanceId,toInputIndex.toInt, modelName,flowName)
       case _ => UnknownCommand(input.value)
     }
   }

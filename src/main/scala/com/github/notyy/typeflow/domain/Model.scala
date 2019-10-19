@@ -6,9 +6,12 @@ case class Element(elementType: String, name: String)
 
 trait Definition {
   def name: String
+  def inputs: Vector[Input]
 }
 
-case class InputEndpoint(name: String, outputType: OutputType) extends Definition
+case class InputEndpoint(name: String, outputType: OutputType) extends Definition {
+  override def inputs: Vector[Input] = Vector.empty
+}
 
 case class PureFunction(name: String, inputs: Vector[Input], outputs: Vector[Output]) extends Definition
 
@@ -31,4 +34,4 @@ object Instance {
   def apply(definition: Definition): Instance = Instance(definition.name, definition)
 }
 
-case class Connection(fromInstanceId: String, outputIndex: Int, toInstanceId: String)
+case class Connection(fromInstanceId: String, outputIndex: Int, toInstanceId: String, inputIndex: Int)

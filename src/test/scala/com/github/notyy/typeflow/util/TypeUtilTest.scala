@@ -1,7 +1,7 @@
 package com.github.notyy.typeflow.util
 
 import com.github.notyy.typeflow.domain.InputType
-import com.github.notyy.typeflow.editor.QuitCommand
+import com.github.notyy.typeflow.editor.{Path, QuitCommand}
 import org.scalatest.{FunSpec, Matchers}
 
 class TypeUtilTest extends FunSpec with Matchers {
@@ -23,6 +23,9 @@ class TypeUtilTest extends FunSpec with Matchers {
     it("whould recognize java primitive types when composing type") {
       TypeUtil.composeInputType(Some("xyz"),InputType("String")) shouldBe "java.lang.String"
       TypeUtil.composeInputType(Some("xyz"),InputType("Object")) shouldBe "java.lang.Object"
+    }
+    it("AnyVal should be ok"){
+      TypeUtil.getTypeShortName(Path("xxx")) shouldBe "Path"
     }
   }
 }

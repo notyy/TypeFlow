@@ -18,7 +18,7 @@ object Fixtures {
       Output(OutputType("UII::AddInstanceCommand"), 8),
       Output(OutputType("UII::ConnectElementCommand"), 9)
     ))
-  val command2ModelName: PureFunction = PureFunction("Command2ModelName", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("C2MN::String"), 1)))
+  val command2ModelName: PureFunction = PureFunction("Command2ModelName", Vector(Input(InputType(s"AddDefinitionCommand"), 1)), Vector(Output(OutputType("C2MN::String"), 1)))
   val wrapOutput: domain.PureFunction = domain.PureFunction("WrapOutput", inputs = Vector(Input(InputType("Object"), 1)),
     outputs = Vector(Output(OutputType("WO::WrappedOutput"), 1))
   )
@@ -51,6 +51,7 @@ object Fixtures {
       Instance(addDefinition),
       Instance(model2Json),
       Instance(getModelPath),
+      Instance("getModelPath1",getModelPath),
       Instance(saveToFile),
       Instance(onSaveModelSuccess),
       Instance(command2ModelName),
@@ -58,28 +59,59 @@ object Fixtures {
       Instance(json2Model),
     ),
     connections = Vector(
-      Connection(userInputEndpoint.name, 1, userInputInterpreter.name),
-      Connection(userInputInterpreter.name, 1, wrapOutput.name),
-      Connection(userInputInterpreter.name, 2, wrapOutput.name),
+      Connection(userInputEndpoint.name, 1, userInputInterpreter.name,1),
+      Connection(userInputInterpreter.name, 1, wrapOutput.name,1),
+      Connection(userInputInterpreter.name, 2, wrapOutput.name,1),
 
-      Connection(userInputInterpreter.name, 3, createNewModel.name),
-      Connection(createNewModel.name, 1, wrapOutput.name),
+      Connection(userInputInterpreter.name, 3, createNewModel.name,1),
+      Connection(createNewModel.name, 1, wrapOutput.name,1),
 
-      Connection(userInputInterpreter.name, 4, addDefinition.name),
-      Connection(userInputInterpreter.name, 4, command2ModelName.name),
-      Connection(command2ModelName.name, 1, readFile.name),
-      Connection(readFile.name, 1, json2Model.name),
-      Connection(json2Model.name, 1, addDefinition.name),
+      Connection(userInputInterpreter.name, 4, addDefinition.name,2),
+      Connection(userInputInterpreter.name, 4, command2ModelName.name,1),
+      Connection(command2ModelName.name, 1, "getModelPath1",1),
+      Connection("getModelPath1", 1, readFile.name,1),
+      Connection(readFile.name, 1, json2Model.name,1),
+      Connection(json2Model.name, 1, addDefinition.name,1),
 
-      Connection(addDefinition.name, 1, model2Json.name),
-      Connection(addDefinition.name, 1, getModelPath.name),
-      Connection(getModelPath.name, 1, saveToFile.name),
-      Connection(model2Json.name, 1, saveToFile.name),
-      Connection(addDefinition.name, 1, onSaveModelSuccess.name),
-      Connection(saveToFile.name, 1, onSaveModelSuccess.name),
-      Connection(onSaveModelSuccess.name, 1, wrapOutput.name),
-      Connection(wrapOutput.name, 1, outputEndpoint.name),
+      Connection(addDefinition.name, 1, model2Json.name,1),
+      Connection(addDefinition.name, 1, getModelPath.name,1),
+      Connection(getModelPath.name, 1, saveToFile.name,1),
+      Connection(model2Json.name, 1, saveToFile.name,1),
+      Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
+      Connection(saveToFile.name, 1, onSaveModelSuccess.name,1),
+      Connection(onSaveModelSuccess.name, 1, wrapOutput.name,1),
+      Connection(wrapOutput.name, 1, outputEndpoint.name,1),
     )
   )
   val model: Model = domain.Model("typeflow_editor", Vector(userInputEndpoint, userInputInterpreter, wrapOutput, outputEndpoint), Vector(minimalFlow), Some(minimalFlow))
+
+  //define an multi parameter simple model
+  val numInput: InputEndpoint = InputEndpoint("NumInput",OutputType("NI::Integer"))
+  val add2: PureFunction = PureFunction("Add2",Vector(Input(InputType("Integer"),1)),Vector(Output(OutputType("A2::Integer"),1)))
+  val multi3: PureFunction = PureFunction("Multi3", Vector(Input(InputType("Integer"),1)),Vector(Output(OutputType("M3::Integer"),1)))
+  val addAndPrint: OutputEndpoint = OutputEndpoint("AddAndPrint",
+    inputs = Vector(
+      Input(InputType("Integer"),1),
+      Input(InputType("Integer"),2),
+    ),
+    outputType = OutputType("AAP::Integer"),
+    errorOutputs = Vector.empty
+  )
+  val definitions: Vector[Definition] = Vector(numInput,add2,multi3,addAndPrint)
+
+  val flow = Flow("flow",
+    instances = Vector(
+      Instance(numInput),
+      Instance(add2),
+      Instance(multi3),
+      Instance(addAndPrint)
+    ),
+    connections = Vector(
+      Connection(numInput.name,1,add2.name,1),
+      Connection(numInput.name,1,multi3.name,1),
+      Connection(add2.name,1,addAndPrint.name,1),
+      Connection(multi3.name,1,addAndPrint.name,2),
+    )
+  )
+  val multiParamModel: Model = Model("testModel",definitions,Vector(flow),Some(flow))
 }

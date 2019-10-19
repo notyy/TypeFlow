@@ -5,7 +5,11 @@ import com.github.notyy.typeflow.domain.{Connection, InputEndpoint, Model, Outpu
 object ConnectModelElement {
   def execute(savedModel: Model, connectElementCommand: ConnectElementCommand): Model = {
     val instanceId = connectElementCommand.fromInstanceId
-    val connection = Connection(instanceId,outputTypeName2index(instanceId,connectElementCommand.outputTypeName,savedModel) ,connectElementCommand.toInstanceId)
+    val connection = Connection(instanceId,
+      outputTypeName2index(instanceId,connectElementCommand.outputTypeName,savedModel),
+      connectElementCommand.toInstanceId,
+      connectElementCommand.toInputIndex
+    )
     //TODO temporary put here, will deal with it later
     val flowIndex = savedModel.flows.indexWhere(_.name == connectElementCommand.flowName)
     val updatedFlow = savedModel.flows(flowIndex).copy(connections = savedModel.flows(flowIndex).connections.appended(connection))
