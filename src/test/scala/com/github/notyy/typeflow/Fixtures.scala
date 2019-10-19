@@ -24,7 +24,12 @@ object Fixtures {
   )
   val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", Vector(Input(InputType("CLOE::WrappedOutput"), 1)), OutputType("CLOE::Unit"), Vector.empty)
   val createNewModel: OutputEndpoint = OutputEndpoint("CreateNewModel", Vector(Input(InputType("CreateModelCommand"), 1)), OutputType(s"CNM::ModelCreationSuccess"), Vector.empty)
-  val addDefinition: PureFunction = PureFunction("AddDefinition", inputs = Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("AD::AddDefinitionCommand"), 2)),
+  val addDefinition: PureFunction = PureFunction("AddDefinition",
+    inputs = Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("AD::AddDefinitionCommand"), 2)),
+    outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
+  )
+  val connectElement: PureFunction = PureFunction("ConnectModelElement",
+    inputs = Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("ConnectElementCommand"), 2)),
     outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
   )
   val model2Json: PureFunction = PureFunction("Model2Json", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("M2J::String"), 1)))
@@ -50,14 +55,22 @@ object Fixtures {
       Instance(outputEndpoint),
       Instance(createNewModel),
       Instance(addDefinition),
+      Instance(connectElement),
       Instance(model2Json),
       Instance(getModelPath),
       Instance("getModelPath1",getModelPath),
+      Instance(readFile),
+      Instance(json2Model),
       Instance(saveToFile),
       Instance(onSaveModelSuccess),
       Instance(command2ModelName),
-      Instance(readFile),
-      Instance(json2Model),
+
+      //used in connect element
+      Instance("command2ModelName1", command2ModelName),
+      Instance("getModelPath2",getModelPath),
+      Instance("readFile1",readFile),
+      Instance("json2Model1",json2Model),
+
       Instance(model2ModelName)
     ),
     connections = Vector(
@@ -68,6 +81,7 @@ object Fixtures {
       Connection(userInputInterpreter.name, 3, createNewModel.name,1),
       Connection(createNewModel.name, 1, wrapOutput.name,1),
 
+      //processing addDefinition command
       Connection(userInputInterpreter.name, 4, addDefinition.name,2),
       Connection(userInputInterpreter.name, 4, command2ModelName.name,1),
       Connection(command2ModelName.name, 1, "getModelPath1",1),
@@ -77,10 +91,27 @@ object Fixtures {
 
       Connection(addDefinition.name, 1, model2Json.name,1),
       Connection(addDefinition.name, 1, model2ModelName.name,1),
+      Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
+
+      Connection(addDefinition.name, 1, model2Json.name,1),
+      Connection(addDefinition.name, 1, model2ModelName.name,1),
+      Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
+
+      //processing connect element command
+      Connection(userInputInterpreter.name, 9, connectElement.name,2),
+      Connection(userInputInterpreter.name, 9, "command2ModelName1",1),
+      Connection("command2ModelName1", 1, "getModelPath2",1),
+      Connection("getModelPath2", 1, "readFile1",1),
+      Connection("readFile1", 1, "json2Model1",1),
+      Connection("json2Model1", 1, connectElement.name,1),
+      Connection(connectElement.name, 1, model2Json.name,1),
+      Connection(connectElement.name, 1, model2ModelName.name,1),
+      Connection(connectElement.name, 1, onSaveModelSuccess.name,1),
+
+      //save model and output result
       Connection(model2ModelName.name, 1, getModelPath.name,1),
       Connection(getModelPath.name, 1, saveToFile.name,1),
       Connection(model2Json.name, 1, saveToFile.name,2),
-      Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
       Connection(saveToFile.name, 1, onSaveModelSuccess.name,2),
       Connection(onSaveModelSuccess.name, 1, wrapOutput.name,1),
       Connection(wrapOutput.name, 1, outputEndpoint.name,1),

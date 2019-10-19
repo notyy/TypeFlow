@@ -44,7 +44,7 @@ class UserInputInterpreterTest extends FunSpec with Matchers {
     }
     it("can understand connect Command") {
       val result = UserInputInterpreter.execute(UserInput("connect from FunctionX.Output1 to FunctionY.1 inFlow SampleModel.SampleFlow"))
-      result shouldBe ConnectElementCommand("FunctionX","Output1","FunctionY",1,"SampleModel","SampleFlow")
+      result shouldBe ConnectElementCommand("FunctionX","Output1","FunctionY",1,"SampleModel")
     }
     it("can extract inputs from user input string") {
       UserInputInterpreter.extractInputs("UserInput,1;x,2") shouldBe Vector(Input(InputType("UserInput"), 1), Input(InputType("x"), 2))

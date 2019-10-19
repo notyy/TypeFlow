@@ -1,6 +1,5 @@
 package com.github.notyy.typeflow.editor
 
-import org.json4s.MappingException
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.util.Failure
@@ -16,7 +15,7 @@ class Json2ModelTest extends FunSpec with Matchers {
       model.definitions.size shouldBe 4
       model.activeFlow.get.name shouldBe "minimalFlow"
       model.activeFlow.get.connections.foreach(println)
-      model.activeFlow.get.connections.size shouldBe 20
+      model.activeFlow.get.connections.size shouldBe 32
     }
     it("should return new model when processing empty string") {
       val tryModel = Json2Model.execute("")

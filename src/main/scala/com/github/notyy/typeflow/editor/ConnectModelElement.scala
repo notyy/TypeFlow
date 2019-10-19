@@ -10,10 +10,10 @@ object ConnectModelElement {
       connectElementCommand.toInstanceId,
       connectElementCommand.toInputIndex
     )
+    val activeFlow = savedModel.activeFlow.get
     //TODO temporary put here, will deal with it later
-    val flowIndex = savedModel.flows.indexWhere(_.name == connectElementCommand.flowName)
-    val updatedFlow = savedModel.flows(flowIndex).copy(connections = savedModel.flows(flowIndex).connections.appended(connection))
-    savedModel.copy(flows = savedModel.flows.updated(flowIndex,updatedFlow))
+    val updatedFlow = activeFlow.copy(connections = activeFlow.connections.appended(connection))
+    savedModel.copy(activeFlow = Some(updatedFlow))
   }
 
   def outputTypeName2index(instanceId: String,outputTypeName: String, model: Model):Int = {
