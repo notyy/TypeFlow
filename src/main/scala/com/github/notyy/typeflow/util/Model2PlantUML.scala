@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.util
 
-import com.github.notyy.typeflow.domain.Model
+import com.github.notyy.typeflow.domain.{Connection, Model}
 import com.github.notyy.typeflow.editor.PlantUML
 
 object Model2PlantUML {
@@ -10,8 +10,9 @@ object Model2PlantUML {
     val defBlock = definitions.map(defi => s"class ${defi.name} <<${ModelUtil.definitionType(defi)}>>").mkString(System.lineSeparator)
     val connectionBlock = model.activeFlow.get.connections.map(conn => {
       val outputType = ModelUtil.findOutputType(conn.fromInstanceId, conn.outputIndex, model).get
-      s"${conn.fromInstanceId} --> $outputType${System.lineSeparator}" +
-        s"$outputType --> ${conn.toInstanceId}"
+      val decOutputType = decorateOutputType(outputType, conn, model)
+      s"${conn.fromInstanceId} --> $decOutputType${System.lineSeparator}" +
+        s"$decOutputType --> ${conn.toInstanceId}"
     }).mkString(System.lineSeparator).linesIterator.distinct.mkString(System.lineSeparator) //to avoid duplicated connections from same instance to it's output
     val rs = s"""
        |@startuml
@@ -21,5 +22,14 @@ object Model2PlantUML {
        |@enduml
        |""".stripMargin
     PlantUML(rs)
+  }
+
+  def decorateOutputType(outputType: String, connection: Connection, model: Model): String = {
+    val fromInstance = model.activeFlow.get.instances.find(_.id == connection.fromInstanceId).get
+    if(fromInstance.id != fromInstance.definition.name) {
+      s"${fromInstance.id}::$outputType"
+    } else {
+      outputType
+    }
   }
 }

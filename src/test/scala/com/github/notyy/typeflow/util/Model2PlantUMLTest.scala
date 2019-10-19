@@ -1,6 +1,8 @@
 package com.github.notyy.typeflow.util
 
 import com.github.notyy.typeflow.Fixtures
+import com.github.notyy.typeflow.Fixtures.printEP
+import com.github.notyy.typeflow.domain.Connection
 import com.github.notyy.typeflow.editor.{Path, SaveToFile}
 import com.typesafe.scalalogging.Logger
 import org.scalatest.{FunSpec, Matchers}
@@ -72,6 +74,10 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
     it("can be used as a small puml generation tool") {
       val plantUML = Model2PlantUML.execute(Fixtures.multiParamModel)
       SaveToFile.execute(Path("./localoutput/multi_param.puml"),plantUML.value)
+    }
+    it("will decorate output type if it's from multiple instance of same definition") {
+      val ot = Model2PlantUML.decorateOutputType("A2::Integer",Connection("1::add2",1,printEP.name,1), Fixtures.multiParamModel)
+      ot shouldBe "1::add2::A2::Integer"
     }
   }
 }

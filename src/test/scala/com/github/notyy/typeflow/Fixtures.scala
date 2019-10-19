@@ -53,7 +53,6 @@ object Fixtures {
       Instance(model2Json),
       Instance(getModelPath),
       Instance("getModelPath1",getModelPath),
-      Instance("getModelPath2",getModelPath),
       Instance(saveToFile),
       Instance(onSaveModelSuccess),
       Instance(command2ModelName),
@@ -78,8 +77,8 @@ object Fixtures {
 
       Connection(addDefinition.name, 1, model2Json.name,1),
       Connection(addDefinition.name, 1, model2ModelName.name,1),
-      Connection(model2ModelName.name, 1, "getModelPath2",1),
-      Connection("getModelPath2", 1, saveToFile.name,1),
+      Connection(model2ModelName.name, 1, getModelPath.name,1),
+      Connection(getModelPath.name, 1, saveToFile.name,1),
       Connection(model2Json.name, 1, saveToFile.name,2),
       Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
       Connection(saveToFile.name, 1, onSaveModelSuccess.name,2),
@@ -101,18 +100,27 @@ object Fixtures {
     outputType = OutputType("AAP::Integer"),
     errorOutputs = Vector.empty
   )
+  val printEP: OutputEndpoint = OutputEndpoint("PrintEP",
+    Vector(Input(InputType("Integer"),1)),
+    OutputType("Integer"),
+    Vector.empty
+  )
   val definitions: Vector[Definition] = Vector(numInput,add2,multi3,addAndPrint)
 
   val flow = Flow("flow",
     instances = Vector(
       Instance(numInput),
       Instance(add2),
+      Instance("1::add2",add2),
       Instance(multi3),
-      Instance(addAndPrint)
+      Instance(addAndPrint),
+      Instance(printEP)
     ),
     connections = Vector(
       Connection(numInput.name,1,add2.name,1),
       Connection(numInput.name,1,multi3.name,1),
+      Connection(numInput.name,1,"1::add2",1),
+      Connection("1::add2",1,printEP.name,1),
       Connection(add2.name,1,addAndPrint.name,1),
       Connection(multi3.name,1,addAndPrint.name,2),
     )

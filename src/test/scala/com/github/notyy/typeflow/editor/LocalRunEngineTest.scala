@@ -38,3 +38,10 @@ object AddAndPrint {
     rs
   }
 }
+
+object PrintEP {
+  def execute(x: Integer): Try[Integer] = Try {
+    println(x)
+    x
+  }
+}
