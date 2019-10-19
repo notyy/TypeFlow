@@ -23,7 +23,7 @@ object Fixtures {
     outputs = Vector(Output(OutputType("WO::WrappedOutput"), 1))
   )
   val outputEndpoint: OutputEndpoint = OutputEndpoint("CommandLineOutputEndpoint", Vector(Input(InputType("CLOE::WrappedOutput"), 1)), OutputType("CLOE::Unit"), Vector.empty)
-  val createNewModel: OutputEndpoint = OutputEndpoint("CreateNewModel", Vector(Input(InputType("CreateModelCommand"), 1)), OutputType(s"CNM::$mp.ModelCreationSuccess"), Vector.empty)
+  val createNewModel: OutputEndpoint = OutputEndpoint("CreateNewModel", Vector(Input(InputType("CreateModelCommand"), 1)), OutputType(s"CNM::ModelCreationSuccess"), Vector.empty)
   val addDefinition: PureFunction = PureFunction("AddDefinition", inputs = Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("AD::AddDefinitionCommand"), 2)),
     outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
   )
@@ -39,7 +39,7 @@ object Fixtures {
     outputType = OutputType("STF::Unit"),
     errorOutputs = Vector(Output(OutputType("STF::String"), 1))
   )
-  val onSaveModelSuccess: PureFunction = PureFunction("OnSaveModelSuccess", Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("Unit"), 2)), Vector(Output(OutputType(s"OSMS::$mp.ModelUpdateSuccess"), 1)))
+  val onSaveModelSuccess: PureFunction = PureFunction("OnSaveModelSuccess", Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("Unit"), 2)), Vector(Output(OutputType(s"OSMS::ModelUpdateSuccess"), 1)))
 
   val minimalFlow: Flow = Flow("minimalFlow",
     instances = Vector(
