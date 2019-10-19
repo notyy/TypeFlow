@@ -12,9 +12,15 @@ object ReflectRunner {
     logger.debug(s"input.getClass is ${inputParams.map(_.map(_.getClass.getName).mkString(",")).getOrElse("no argument")}")
     definition match {
       case PureFunction(name, inputs, _) => {
-        locateClass(packagePrefix, name).
-          getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*).
-          invoke(null, inputParams.get:_*)
+        val method = locateClass(packagePrefix, name).
+          getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*)
+        val invokeResult = method.invoke(null, inputParams.get: _*)
+        invokeResult match {
+          case value: Try[Any] =>
+            value.getOrElse(new IllegalStateException(s"error running $name"))
+          case _ =>
+            invokeResult
+        }
       }
       case InputEndpoint(name, output) => {
         locateClass(packagePrefix, name).
