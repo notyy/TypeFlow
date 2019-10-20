@@ -13,7 +13,7 @@ class UserInputInterpreterTest extends FunSpec with Matchers {
     it("can understand add Function command") {
       //add Function (.*) haveInputs (.*) haveOutputs (.*) toModel (.*)
       val result = UserInputInterpreter.execute(
-        UserInput("add Function UserInputInterpreter haveInputs UserInput,1 haveOutputs UnknownCommand,1;QuitCommand,2;CreateModelCommand,3;AddInputEndpointCommand,4;AddFunctionCommand,5;AddOutputEndpointCommand,6 toModel SampleModel"))
+        UserInput("add PureFunction UserInputInterpreter haveInputs UserInput,1 haveOutputs UnknownCommand,1;QuitCommand,2;CreateModelCommand,3;AddInputEndpointCommand,4;AddFunctionCommand,5;AddOutputEndpointCommand,6 toModel SampleModel"))
       result shouldBe AddFunctionCommand("SampleModel", "UserInputInterpreter", Vector(Input(InputType("UserInput"), 1)),
         outputs = Vector(
           Output(OutputType("UnknownCommand"), 1),
@@ -43,8 +43,8 @@ class UserInputInterpreterTest extends FunSpec with Matchers {
       result shouldBe AddInstanceCommand("SampleModel","SampleFlow","FunctionX")
     }
     it("can understand connect Command") {
-      val result = UserInputInterpreter.execute(UserInput("connect from FunctionX.Output1 to FunctionY.1 inModel SampleModel"))
-      result shouldBe ConnectElementCommand("FunctionX","Output1","FunctionY",1,"SampleModel")
+      val result = UserInputInterpreter.execute(UserInput("connect from FunctionX.1 to FunctionY.1 inModel SampleModel"))
+      result shouldBe ConnectElementCommand("FunctionX",1,"FunctionY",1,"SampleModel")
     }
     it("can extract inputs from user input string") {
       UserInputInterpreter.extractInputs("UserInput,1;x,2") shouldBe Vector(Input(InputType("UserInput"), 1), Input(InputType("x"), 2))

@@ -3,7 +3,7 @@ package com.github.notyy.typeflow.util
 import com.github.notyy.typeflow.Fixtures
 import com.github.notyy.typeflow.Fixtures.printEP
 import com.github.notyy.typeflow.domain.Connection
-import com.github.notyy.typeflow.editor.{Path, SaveToFile}
+import com.github.notyy.typeflow.editor.{Json2Model, Path, ReadFile, SaveToFile}
 import com.typesafe.scalalogging.Logger
 import org.scalatest.{FunSpec, Matchers}
 
@@ -81,6 +81,12 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
     }
     it("will find those added instances for one definition") {
       Model2PlantUML.filterDecoratedInstances(Fixtures.multiParamModel).map(_.id).contains("1::Add2") shouldBe true
+    }
+    it("will output result of ./localoutput/newModel.typeflow") {
+      val json = ReadFile.execute(Path("./localoutput/newModel.typeflow")).get
+      val model = Json2Model.execute(json).get
+      val puml = Model2PlantUML.execute(model)
+      SaveToFile.execute(Path("./localoutput/newModel.puml"),puml.value)
     }
   }
 }

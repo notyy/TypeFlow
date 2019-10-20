@@ -95,6 +95,10 @@ object Fixtures {
       //processing addDefinition command
       Connection(userInputInterpreter.name, 4, addDefinition.name,2),
       Connection(userInputInterpreter.name, 4, command2ModelName.name,1),
+      Connection(userInputInterpreter.name, 5, addDefinition.name,2),
+      Connection(userInputInterpreter.name, 5, command2ModelName.name,1),
+      Connection(userInputInterpreter.name, 6, addDefinition.name,2),
+      Connection(userInputInterpreter.name, 6, command2ModelName.name,1),
       Connection(command2ModelName.name, 1, "getModelPath1",1),
       Connection("getModelPath1", 1, readFile.name,1),
       Connection(readFile.name, 1, json2Model.name,1),

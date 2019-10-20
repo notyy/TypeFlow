@@ -20,4 +20,4 @@ case class AddOutputEndpointCommand(modelName: String, name: String, inputs: Vec
 sealed trait FlowOperationCommand extends ChangeModelCommand
 case class CreateFlowCommand(modelName: String, name: String) extends FlowOperationCommand
 case class AddInstanceCommand(modelName: String, flowName: String,definitionName: String) extends FlowOperationCommand
-case class ConnectElementCommand(fromInstanceId: String, outputTypeName: String, toInstanceId: String, toInputIndex: Int, modelName: String) extends FlowOperationCommand
+case class ConnectElementCommand(fromInstanceId: String, fromInputIndex: Int, toInstanceId: String, toInputIndex: Int, modelName: String) extends FlowOperationCommand
