@@ -18,7 +18,7 @@ object Fixtures {
       Output(OutputType("UII::AddInstanceCommand"), 8),
       Output(OutputType("UII::ConnectElementCommand"), 9)
     ))
-  val command2ModelName: PureFunction = PureFunction("Command2ModelName", Vector(Input(InputType(s"AddDefinitionCommand"), 1)), Vector(Output(OutputType("C2MN::String"), 1)))
+  val command2ModelName: PureFunction = PureFunction("Command2ModelName", Vector(Input(InputType(s"ChangeModelCommand"), 1)), Vector(Output(OutputType("C2MN::String"), 1)))
   val wrapOutput: domain.PureFunction = domain.PureFunction("WrapOutput", inputs = Vector(Input(InputType("Object"), 1)),
     outputs = Vector(Output(OutputType("WO::WrappedOutput"), 1))
   )
@@ -26,6 +26,10 @@ object Fixtures {
   val createNewModel: OutputEndpoint = OutputEndpoint("CreateNewModel", Vector(Input(InputType("CreateModelCommand"), 1)), OutputType(s"CNM::ModelCreationSuccess"), Vector.empty)
   val addDefinition: PureFunction = PureFunction("AddDefinition",
     inputs = Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("AD::AddDefinitionCommand"), 2)),
+    outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
+  )
+  val createFlow: PureFunction = PureFunction("CreateFlow",
+    inputs = Vector(Input(InputType(s"$mp.Model"), 1), Input(InputType("CreateFlowCommand"), 2)),
     outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
   )
   val connectElement: PureFunction = PureFunction("ConnectModelElement",
@@ -55,6 +59,7 @@ object Fixtures {
       Instance(outputEndpoint),
       Instance(createNewModel),
       Instance(addDefinition),
+      Instance(createFlow),
       Instance(connectElement),
       Instance(model2Json),
       Instance(getModelPath),
@@ -70,6 +75,12 @@ object Fixtures {
       Instance("getModelPath2",getModelPath),
       Instance("readFile1",readFile),
       Instance("json2Model1",json2Model),
+
+      //used in create flow
+      Instance("command2ModelName2", command2ModelName),
+      Instance("getModelPath3",getModelPath),
+      Instance("readFile2",readFile),
+      Instance("json2Model2",json2Model),
 
       Instance(model2ModelName)
     ),
@@ -107,6 +118,17 @@ object Fixtures {
       Connection(connectElement.name, 1, model2Json.name,1),
       Connection(connectElement.name, 1, model2ModelName.name,1),
       Connection(connectElement.name, 1, onSaveModelSuccess.name,1),
+
+      //processing create flow command
+      Connection(userInputInterpreter.name, 7, createFlow.name,2),
+      Connection(userInputInterpreter.name, 7, "command2ModelName2",1),
+      Connection("command2ModelName2", 1, "getModelPath3",1),
+      Connection("getModelPath3", 1, "readFile2",1),
+      Connection("readFile2", 1, "json2Model2",1),
+      Connection("json2Model2", 1, createFlow.name,1),
+      Connection(createFlow.name, 1, model2Json.name,1),
+      Connection(createFlow.name, 1, model2ModelName.name,1),
+      Connection(createFlow.name, 1, onSaveModelSuccess.name,1),
 
       //save model and output result
       Connection(model2ModelName.name, 1, getModelPath.name,1),
