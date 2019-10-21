@@ -1,9 +1,8 @@
-package com.github.notyy.typeflow.util
+package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.Fixtures
 import com.github.notyy.typeflow.Fixtures.printEP
 import com.github.notyy.typeflow.domain.Connection
-import com.github.notyy.typeflow.editor.{Json2Model, Path, ReadFile, SavePlantUML, SaveToFile}
 import com.typesafe.scalalogging.Logger
 import org.scalatest.{FunSpec, Matchers}
 
