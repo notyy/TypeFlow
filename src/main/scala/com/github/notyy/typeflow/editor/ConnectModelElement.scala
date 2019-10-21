@@ -1,8 +1,10 @@
 package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain.{Connection, Definition, InputEndpoint, Instance, Model, OutputEndpoint, PureFunction}
+import com.typesafe.scalalogging.Logger
 
 object ConnectModelElement {
+  private val logger = Logger(ConnectModelElement.getClass)
   def execute(savedModel: Model, connectElementCommand: ConnectElementCommand): Model = {
     val currDefis = savedModel.definitions
     val currInstances = savedModel.activeFlow.get.instances

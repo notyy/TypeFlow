@@ -38,7 +38,7 @@ object Fixtures {
   )
   val model2Json: PureFunction = PureFunction("Model2Json", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("M2J::String"), 1)))
   val model2PlantUML: PureFunction = PureFunction("Model2PlantUML", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("PlantUML"), 1)))
-  val savePlantUML: OutputEndpoint = OutputEndpoint("SavePlantUML",Vector(Input(InputType(s"$mp.Model"),1)),OutputType("SPU::Unit"),Vector.empty)
+  val savePlantUML: OutputEndpoint = OutputEndpoint("SavePlantUML",Vector(Input(InputType(s"PlantUML"),1)),OutputType("SPU::Unit"),Vector.empty)
   val getModelPath: PureFunction = PureFunction("GetModelPath", Vector(Input(InputType("String"), 1)), Vector(Output(OutputType("GMP::Path"), 1)))
   val model2ModelName: PureFunction = PureFunction("Model2ModelName", Vector(Input(InputType(s"$mp.Model"),1)),Vector(Output(OutputType("M2MN::String"),1)))
   val readFile: OutputEndpoint = OutputEndpoint("ReadFile", Vector(Input(InputType("Path"), 1)), OutputType("RF::String"), Vector.empty)
