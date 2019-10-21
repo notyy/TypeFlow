@@ -13,7 +13,7 @@ object CommandLineUI extends App {
       |""".stripMargin
 
   val json = ReadFileFromResource.execute("/TypeFlowEditor.typeflow")
-  val model: Model = Json2Model.execute(json)
+  val model: Model = Json2Model.execute(json).get
 
   println(welcomeStr)
   askForCommand()

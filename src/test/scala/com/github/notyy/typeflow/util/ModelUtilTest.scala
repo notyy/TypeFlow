@@ -21,5 +21,11 @@ class ModelUtilTest extends FunSpec with Matchers {
     it("can find out instance's outputType of given index and keep as is") {
       ModelUtil.findOutputType(Fixtures.userInputInterpreter.name, 1, model) shouldBe Some("UII::UnknownCommand")
     }
+    it("can find out instance's outputType, even if it's an qualified typename") {
+      ModelUtil.findOutputType(Fixtures.json2Model.name, 1, model) shouldBe Some("J2M::com.github.notyy.typeflow.domain.Model")
+    }
+    it("can find out instance's outputType, even if it's an qualified typename and only take short name") {
+      ModelUtil.findOutputTypeRemovePrefixShortName(Fixtures.json2Model.name, 1, model) shouldBe Some("Model")
+    }
   }
 }
