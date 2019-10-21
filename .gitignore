@@ -4,3 +4,4 @@
 target/
 localOutput/*
 !localOutput/readme.md
+!localoutput/commands.txt
