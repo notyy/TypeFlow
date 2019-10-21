@@ -28,7 +28,7 @@ object Model2PlantUML {
        |$connectionBlock
        |@enduml
        |""".stripMargin
-    PlantUML(rs)
+    PlantUML(model.name,rs)
   }
 
   def decorateOutputType(outputType: String, connection: Connection, model: Model): String = {

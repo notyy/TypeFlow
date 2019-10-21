@@ -32,6 +32,7 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
           if (currParams.size == ins.definition.inputs.size) {
             //enough parameters
             val nextOutput = callInstance(currParams.toVector.sortBy(_._1).map(_._2), ins)
+            waitingParams.remove(ins.id)
             val nextIns = nextInstances(nextOutput, ins)
             callNextInstances(nextOutput, nextIns)
           } else {

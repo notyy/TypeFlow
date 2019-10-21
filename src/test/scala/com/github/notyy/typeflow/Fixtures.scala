@@ -37,6 +37,8 @@ object Fixtures {
     outputs = Vector(Output(OutputType(s"$mp.Model"), 1))
   )
   val model2Json: PureFunction = PureFunction("Model2Json", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("M2J::String"), 1)))
+  val model2PlantUML: PureFunction = PureFunction("Model2PlantUML", Vector(Input(InputType(s"$mp.Model"), 1)), Vector(Output(OutputType("PlantUML"), 1)))
+  val savePlantUML: OutputEndpoint = OutputEndpoint("SavePlantUML",Vector(Input(InputType(s"$mp.Model"),1)),OutputType("SPU::Unit"),Vector.empty)
   val getModelPath: PureFunction = PureFunction("GetModelPath", Vector(Input(InputType("String"), 1)), Vector(Output(OutputType("GMP::Path"), 1)))
   val model2ModelName: PureFunction = PureFunction("Model2ModelName", Vector(Input(InputType(s"$mp.Model"),1)),Vector(Output(OutputType("M2MN::String"),1)))
   val readFile: OutputEndpoint = OutputEndpoint("ReadFile", Vector(Input(InputType("Path"), 1)), OutputType("RF::String"), Vector.empty)
@@ -62,6 +64,8 @@ object Fixtures {
       Instance(createFlow),
       Instance(connectElement),
       Instance(model2Json),
+      Instance(model2PlantUML),
+      Instance(savePlantUML),
       Instance(getModelPath),
       Instance("getModelPath1",getModelPath),
       Instance(readFile),
@@ -103,14 +107,11 @@ object Fixtures {
       Connection("getModelPath1", 1, readFile.name,1),
       Connection(readFile.name, 1, json2Model.name,1),
       Connection(json2Model.name, 1, addDefinition.name,1),
-
+      //save model change
       Connection(addDefinition.name, 1, model2Json.name,1),
       Connection(addDefinition.name, 1, model2ModelName.name,1),
       Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
-
-      Connection(addDefinition.name, 1, model2Json.name,1),
-      Connection(addDefinition.name, 1, model2ModelName.name,1),
-      Connection(addDefinition.name, 1, onSaveModelSuccess.name,1),
+      Connection(addDefinition.name, 1, model2PlantUML.name,1),
 
       //processing connect element command
       Connection(userInputInterpreter.name, 9, connectElement.name,2),
@@ -122,6 +123,7 @@ object Fixtures {
       Connection(connectElement.name, 1, model2Json.name,1),
       Connection(connectElement.name, 1, model2ModelName.name,1),
       Connection(connectElement.name, 1, onSaveModelSuccess.name,1),
+      Connection(connectElement.name, 1, model2PlantUML.name,1),
 
       //processing create flow command
       Connection(userInputInterpreter.name, 7, createFlow.name,2),
@@ -133,6 +135,7 @@ object Fixtures {
       Connection(createFlow.name, 1, model2Json.name,1),
       Connection(createFlow.name, 1, model2ModelName.name,1),
       Connection(createFlow.name, 1, onSaveModelSuccess.name,1),
+      Connection(createFlow.name, 1, model2PlantUML.name,1),
 
       //save model and output result
       Connection(model2ModelName.name, 1, getModelPath.name,1),
@@ -141,6 +144,8 @@ object Fixtures {
       Connection(saveToFile.name, 1, onSaveModelSuccess.name,2),
       Connection(onSaveModelSuccess.name, 1, wrapOutput.name,1),
       Connection(wrapOutput.name, 1, outputEndpoint.name,1),
+      //save model as PlantUML silently
+      Connection(model2PlantUML.name, 1, savePlantUML.name,1),
     )
   )
   val model: Model = domain.Model("typeflow_editor", Vector(userInputEndpoint, userInputInterpreter, wrapOutput, outputEndpoint), Vector(minimalFlow), Some(minimalFlow))
@@ -182,5 +187,5 @@ object Fixtures {
       Connection(multi3.name,1,addAndPrint.name,2),
     )
   )
-  val multiParamModel: Model = Model("testModel",definitions,Vector(flow),Some(flow))
+  val multiParamModel: Model = Model("multi_param",definitions,Vector(flow),Some(flow))
 }
