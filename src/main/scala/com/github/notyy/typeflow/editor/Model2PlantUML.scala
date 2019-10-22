@@ -2,11 +2,13 @@ package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain._
 import com.github.notyy.typeflow.util.ModelUtil
+import com.typesafe.scalalogging.Logger
 
 object Model2PlantUML {
+  private val logger = Logger(Model2PlantUML.getClass)
   //shows the plantuml diagram of active flow
   def execute(model: Model): PlantUML = {
-    val definitions = model.activeFlow.get.instances.map(_.definition)
+    val definitions = model.definitions
     val decoratedDefis: Vector[Definition] = filterDecoratedInstances(model).map{ ins =>
       ins.definition match {
         case i: InputEndpoint => i.copy(name = ins.id)

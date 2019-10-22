@@ -5,5 +5,7 @@ target/
 localOutput/*
 !localOutput/readme.md
 !localoutput/commands.txt
+/src/test/scala/com/github/notyy/typeflow/localtest/ModelPlayTool.scala
+
 src/test/scala/runModel2Json.scala
 src/main/resources/TypeFlowEditorForMulti.typeflow
