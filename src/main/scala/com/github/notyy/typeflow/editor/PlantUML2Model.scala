@@ -51,7 +51,22 @@ object PlantUML2Model {
     null
   }
 
-  def createPureFunction(ele: Element, descriptions: Vector[UMLDescription]): PureFunction = {
+  def isFunctionDuplicate(targetEle: Element, elements: Vector[Element]): Boolean = {
+    if(targetEle.name.contains("::")) {
+      elements.foreach(ele => {
+        targetEle.name.contains(ele)
+        return true
+      })
+    }
+    false
+  }
+
+  def createPureFunction(ele: Element, elements: Vector[Element], descriptions: Vector[UMLDescription]): PureFunction = {
+    if(isFunctionDuplicate(ele, elements)) {
+      //is duplicate
+      return null
+    }
+    //is not duplicate
     val outputs: ArrayBuffer[Output] = ArrayBuffer()
     val inputs: ArrayBuffer[Input] = ArrayBuffer()
     descriptions.foreach(desc => {
@@ -81,16 +96,16 @@ object PlantUML2Model {
     OutputEndpoint(ele.name, inputs.toVector, outputType, errorOutputs)
   }
 
-  def createDefinition(ele: Element, descriptions: Vector[UMLDescription]): Definition = {
+  def createDefinition(ele: Element, elements: Vector[Element], descriptions: Vector[UMLDescription]): Definition = {
     ele.elementType match {
       case "InputEndpoint" => createInputEndpoint(ele, descriptions)
-      case "PureFunction" =>createPureFunction(ele, descriptions)
+      case "PureFunction" =>createPureFunction(ele, elements, descriptions)
       case "OutputEndpoint" => createOutputEndpoint(ele, descriptions)
     }
   }
 
   def createDefinitions(elements: Vector[Element], descriptions: Vector[UMLDescription]): Vector[Definition] = {
-    elements.map(ele => createDefinition(ele, descriptions))
+    elements.map(ele => createDefinition(ele, elements, descriptions)).filter(_ != null)
   }
 
   def createInstances(definitions: Vector[Definition]): Vector[Instance] = {
