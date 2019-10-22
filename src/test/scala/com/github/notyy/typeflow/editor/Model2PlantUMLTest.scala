@@ -81,11 +81,11 @@ class Model2PlantUMLTest extends FunSpec with Matchers {
     it("will find those added instances for one definition") {
       Model2PlantUML.filterDecoratedInstances(Fixtures.multiParamModel).map(_.id).contains("1::Add2") shouldBe true
     }
-    it("will output result of ./localoutput/newModel.typeflow") {
-      val json = ReadFile.execute(Path("./localoutput/newModel.typeflow")).get
-      val model = Json2Model.execute(json).get
-      val puml = Model2PlantUML.execute(model)
-      SavePlantUML.execute(puml)
-    }
+//    it("will output result of ./localoutput/newModel.typeflow") {
+//      val json = ReadFile.execute(Path("./localoutput/newModel.typeflow")).get
+//      val model = Json2Model.execute(json).get
+//      val puml = Model2PlantUML.execute(model)
+//      SavePlantUML.execute(puml)
+//    }
   }
 }
