@@ -1,0 +1,20 @@
+
+@startuml
+class NumInput <<InputEndpoint>>
+class Add2 <<PureFunction>>
+class Multi3 <<PureFunction>>
+class AddAndPrint <<OutputEndpoint>>
+class 1::Add2 <<PureFunction>>
+class PrintEP <<OutputEndpoint>>
+
+NumInput --> NI::Integer
+NI::Integer --> Add2
+NI::Integer --> Multi3
+NI::Integer --> 1::Add2
+1::Add2 --> 1::Add2::A2::Integer
+1::Add2::A2::Integer --> PrintEP
+Add2 --> A2::Integer
+A2::Integer --> AddAndPrint
+Multi3 --> M3::Integer
+M3::Integer --> AddAndPrint
+@enduml

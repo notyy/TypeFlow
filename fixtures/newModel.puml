@@ -1,0 +1,19 @@
+
+@startuml
+class NumInput <<InputEndpoint>>
+class Add2 <<PureFunction>>
+class NumInput <<InputEndpoint>>
+class Multi3 <<PureFunction>>
+class Add2 <<PureFunction>>
+class AddAndPrint <<OutputEndpoint>>
+class Multi3 <<PureFunction>>
+class AddAndPrint <<OutputEndpoint>>
+
+NumInput --> Integer
+Integer --> Add2
+Integer --> Multi3
+Add2 --> A2::Integer
+A2::Integer --> AddAndPrint
+Multi3 --> M3::Integer
+M3::Integer --> AddAndPrint
+@enduml
