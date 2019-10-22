@@ -177,7 +177,7 @@ object PlantUML2Model {
   }
 
   def execute(plantUML: PlantUML): Model = {
-    val umlStr = plantUML.value
+    val umlStr = plantUML.content
     println(s"$umlStr")
     println("----------")
 
