@@ -5,3 +5,5 @@ target/
 localOutput/*
 !localOutput/readme.md
 !localoutput/commands.txt
+src/test/scala/runModel2Json.scala
+src/main/resources/TypeFlowEditorForMulti.typeflow
