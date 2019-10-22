@@ -181,7 +181,7 @@ object PlantUML2Model {
     println(s"$umlStr")
     println("----------")
 
-    val name: String = "typeflow_editor"
+    val name: String = plantUML.modelName
     val umlStrings: Array[String] = umlStr.split('\n')
     val descriptions: ArrayBuffer[UMLDescription] = ArrayBuffer()
     val elements: ArrayBuffer[Element] = ArrayBuffer()
