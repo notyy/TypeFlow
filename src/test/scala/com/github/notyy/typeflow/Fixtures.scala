@@ -167,7 +167,7 @@ object Fixtures {
     OutputType("Integer"),
     Vector.empty
   )
-  val definitions: Vector[Definition] = Vector(numInput,add2,multi3,addAndPrint)
+  val definitions: Vector[Definition] = Vector(numInput,add2,multi3,addAndPrint, printEP)
 
   val flow = Flow("flow",
     instances = Vector(
