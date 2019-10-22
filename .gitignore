@@ -5,3 +5,4 @@ target/
 localOutput/*
 !localOutput/readme.md
 !localoutput/commands.txt
+/src/main/scala/com/github/notyy/typeflow/localtest/ModelPlayTool.scala
