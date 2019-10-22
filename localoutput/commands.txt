@@ -1,0 +1,16 @@
+create Model newModel
+create Flow newFlow toModel newModel
+
+add InputEndpoint NumInput haveOutputType Integer toModel newModel
+add PureFunction Add2 haveInputs Integer,1 haveOutputs A2::Integer,1 toModel newModel
+add PureFunction Multi3 haveInputs Integer,1 haveOutputs M3::Integer,1 toModel newModel
+add OutputEndpoint AddAndPrint haveInputs Integer,1;Integer,2 haveOutputType AAP::Integer haveErrorOutputs Empty toModel newModel
+connect from NumInput.1 to Add2.1 inModel newModel
+connect from NumInput.1 to Multi3.1 inModel newModel
+connect from Add2.1 to AddAndPrint.1 inModel newModel
+connect from Multi3.1 to AddAndPrint.2 inModel newModel
+
+val numInput: InputEndpoint = InputEndpoint("NumInput",OutputType("NI::Integer"))
+val add2: PureFunction = PureFunction("Add2",Vector(Input(InputType("Integer"),1)),Vector(Output(OutputType("A2::Integer"),1)))
+val multi3: PureFunction = PureFunction("Multi3", Vector(Input(InputType("Integer"),1)),Vector(Output(OutputType("M3::Integer"),1)))
+val addAndPrint: OutputEndpoint = OutputEndpoint("AddAndPrint",

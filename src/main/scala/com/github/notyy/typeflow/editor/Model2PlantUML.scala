@@ -1,7 +1,7 @@
-package com.github.notyy.typeflow.util
+package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{Connection, Definition, InputEndpoint, Instance, Model, OutputEndpoint, PureFunction}
-import com.github.notyy.typeflow.editor.PlantUML
+import com.github.notyy.typeflow.domain._
+import com.github.notyy.typeflow.util.ModelUtil
 
 object Model2PlantUML {
   //shows the plantuml diagram of active flow
@@ -28,7 +28,7 @@ object Model2PlantUML {
        |$connectionBlock
        |@enduml
        |""".stripMargin
-    PlantUML(rs)
+    PlantUML(model.name,rs)
   }
 
   def decorateOutputType(outputType: String, connection: Connection, model: Model): String = {
