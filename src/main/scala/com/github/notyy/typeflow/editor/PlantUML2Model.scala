@@ -2,8 +2,10 @@ package com.github.notyy.typeflow.editor
 
 
 import com.github.notyy.typeflow.domain.{Connection, Definition, Element, Flow, Input, InputEndpoint, InputType, Instance, Model, Output, OutputEndpoint, OutputType, PureFunction}
+import com.sun.xml.internal.ws.developer.MemberSubmissionEndpointReference.Elements
 import org.hamcrest.Description
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.matching.Regex
 
@@ -14,6 +16,7 @@ object PlantUML2Model {
   private val InputEndpointClass: String = "com.github.notyy.typeflow.domain.InputEndpoint"
   private val PureFunctionClass: String = "com.github.notyy.typeflow.domain.PureFunction"
   private val OutputEndpointClass: String = "com.github.notyy.typeflow.domain.OutputEndpoint"
+  private val instancesFirst: mutable.Map[String, String] = mutable.Map()
 
   //  def createDefinition(definitionName: String, className: String): Definition = {
   //    var definition: Definition = className match {
@@ -53,20 +56,12 @@ object PlantUML2Model {
 
   def isFunctionDuplicate(targetEle: Element, elements: Vector[Element]): Boolean = {
     if(targetEle.name.contains("::")) {
-      elements.foreach(ele => {
-        targetEle.name.contains(ele)
-        return true
-      })
+      return true
     }
     false
   }
 
-  def createPureFunction(ele: Element, elements: Vector[Element], descriptions: Vector[UMLDescription]): PureFunction = {
-    if(isFunctionDuplicate(ele, elements)) {
-      //is duplicate
-      return null
-    }
-    //is not duplicate
+  def getPureFunction(ele: Element, descriptions: Vector[UMLDescription]): PureFunction = {
     val outputs: ArrayBuffer[Output] = ArrayBuffer()
     val inputs: ArrayBuffer[Input] = ArrayBuffer()
     descriptions.foreach(desc => {
@@ -79,6 +74,24 @@ object PlantUML2Model {
     })
     PureFunction(ele.name, inputs.toVector, outputs.toVector)
   }
+
+  def addToMap(targetEle: Element, elements: Vector[Element]): Unit = {
+    elements.foreach(ele => {
+      if(targetEle.name.contains("::"+ele.name)){
+        instancesFirst.addOne(targetEle.name, ele.name)
+      }
+    })
+  }
+
+  def createPureFunction(ele: Element, elements: Vector[Element], descriptions: Vector[UMLDescription]): PureFunction = {
+    if(isFunctionDuplicate(ele, elements)) {
+      addToMap(ele: Element, elements: Vector[Element])
+      return null
+    }
+    getPureFunction(ele, descriptions)
+  }
+
+
 
   def createOutputEndpoint(ele: Element, descriptions: Vector[UMLDescription]): OutputEndpoint = {
     var outputType: OutputType = null
@@ -108,9 +121,22 @@ object PlantUML2Model {
     elements.map(ele => createDefinition(ele, elements, descriptions)).filter(_ != null)
   }
 
-  def createInstances(definitions: Vector[Definition]): Vector[Instance] = {
-    //function may be change in later model
-    definitions.map(defi => Instance(defi))
+  def getDefinition(name: String, definitions: Vector[Definition]): Definition = {
+    definitions.foreach(defi => {
+      if(defi.name == name) {
+        return defi
+      }
+    })
+    null
+  }
+
+  def createInstances(definitions: Vector[Definition], elements: Vector[Element]): Vector[Instance] = {
+    val instances: ArrayBuffer[Instance] = ArrayBuffer()
+    instances.addAll(definitions.map(defi => Instance(defi)))
+    for((k, v) <- instancesFirst) {
+      instances.addOne(Instance(k, getDefinition(v, definitions)))
+    }
+    instances.toVector
   }
 
   def getToInstanceId(outputType: OutputType, descriptions: Vector[UMLDescription]) : String = {
@@ -220,7 +246,7 @@ object PlantUML2Model {
     val definitions = createDefinitions(elements.toVector, descriptions.toVector)
 
     //create instances
-    val instances = createInstances(definitions)
+    val instances = createInstances(definitions, elements.toVector)
 
     //create connections
     val connections = createConnections(instances, descriptions.toVector)
