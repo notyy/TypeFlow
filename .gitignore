@@ -7,3 +7,4 @@ localOutput/*
 !localoutput/commands.txt
 /src/test/scala/com/github/notyy/typeflow/localtest/ModelPlayTool.scala
 externalJars/
+.gradle/
