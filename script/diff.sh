@@ -1,0 +1,1 @@
+java -cp target/scala-2.13/type-flow-assembly-0.0.1.jar com.github.notyy.typeflow.tooling.DiffScript externalJars/plantuml.jar $1 $2 $3

@@ -175,11 +175,11 @@ object PlantUML2Model {
     -1
   }
 
-  def validOutputType(insId: String, name: String): OutputType = {
-    if(insId != name) {
-      return OutputType(insId + "::" + name)
+  def validOutputType(insId: String, defiName: String, outputName: String): OutputType = {
+    if(insId != defiName) {
+      return OutputType(insId + "::" + outputName)
     }
-    OutputType(insId)
+    OutputType(outputName)
   }
 
   def createFunctionConnection(ins: Instance, descriptions: Vector[UMLDescription], instances: Vector[Instance]): Vector[Connection] = {
@@ -188,9 +188,9 @@ object PlantUML2Model {
     val pureFunction = ins.definition.asInstanceOf[PureFunction]
     pureFunction.outputs.foreach(out => {
       val outputIndex = out.index
-      val outputType = validOutputType(ins.id, pureFunction.name)
-      val toInstanceIds = getToInstanceId(out.outputType, descriptions)
-      connections.addAll(toInstanceIds.map(toInstanceId => Connection(fromInstanceId, outputIndex, toInstanceId, getInputId(toInstanceId, out.outputType.name, instances))))
+      val outputType = validOutputType(ins.id, ins.definition.name, out.outputType.name)
+      val toInstanceIds = getToInstanceId(outputType, descriptions)
+      connections.addAll(toInstanceIds.map(toInstanceId => Connection(fromInstanceId, outputIndex, toInstanceId, getInputId(toInstanceId, outputType.name, instances))))
     })
     connections.toVector
   }
