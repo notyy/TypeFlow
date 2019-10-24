@@ -27,5 +27,8 @@ class TypeUtilTest extends FunSpec with Matchers {
     it("AnyVal should be ok"){
       TypeUtil.getTypeShortName(Path("xxx")) shouldBe "Path"
     }
+    it("can transform decorated type to origin type") {
+      TypeUtil.removeDecorate("NI::Integer") shouldBe "Integer"
+    }
   }
 }

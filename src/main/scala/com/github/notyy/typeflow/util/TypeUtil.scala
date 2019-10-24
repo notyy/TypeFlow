@@ -24,6 +24,8 @@ object TypeUtil {
     }
   }
 
+  def removeDecorate(typeName: String): String = typeName.split("::").last
+
   val PrimitiveTypeNameMap: Map[String, String] = Map(
     "String" -> "java.lang.String",
     "Byte" -> "java.lang.Byte",
