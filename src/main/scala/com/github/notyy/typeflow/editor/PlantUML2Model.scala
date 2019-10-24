@@ -2,11 +2,12 @@ package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain._
 import com.github.notyy.typeflow.util.PlantUMLUtil
+import com.typesafe.scalalogging.Logger
 
-import scala.collection.mutable
 import scala.util.matching.Regex
 
 object PlantUML2Model {
+  private val logger = Logger(PlantUML2Model.getClass)
   type ElementName = String
   type ElementType = String
   type InputTypeName = String
@@ -22,6 +23,7 @@ object PlantUML2Model {
     val rawDefiNameType: Map[ElementName, ElementType] = rawDefiBlock.map {
       case ElementPattern(elementName, elementType) => (elementName, elementType)
     }.toMap[ElementName, ElementType]
+    logger.debug(s"find ${rawDefiNameType.keySet.size} raw definitions")
 
     val fromTos: Vector[(ElementName, String)] =
       connBlock.map {
@@ -56,24 +58,33 @@ object PlantUML2Model {
         val definition = definitionsWithDecorates.find(_.name == defiName).get
         Instance(elementName, definition)
       }
+    logger.debug(s"extract ${instances.size} instances")
 
     val connections: Vector[Connection] =
       instanceToOutput.toVector.flatMap {
         case (instanceId, outputs) =>
-          outputs.map{ ot =>
+          outputs.flatMap{ ot =>
             val outputIndex: Int = definitionsWithDecorates.find(_.name == instanceId).get match {
               case InputEndpoint(name, outputType) => 1
-              case PureFunction(name, inputs, outputs) => outputs.indexOf(ot)
+              case PureFunction(name, inputs, outputs) => outputs.find(_ == ot).get.index
               case OutputEndpoint(name, inputs, outputs, errorOutputs) => -1 //should not come here
             }
-            val (toInstanceId: String, inputIndex: Int) = instanceFromInput.find{
-              case (elementName,inputs) => inputs.exists(_.inputType.name == ot.outputType.name)
-            }.map{
-              case (eleName,ins) => (eleName, ins.find(_.inputType.name == ot.outputType.name).get.index)
-            }.get
-            Connection(instanceId,outputIndex,toInstanceId,inputIndex)
+            val conntions: Vector[Connection] = {
+              val instanceConnectedByInput: Map[ElementName, Vector[Input]] = instanceFromInput.filter {
+                case (elementName, inputs) => inputs.exists(_.inputType.name == ot.outputType.name)
+              }
+
+              instanceConnectedByInput.map {
+                case (eleName, ins) =>  {
+                  val inputIndex = ins.find(_.inputType.name == ot.outputType.name).get.index
+                  Connection(instanceId, outputIndex, eleName, inputIndex)
+                }
+              }.toVector
+            }
+            conntions
           }
       }
+    logger.debug(s"extract connections:${System.lineSeparator()}${connections.mkString(System.lineSeparator())}")
 
     val cleanDefinitions: Vector[Definition] = definitionsWithDecorates.filterNot(_.name.contains("::")).
       map{ defi =>
