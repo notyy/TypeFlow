@@ -4,6 +4,7 @@ case class Model(name: String, definitions: Vector[Definition], flows: Vector[Fl
 
 case class Element(elementType: String, name: String)
 
+//TODO considering make every Definition have inputs and outputs, just some are empty
 trait Definition {
   def name: String
   def inputs: Vector[Input]
