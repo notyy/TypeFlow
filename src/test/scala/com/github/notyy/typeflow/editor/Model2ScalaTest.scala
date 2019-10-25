@@ -13,16 +13,7 @@ class Model2ScalaTest extends FunSpec with Matchers {
       val packageName = "com.github.notyy.newModel"
       val codes: Map[CodeFileName, CodeContent] = Model2Scala.execute(model, packageName)
       codes.size shouldBe 4
-      codes("NumInput.scala") shouldBe
-        s"""|package $packageName
-            |
-            |object NumInput {
-            |  def execute(): Integer = {
-            |    ???
-            |  }
-            |}
-            |""".stripMargin
-
+      codes("NumInput.scala").contains("LocalRunEngine.runFlow") shouldBe true
       codes("AddAndPrint.scala") shouldBe
         s"""|package $packageName
             |

@@ -30,9 +30,14 @@ object GenCode extends App {
     }
     codes.foreach{ case (codeFileName, codeContent) =>
       val codeFilePath = s"$codeDirPath/$codeFileName"
-      SaveToFile.execute(Path(codeFilePath), codeContent) match {
-        case Success(_) =>
-        case Failure(exception) => logger.error(s"error when saving file to $codeFilePath", exception)
+      val file = new File(codeFilePath)
+      if(file.exists() && file.isFile) {
+        println(s"$codeFilePath already exist,skipped")
+      }else {
+        SaveToFile.execute(Path(codeFilePath), codeContent) match {
+          case Success(_) => println(s"$codeFilePath generated")
+          case Failure(exception) => logger.error(s"error when saving file to $codeFilePath", exception)
+        }
       }
     }
   } match {

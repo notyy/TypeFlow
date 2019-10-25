@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{Definition, Input, Model, Output}
+import com.github.notyy.typeflow.domain.{Definition, Input, InputEndpoint, Model, Output}
 import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
@@ -13,15 +13,19 @@ object Model2Scala {
     val definitions: Vector[Definition] = model.definitions
     definitions.map { defi =>
       val codeFileName = s"${defi.name}.scala"
-      val codeContent: CodeContent =
-        s"""|package $packageName
-            |
-            |object ${defi.name} {
-            |  def execute(${genParams(defi.inputs)}): ${genReturnType(defi.outputs)} = {
-            |    ???
-            |  }
-            |}
-            |""".stripMargin
+      val codeContent: CodeContent = defi match {
+        case InputEndpoint(name, outputType) => {
+          ReadFile.execute(Path("./code_template/scala/CommandLineInputEndpoint.scala")).get.replaceAllLiterally("$InputEndpointName$",defi.name)
+        }
+        case _ => s"""|package $packageName
+                      |
+                      |object ${defi.name} {
+                      |  def execute(${genParams(defi.inputs)}): ${genReturnType(defi.outputs)} = {
+                      |    ???
+                      |  }
+                      |}
+                      |""".stripMargin
+      }
       (codeFileName, codeContent)
     }.toMap
   }
