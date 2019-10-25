@@ -23,8 +23,7 @@ object ReflectRunner {
         }
       }
       case InputEndpoint(name, output) => {
-        locateClass(packagePrefix, name).
-          getDeclaredMethod("execute").invoke(null)
+        runInputEndpoint(packagePrefix, name)
       }
       case OutputEndpoint(name, inputs, outputType, errorOutput) => {
         val method = locateClass(packagePrefix, name).
@@ -40,6 +39,11 @@ object ReflectRunner {
       }
       case _ => ???
     }
+  }
+
+  def runInputEndpoint(packagePrefix: Option[String], name: String): AnyRef = {
+    locateClass(packagePrefix, name).
+      getDeclaredMethod("execute").invoke(null)
   }
 
   private def locateClass(packagePrefix: Option[String], name: String) = {
