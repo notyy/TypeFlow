@@ -3,10 +3,11 @@
 
 skinparam class {
 	BackgroundColor<<InputEndpoint>> BurlyWood
+	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
 	BackgroundColor<<OutputEndpoint>> BurlyWood
 }
 
-class NumInput <<InputEndpoint>>
+class NumInput <<CommandLineInputEndpoint>>
 class Add2 <<PureFunction>>
 class AddAndPrint <<OutputEndpoint>>
 class Multi3 <<PureFunction>>

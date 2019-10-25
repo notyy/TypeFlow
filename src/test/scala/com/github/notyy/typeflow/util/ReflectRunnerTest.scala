@@ -24,7 +24,7 @@ class ReflectRunnerTest extends FunSpec with Matchers {
         asInstanceOf[Path] shouldBe Path("./localoutput/newModel.typeflow")
     }
     it("should run InputEndpoint") {
-      val mockInputEndpoint: InputEndpoint = InputEndpoint("com.github.notyy.typeflow.util.MockInputEndpoint", OutputType("UserInput"))
+      val mockInputEndpoint: InputEndpoint = CommandLineInputEndpoint("com.github.notyy.typeflow.util.MockInputEndpoint", OutputType("UserInput"))
       val rs = ReflectRunner.run(mockInputEndpoint, None, None)
       println(s"rs=$rs")
       rs.asInstanceOf[UserInput] shouldBe UserInput("mock input")

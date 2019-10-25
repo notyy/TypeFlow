@@ -5,7 +5,7 @@ import com.github.notyy.typeflow.domain._
 object Fixtures {
   val mp = "com.github.notyy.typeflow.domain"
 
-  val userInputEndpoint: InputEndpoint = InputEndpoint("UserInputEndpoint", OutputType("UIE::UserInput"))
+  val userInputEndpoint: InputEndpoint = CommandLineInputEndpoint("UserInputEndpoint", OutputType("UIE::UserInput"))
   val userInputInterpreter: domain.PureFunction = domain.PureFunction("UserInputInterpreter", inputs = Vector(Input(InputType("UserInput"), 1)),
     outputs = Vector(
       Output(OutputType("UII::UnknownCommand"), 1),
@@ -151,7 +151,7 @@ object Fixtures {
   val model: Model = domain.Model("typeflow_editor", Vector(userInputEndpoint, userInputInterpreter, wrapOutput, outputEndpoint), Vector(minimalFlow), Some(minimalFlow))
 
   //define an multi parameter simple model
-  val numInput: InputEndpoint = InputEndpoint("NumInput",OutputType("NI::Integer"))
+  val numInput: InputEndpoint = CommandLineInputEndpoint("NumInput",OutputType("NI::Integer"))
   val add2: PureFunction = PureFunction("Add2",Vector(Input(InputType("Integer"),1)),Vector(Output(OutputType("A2::Integer"),1)))
   val multi3: PureFunction = PureFunction("Multi3", Vector(Input(InputType("Integer"),1)),Vector(Output(OutputType("M3::Integer"),1)))
   val addAndPrint: OutputEndpoint = OutputEndpoint("AddAndPrint",

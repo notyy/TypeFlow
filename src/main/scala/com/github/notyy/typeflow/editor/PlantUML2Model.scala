@@ -38,7 +38,7 @@ object PlantUML2Model {
       groupMap(_._1)(_._2)).mapValues(_.foldLeft(Vector.empty[Input])((acc, it) => acc.appended(Input(InputType(it), acc.size + 1)))).toMap
 
     val definitionsWithDecorates: Vector[Definition] = rawDefiNameType.toVector.map {
-      case (name, "InputEndpoint") => InputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
+      case (name, "CommandLineInputEndpoint") => CommandLineInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
       case (name, "PureFunction") => {
         PureFunction(name,
           instanceFromInput(name),
@@ -65,7 +65,7 @@ object PlantUML2Model {
         case (instanceId, outputs) =>
           outputs.flatMap{ ot =>
             val outputIndex: Int = definitionsWithDecorates.find(_.name == instanceId).get match {
-              case InputEndpoint(name, outputType) => 1
+              case CommandLineInputEndpoint(name, outputType) => 1
               case PureFunction(name, inputs, outputs) => outputs.find(_ == ot).get.index
               case OutputEndpoint(name, inputs, outputs, errorOutputs) => -1 //should not come here
             }

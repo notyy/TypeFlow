@@ -22,7 +22,7 @@ object ReflectRunner {
             invokeResult
         }
       }
-      case InputEndpoint(name, output) => {
+      case CommandLineInputEndpoint(name, output) => {
         runInputEndpoint(packagePrefix, name)
       }
       case OutputEndpoint(name, inputs, outputType, errorOutput) => {

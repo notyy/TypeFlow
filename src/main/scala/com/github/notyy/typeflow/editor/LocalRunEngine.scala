@@ -60,7 +60,7 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
     logger.debug(s"looking for nextInstance for ${outputFrom.id}.$output")
     val flow = model.activeFlow.get
     val nIns = outputFrom match {
-      case Instance(id, InputEndpoint(name, o)) => {
+      case Instance(id, CommandLineInputEndpoint(name, o)) => {
         logger.debug(s"outputs from InputEndpoint $id is $output, now looking for next instances")
         val conns: Vector[Connection] = flow.connections.filter(_.fromInstanceId == outputFrom.id)
         connections2instances(conns)

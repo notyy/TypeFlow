@@ -11,11 +11,13 @@ trait Definition {
   def outputs: Vector[Output]
 }
 
-case class InputEndpoint(name: String, outputType: OutputType) extends Definition {
+trait InputEndpoint extends Definition {
+  def outputType: OutputType
   override def inputs: Vector[Input] = Vector.empty
 
   override def outputs: Vector[Output] = Vector(Output(outputType,1))
 }
+case class CommandLineInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint
 
 case class PureFunction(name: String, inputs: Vector[Input], outputs: Vector[Output]) extends Definition
 

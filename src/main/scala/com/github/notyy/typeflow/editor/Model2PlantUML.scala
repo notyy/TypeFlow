@@ -11,7 +11,7 @@ object Model2PlantUML {
     val definitions = model.definitions
     val decoratedDefis: Vector[Definition] = filterDecoratedInstances(model).map{ ins =>
       ins.definition match {
-        case i: InputEndpoint => i.copy(name = ins.id)
+        case i: CommandLineInputEndpoint => i.copy(name = ins.id)
         case o: OutputEndpoint => o.copy(name = ins.id)
         case p: PureFunction => p.copy(name = ins.id)
       }

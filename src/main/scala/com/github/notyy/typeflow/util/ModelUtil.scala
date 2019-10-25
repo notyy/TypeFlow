@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.util
 
-import com.github.notyy.typeflow.domain.{Definition, InputEndpoint, Model, OutputEndpoint, OutputType, PureFunction}
+import com.github.notyy.typeflow.domain.{CommandLineInputEndpoint, Definition, InputEndpoint, Model, OutputEndpoint, OutputType, PureFunction}
 import com.typesafe.scalalogging.Logger
 
 object ModelUtil {
@@ -20,7 +20,7 @@ object ModelUtil {
   def findOutputType(instanceId: String, outputIndex: Int, model: Model) = {
     val maybeInstance = model.activeFlow.get.instances.find(_.id == instanceId)
     maybeInstance.flatMap(_.definition match {
-      case InputEndpoint(name, outputType) => Some(outputType)
+      case CommandLineInputEndpoint(name, outputType) => Some(outputType)
       case PureFunction(name, input, outputs) => outputs.find(_.index == outputIndex).map(_.outputType)
       case OutputEndpoint(name, inputType, outputType, errorOutput) => Some(outputType)
     }).map(_.name)
