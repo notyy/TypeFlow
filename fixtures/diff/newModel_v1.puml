@@ -1,5 +1,11 @@
 
 @startuml
+
+skinparam class {
+	BackgroundColor<<InputEndpoint>> BurlyWood
+	BackgroundColor<<OutputEndpoint>> BurlyWood
+}
+
 class NumInput <<InputEndpoint>>
 class Add2 <<PureFunction>>
 class Add <<PureFunction>>
