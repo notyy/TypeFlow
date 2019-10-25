@@ -10,23 +10,29 @@ import scala.util.{Failure, Success}
 
 object GenCode extends App {
   private val logger = Logger(GenCode.getClass)
-  if(args.length != 4) {
-    println("usage: genCode {modelFilePath} {outputPath} {lang} {packageName}")
+  if(args.length != 5) {
+    println("usage: genCode {modelFilePath} {outputPath} {lang} {packageName} {platform}")
   }
   val modelFilePath = args(0)
   val outputPath = if(args(1).endsWith("/")) args(1).init else args(1)
   val lang: String = args(2)
   val packageName: String = args(3)
+  val platform: String = args(4)
+  if(platform != Model2Scala.PLATFORM_LOCAL && platform != Model2Scala.PLATFORM_ALIYUN){
+    println(s"unknown platform $platform")
+    System.exit(1)
+  }
 
   println(s"generating source code for $modelFilePath to $outputPath")
 
   ReadFile.execute(Path(modelFilePath)).map { puml =>
     val model = PlantUML2Model.execute(PlantUML(modelFilePath.dropRight(5).split('/').last,puml))
-    val codes: Map[CodeFileName, CodeContent] = Model2Scala.execute(model,"com.github.notyy")
+    val codes: Map[CodeFileName, CodeContent] = Model2Scala.execute(model,"com.github.notyy", platform)
+    logger.debug(s"totally ${codes.size} code files to be generated")
     val codeDirPath = s"$outputPath/src/main/$lang/${packageName.replaceAllLiterally(".", "/")}"
-    val codeDir = new File(codeDirPath)
-    if (!codeDir.exists() || !codeDir.isDirectory) {
-      codeDir.mkdirs()
+    mkCodeDir(codeDirPath)
+    if(platform == Model2Scala.PLATFORM_ALIYUN) {
+      mkCodeDir(s"$codeDirPath/aliyun")
     }
     codes.foreach{ case (codeFileName, codeContent) =>
       val codeFilePath = s"$codeDirPath/$codeFileName"
@@ -45,6 +51,13 @@ object GenCode extends App {
     case Failure(exception) => {
       println(s"code generation failed, error message is ${exception.getMessage}")
       logger.error(s"code generation failed for $modelFilePath to $outputPath", exception)
+    }
+  }
+
+  private def mkCodeDir(codeDirPath: String): Unit = {
+    val codeDir = new File(codeDirPath)
+    if (!codeDir.exists() || !codeDir.isDirectory) {
+      codeDir.mkdirs()
     }
   }
 }

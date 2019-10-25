@@ -1,4 +1,4 @@
-package com.github.notyy
+package $packageName$
 
 import com.github.notyy.typeflow.editor.{LocalRunEngine, Path}
 import com.github.notyy.typeflow.util.TypeUtil
