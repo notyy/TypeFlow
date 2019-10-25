@@ -10,7 +10,7 @@ import scala.util.{Failure, Success}
 
 object GenCode extends App {
   private val logger = Logger(GenCode.getClass)
-  if(args.size != 4) {
+  if(args.length != 4) {
     println("usage: genCode {modelFilePath} {outputPath} {lang} {packageName}")
   }
   val modelFilePath = args(0)
