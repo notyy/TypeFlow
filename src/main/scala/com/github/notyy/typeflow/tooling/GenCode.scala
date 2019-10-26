@@ -2,9 +2,9 @@ package com.github.notyy.typeflow.tooling
 
 import java.io.File
 
-import com.github.notyy.typeflow.domain.Definition
+import com.github.notyy.typeflow.domain.{AliyunHttpInputEndpoint, Definition}
 import com.github.notyy.typeflow.editor.Model2Scala.{CodeContent, CodeFileName}
-import com.github.notyy.typeflow.editor.aliyun.{AliyunConfigGen, AliyunFunction}
+import com.github.notyy.typeflow.editor.aliyun.{AliyunConfigGen, AliyunFunction, Trigger}
 import com.github.notyy.typeflow.editor.{Model2Scala, Path, PlantUML, PlantUML2Model, ReadFile, SaveToFile}
 import com.typesafe.scalalogging.Logger
 
@@ -61,7 +61,10 @@ object GenCode extends App {
 
   private def genAliyunTemplate(serviceName: String, definitions: Vector[Definition], codeUri: String): Unit = {
     val functions: Vector[AliyunFunction] = definitions.map { defi =>
-      AliyunFunction(defi.name, s"$packageName.aliyun.${defi.name}Handler", None)
+      defi match {
+        case AliyunHttpInputEndpoint(name,ot) => AliyunFunction(name, s"$packageName.aliyun.${name}Handler", Some(Trigger(s"$name-http-trigger","HTTP")))
+        case _ => AliyunFunction(defi.name, s"$packageName.aliyun.${defi.name}Handler", None)
+      }
     }
     val yml = AliyunConfigGen.execute(serviceName, functions, codeUri)
     val aliyunYMLPath = s"$outputPath/template.yml"

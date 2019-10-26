@@ -18,7 +18,9 @@ trait InputEndpoint extends Definition {
   override def outputs: Vector[Output] = Vector(Output(outputType,1))
 }
 case class CommandLineInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint
+case class AliyunHttpInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint
 
+//TODO seems that only one output is valid,are there any case with multiple outputs?
 case class PureFunction(name: String, inputs: Vector[Input], outputs: Vector[Output]) extends Definition
 
 case class OutputEndpoint(name: String, inputs: Vector[Input], outputType: OutputType, errorOutputs: Vector[Output]) extends Definition {

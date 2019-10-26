@@ -39,6 +39,7 @@ object PlantUML2Model {
 
     val definitionsWithDecorates: Vector[Definition] = rawDefiNameType.toVector.map {
       case (name, "CommandLineInputEndpoint") => CommandLineInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
+      case (name, "AliyunHttpInputEndpoint") => AliyunHttpInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
       case (name, "PureFunction") => {
         PureFunction(name,
           instanceFromInput(name),
@@ -66,6 +67,7 @@ object PlantUML2Model {
           outputs.flatMap{ ot =>
             val outputIndex: Int = definitionsWithDecorates.find(_.name == instanceId).get match {
               case CommandLineInputEndpoint(name, outputType) => 1
+              case AliyunHttpInputEndpoint(name, outputType) => 1
               case PureFunction(name, inputs, outputs) => outputs.find(_ == ot).get.index
               case OutputEndpoint(name, inputs, outputs, errorOutputs) => -1 //should not come here
             }

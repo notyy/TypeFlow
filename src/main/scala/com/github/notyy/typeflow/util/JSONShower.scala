@@ -1,6 +1,7 @@
 package com.github.notyy.typeflow.util
 
 object JSONShower extends App {
+  println(JSONUtil.toJSON(Param(1:Integer)))
   val param: Param[(Integer, Integer)] = Param(1,2)
   val json = JSONUtil.toJSON(param)
   println(json)

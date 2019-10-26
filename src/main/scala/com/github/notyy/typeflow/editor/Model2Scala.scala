@@ -1,6 +1,6 @@
 package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{CommandLineInputEndpoint, Definition, Input, InputEndpoint, Model, Output}
+import com.github.notyy.typeflow.domain.{AliyunHttpInputEndpoint, CommandLineInputEndpoint, Definition, Input, InputEndpoint, Model, Output}
 import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
@@ -23,12 +23,6 @@ object Model2Scala {
             replaceAllLiterally("$packageName$", packageName)
         }
         case _ => genLocalCode(packageName, defi)
-        case _ if platform == PLATFORM_ALIYUN => {
-          genLocalCode(packageName, defi)
-          ReadFile.execute(Path("./code_template/scala/StreamRequestHandlerTemplate.scala")).get.
-            replaceAllLiterally("$TypeFlowFunction$", defi.name).
-            replaceAllLiterally("$params$", genFormalParams(defi.inputs))
-        }
       }
       (codeFileName, codeContent)
     }
@@ -40,6 +34,15 @@ object Model2Scala {
           val codeContent: Option[CodeContent] = defi match {
             case CommandLineInputEndpoint(name, outputType) => {
               None
+            }
+            case AliyunHttpInputEndpoint(name, outputType) => {
+              Some(ReadFile.execute(Path("./code_template/scala/AliyunHttpInputEndpoint.scala")).get.
+                replaceAllLiterally("$InputEndpointName$", defi.name).
+                replaceAllLiterally("$packageName$", packageName).
+                replaceAllLiterally("$OutputType$", TypeUtil.removeDecorate(outputType.name)).
+                //TODO replace this
+                replaceAllLiterally("$bucketName$", "type-flow").
+                replaceAllLiterally("$objectName$", s"${model.name}"))
             }
             case _ if platform == PLATFORM_ALIYUN => {
               Some(ReadFile.execute(Path("./code_template/scala/StreamRequestHandlerTemplate.scala")).get.

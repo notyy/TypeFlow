@@ -10,6 +10,7 @@ class AliyunConfigGenTest extends FunSpec with Matchers {
       val functions = Vector(
         AliyunFunction("A", "com.github.notyy.aliyun.AHandler", None),
         AliyunFunction("B", "com.github.notyy.aliyun.BHandler", None),
+        AliyunFunction("C", "com.github.notyy.aliyun.CHandler", Some(Trigger("C-http-trigger","HTTP")))
       )
       val yml = AliyunConfigGen.execute("SampleService", functions, "oss://type-flow/type-flow-assembly-0.0.1.jar")
       logger.debug(yml)
@@ -26,12 +27,30 @@ class AliyunConfigGenTest extends FunSpec with Matchers {
            |          Handler: com.github.notyy.aliyun.AHandler::handleRequest
            |          Runtime: java8
            |          CodeUri: 'oss://type-flow/type-flow-assembly-0.0.1.jar'
+           |
+           |
            |    B: # function name
            |        Type: 'Aliyun::Serverless::Function'
            |        Properties:
            |          Handler: com.github.notyy.aliyun.BHandler::handleRequest
            |          Runtime: java8
            |          CodeUri: 'oss://type-flow/type-flow-assembly-0.0.1.jar'
+           |
+           |
+           |    C: # function name
+           |        Type: 'Aliyun::Serverless::Function'
+           |        Properties:
+           |          Handler: com.github.notyy.aliyun.CHandler::handleRequest
+           |          Runtime: java8
+           |          CodeUri: 'oss://type-flow/type-flow-assembly-0.0.1.jar'
+           |        Events:
+           |          C-http-trigger: # trigger name
+           |            Type: HTTP # http trigger
+           |            Properties:
+           |              AuthType: ANONYMOUS
+           |              Methods: ['GET', 'POST', 'PUT']
+           |
+           |
            |""".stripMargin
     }
   }

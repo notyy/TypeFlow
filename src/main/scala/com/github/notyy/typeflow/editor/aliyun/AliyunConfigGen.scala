@@ -21,8 +21,19 @@ object AliyunConfigGen {
           |        Properties:
           |          Handler: ${f.handler}::handleRequest
           |          Runtime: java8
-          |          CodeUri: '$codeUri'""".stripMargin
+          |          CodeUri: '$codeUri'
+          |${f.trigger.map(triggerBlock).getOrElse("")}
+          |""".stripMargin
     }.mkString(System.lineSeparator())
     block
+  }
+  def triggerBlock(trigger: Trigger): String = {
+      s"""|        Events:
+          |          ${trigger.name}: # trigger name
+          |            Type: ${trigger.triggerType} # http trigger
+          |            Properties:
+          |              AuthType: ANONYMOUS
+          |              Methods: ['GET', 'POST', 'PUT']
+          |""".stripMargin
   }
 }
