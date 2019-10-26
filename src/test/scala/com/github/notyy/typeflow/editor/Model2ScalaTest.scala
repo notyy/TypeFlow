@@ -55,9 +55,9 @@ class Model2ScalaTest extends FunSpec with Matchers {
     }
     it("can generate paramCalls") {
       val oneInput: Vector[Input] = Vector(Input(InputType("Integer"), 1))
-      Model2Scala.genParamCall(oneInput) shouldBe "param"
+      Model2Scala.genParamCall(oneInput) shouldBe "param.value"
       val twoInputs: Vector[Input] = Vector(Input(InputType("Integer"), 1), Input(InputType("String"), 2))
-      Model2Scala.genParamCall(twoInputs) shouldBe "param._1,param._2"
+      Model2Scala.genParamCall(twoInputs) shouldBe "param.value._1,param.value._2"
     }
     it("can generate return type for outputs in definition") {
       val oneOutput: Vector[Output] = Vector(Output(OutputType("Integer"), 1))

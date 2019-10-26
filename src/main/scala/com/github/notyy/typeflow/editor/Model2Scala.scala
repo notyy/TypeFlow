@@ -60,7 +60,7 @@ object Model2Scala {
   }
 
   def genWriteOutput(outputs: Vector[Output]): String = {
-    if(outputs.isEmpty || outputs.head.outputType.name == "Unit") "" else "output.write(JSONUtil.toJSON(rs).getBytes)"
+    if(outputs.isEmpty || outputs.head.outputType.name == "Unit") "" else "output.write(JSONUtil.toJSON(value).getBytes)"
   }
 
   private def genLocalCode(packageName: String, defi: Definition): String = {
@@ -104,9 +104,9 @@ object Model2Scala {
       ""
     } else if (inputs.size == 1) {
       val inputName = inputs.head.inputType.name
-      if (inputName == "Unit") "" else "param"
+      if (inputName == "Unit") "" else "param.value"
     } else {
-      inputs.map(input => s"param._${input.index}").reduce((x1, x2) => s"$x1,$x2")
+      inputs.map(input => s"param.value._${input.index}").reduce((x1, x2) => s"$x1,$x2")
     }
   }
 

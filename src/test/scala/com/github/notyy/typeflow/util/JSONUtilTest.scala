@@ -1,5 +1,6 @@
 package com.github.notyy.typeflow.util
 
+import com.github.notyy.typeflow.domain.InputType
 import com.github.notyy.typeflow.editor.{CreateModelCommand, InterpreterResult, UnknownCommand}
 import org.json4s.{DefaultFormats, Formats, ShortTypeHints}
 import org.scalatest.{FunSpec, Matchers}
@@ -31,6 +32,10 @@ class JSONUtilTest extends FunSpec with Matchers {
       val user = JSONUtil.fromJSON[User](expectedJson).get
       user.name shouldBe "xyz"
       user.age shouldBe 10
+    }
+    it("this test used to manually show json") {
+      val value:Integer = 1
+      println(s"json of $value is: ${JSONUtil.toJSON(value)}")
     }
   }
 }

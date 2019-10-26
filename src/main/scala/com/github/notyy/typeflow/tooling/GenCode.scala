@@ -61,10 +61,10 @@ object GenCode extends App {
 
   private def genAliyunTemplate(serviceName: String, definitions: Vector[Definition], codeUri: String): Unit = {
     val functions: Vector[AliyunFunction] = definitions.map { defi =>
-      AliyunFunction(defi.name, s"${defi}Handler", None)
+      AliyunFunction(defi.name, s"$packageName.aliyun.${defi.name}Handler", None)
     }
     val yml = AliyunConfigGen.execute(serviceName, functions, codeUri)
-    val aliyunYMLPath = s"$outputPath/${serviceName}.yml"
+    val aliyunYMLPath = s"$outputPath/template.yml"
     SaveToFile.execute(Path(aliyunYMLPath), yml)
     logger.debug(s"aliyun config file saved to $aliyunYMLPath")
   }
