@@ -1,30 +1,44 @@
 package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{AliyunHttpInputEndpoint, CommandLineInputEndpoint, Definition, Input, InputEndpoint, Model, Output}
+import com.github.notyy.typeflow.domain.{AliyunHttpInputEndpoint, CommandLineInputEndpoint, Definition, Input, InputEndpoint, Model, Output, OutputEndpoint, PureFunction}
 import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
-object Model2Scala {
+sealed trait CodeLang
+case object LANG_SCALA extends CodeLang
+case object LANG_JAVA extends CodeLang
+
+object CodeLang {
+  def from(lang: String): CodeLang = lang match {
+    case "scala" => LANG_SCALA
+    case "java" => LANG_JAVA
+  }
+}
+
+object Model2Code {
   val PLATFORM_LOCAL = "local"
   val PLATFORM_ALIYUN = "aliyun"
 
-  private val logger = Logger(Model2Scala.getClass)
+
+  private val logger = Logger(Model2Code.getClass)
   type CodeFileName = String
   type CodeContent = String
 
-  def execute(model: Model, packageName: String, platform: String): Map[CodeFileName, CodeContent] = {
+  def execute(model: Model, packageName: String, platform: String, lang: CodeLang): Map[CodeFileName, CodeContent] = {
     val definitions: Vector[Definition] = model.definitions
-    val localCodes: Vector[(CodeFileName, CodeContent)] = definitions.map { defi =>
-      val codeFileName = s"${defi.name}.scala"
-      val codeContent: CodeContent = defi match {
+    val localCodes: Vector[(CodeFileName, CodeContent)] = definitions.flatMap { defi =>
+      val codeFileName = s"${defi.name}.${if (lang == LANG_SCALA) "scala" else "java"}"
+      val codeContent: Option[CodeContent] = defi match {
         case CommandLineInputEndpoint(name, outputType) => {
-          ReadFile.execute(Path("./code_template/scala/CommandLineInputEndpoint.scala")).get.
+          Some(ReadFile.execute(Path("./code_template/scala/CommandLineInputEndpoint.scala")).get.
             replaceAllLiterally("$InputEndpointName$", defi.name).
-            replaceAllLiterally("$packageName$", packageName)
+            replaceAllLiterally("$packageName$", packageName))
         }
-        case _ => genLocalCode(packageName, defi)
+        case PureFunction(name, inputs, outputs) => Some(genLocalCode(packageName, defi, lang))
+        case OutputEndpoint(_,_,_,_) => Some(genLocalCode(packageName, defi, lang))
+        case _ => None
       }
-      (codeFileName, codeContent)
+      codeContent.map(cc => (codeFileName, cc))
     }
 
     val platformCodes: Vector[(CodeFileName, CodeContent)] = {
@@ -50,7 +64,8 @@ object Model2Scala {
                 replaceAllLiterally("$params$", genActualParams(defi.inputs)).
                 replaceAllLiterally("$packageName$", packageName).
                 replaceAllLiterally("$paramCall$", genParamCall(defi.inputs)).
-                replaceAllLiterally("$writeOutput$",genWriteOutput(defi.outputs))
+                replaceAllLiterally("$writeOutput$", genWriteOutput(defi.outputs)).
+                replaceAllLiterally("$Callee$", if(lang == LANG_SCALA) defi.name else s"new ${defi.name}()")
               )
             }
           }
@@ -63,21 +78,32 @@ object Model2Scala {
   }
 
   def genWriteOutput(outputs: Vector[Output]): String = {
-    if(outputs.isEmpty || outputs.head.outputType.name == "Unit") "" else "output.write(JSONUtil.toJSON(Param(value)).getBytes)"
+    if (outputs.isEmpty || outputs.head.outputType.name == "Unit") "" else "output.write(JSONUtil.toJSON(Param(value)).getBytes)"
   }
 
-  private def genLocalCode(packageName: String, defi: Definition): String = {
-    s"""|package $packageName
-        |
-        |object ${defi.name} {
-        |  def execute(${genFormalParams(defi.inputs)}): ${genReturnType(defi.outputs)} = {
-        |    ???
-        |  }
-        |}
-        |""".stripMargin
+  private def genLocalCode(packageName: String, defi: Definition, lang: CodeLang): String = {
+    if (lang == LANG_SCALA) {
+      s"""|package $packageName
+          |
+          |object ${defi.name} {
+          |  def execute(${genFormalParams(defi.inputs,lang)}): ${genReturnType(defi.outputs)} = {
+          |    ???
+          |  }
+          |}
+          |""".stripMargin
+    } else {
+      s"""|package $packageName;
+          |
+          |public class ${defi.name} {
+          |  public ${genReturnType(defi.outputs)} execute(${genFormalParams(defi.inputs,lang)}) {
+          |    return null;
+          |  }
+          |}
+          |""".stripMargin
+    }
   }
 
-  def genFormalParams(inputs: Vector[Input]): String = {
+  def genFormalParams(inputs: Vector[Input], lang: CodeLang): String = {
     if (inputs.isEmpty) {
       ""
     } else {
@@ -85,7 +111,13 @@ object Model2Scala {
         val inputTypeName = input.inputType.name
         if (inputTypeName == "Unit") ""
         else {
-          s"param${input.index}: ${if (inputTypeName == "Unit") "" else inputTypeName}"
+          val inputParamTypeName = if (inputTypeName == "Unit") "" else inputTypeName
+          val paramName = s"param${input.index}"
+          lang match {
+            case LANG_SCALA =>
+              s"$paramName: $inputParamTypeName"
+            case LANG_JAVA => s"$inputParamTypeName $paramName"
+          }
         }
       }.reduce((x1, x2) => s"$x1,$x2")
     }
@@ -98,7 +130,11 @@ object Model2Scala {
       val inputName = inputs.head.inputType.name
       if (inputName == "Unit") "" else inputName
     } else {
-      s"(${inputs.map{_.inputType.name }.reduce((x1, x2) => s"$x1,$x2")})"
+      s"(${
+        inputs.map {
+          _.inputType.name
+        }.reduce((x1, x2) => s"$x1,$x2")
+      })"
     }
   }
 

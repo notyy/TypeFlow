@@ -13,7 +13,7 @@ class $TypeFlowFunction$Handler extends StreamRequestHandler {
   override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
     val inStr = Source.fromInputStream(input).mkString
     JSONUtil.fromJSON[Param[$params$]](inStr).map { param =>
-      $TypeFlowFunction$.execute($paramCall$)
+      $Callee$.execute($paramCall$)
     } match {
       case Success(value) => $writeOutput$
       case Failure(exception) => output.write(exception.getMessage.getBytes)
