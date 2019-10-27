@@ -11,6 +11,8 @@ import scala.io.Source
 import scala.util.{Failure, Success}
 
 class $InputEndpointName$Handler extends HttpRequestHandler{
+  private var result: Option[Param[Object]] = None
+
   override def handleRequest(request: HttpServletRequest, response: HttpServletResponse, context: Context): Unit = {
     val accessKey = System.getenv("ACCESS_KEY")
     val accessSecretKey = System.getenv("SECRET_KEY")
@@ -21,18 +23,27 @@ class $InputEndpointName$Handler extends HttpRequestHandler{
     val ossClient: OSS = new OSSClientBuilder().build("oss-cn-shanghai-internal.aliyuncs.com", accessKey, accessSecretKey)
     val source = Source.fromInputStream(request.getInputStream)
     JSONUtil.fromJSON[Param[$OutputType$]](source.mkString).flatMap{ output =>
-      AliyunRunEngine.runFlow("$bucketName$", "$objectName$", "$InputEndpointName$", output.asInstanceOf[Param[Object]],fcClient,ossClient)
+      AliyunRunEngine.runFlow("$bucketName$", "$objectName$", "$InputEndpointName$", output.asInstanceOf[Param[Object]],fcClient,ossClient, setResponse)
     } match {
       case Success(value) => {
-        val successResult = "success complete"
-        println(successResult)
-        response.getWriter.println(successResult)
-        response.setStatus(200)
+        if(result.isDefined) {
+          response.setStatus(200)
+          response.getWriter.println(JSONUtil.toJSON(result.get))
+        } else {
+          val successResult = "success complete, but no result"
+          response.setStatus(500)
+          response.getWriter.println(successResult)
+          println(successResult)
+        }
       }
       case Failure(exception) => {
         response.getWriter.println(exception.getMessage)
         response.setStatus(500)
       }
     }
+  }
+
+  def setResponse(param: Param[Object]): Unit = {
+    this.result = Some(param)
   }
 }

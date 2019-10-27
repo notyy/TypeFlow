@@ -4,15 +4,15 @@ import com.aliyun.oss.OSS
 import com.aliyuncs.fc.client.FunctionComputeClient
 import com.aliyuncs.fc.request.InvokeFunctionRequest
 import com.github.notyy.typeflow.domain._
-import com.github.notyy.typeflow.editor.{InterpreterResult, Path, PlantUML, PlantUML2Model, ReadFile, UnknownCommand}
-import com.github.notyy.typeflow.util.{JSONUtil, JSonFormats, ModelUtil, Param, ReflectRunner, TypeUtil}
+import com.github.notyy.typeflow.editor.{PlantUML, PlantUML2Model}
+import com.github.notyy.typeflow.util.{JSONUtil, Param, TypeUtil}
 import com.typesafe.scalalogging.Logger
 
 import scala.util.{Failure, Success, Try}
 
 
 case class AliyunRunEngine(model: Model,
-                          fcClient: FunctionComputeClient) {
+                           fcClient: FunctionComputeClient, startFrom: Instance, saveResponse: Param[Object] => Unit) {
   private val logger = Logger(classOf[AliyunRunEngine])
 
   type InstanceId = String
@@ -22,29 +22,33 @@ case class AliyunRunEngine(model: Model,
   //this maybe dangerous, because it occupy uncontrolled num of memory.
   private val waitingParams: scala.collection.mutable.Map[InstanceId, Map[InputIndex, Object]] = scala.collection.mutable.Map.empty
 
-  def startFlow(output: Param[Object], outputFrom: Instance): Unit = {
-    val nextInsts: Vector[(Instance, InputIndex)] = nextInstances(output, outputFrom)
+  def startFlow(output: Param[Object]): Unit = {
+    val nextInsts: Vector[(Instance, InputIndex)] = nextInstances(output, startFrom)
     callNextInstances(output, nextInsts)
   }
 
   //TODO consider shapeless later
   def vectorToParamTuple(vec: Vector[Object]): Param[Object] = vec match {
-    case Vector(a,b) => Param(a,b)
-    case Vector(a,b,c) => Param(a,b,c)
-    case Vector(a,b,c,d) => Param(a,b,c,d)
-    case Vector(a,b,c,d,e) => Param(a,b,c,d,e)
-    case Vector(a,b,c,d,e,f) => Param(a,b,c,d,e,f)
+    case Vector(a, b) => Param(a, b)
+    case Vector(a, b, c) => Param(a, b, c)
+    case Vector(a, b, c, d) => Param(a, b, c, d)
+    case Vector(a, b, c, d, e) => Param(a, b, c, d, e)
+    case Vector(a, b, c, d, e, f) => Param(a, b, c, d, e, f)
   }
 
   //@tailrec    TODO failed tailrec, must solve this later
   //TODO copied from LocalRunEngine, duplicated code need to be cleaned
   private def callNextInstances(output: Param[Object], instances: Vector[(Instance, InputIndex)]): Unit = {
     instances.foreach { case (ins, idx) =>
+      logger.debug(s"calling ${ins.id}.$idx with $output")
       if (ins.definition.inputs.size > 1) {
+        logger.debug(s"$ins have ${ins.definition.inputs.size} inputs")
         if (waitingParams.contains(ins.id)) {
+          logger.debug(s"already have part of parameters of ${ins.id}")
           val prevParams = waitingParams(ins.id)
           val currParams = prevParams + (idx -> output.value)
           if (currParams.size == ins.definition.inputs.size) {
+            logger.debug(s"got enough parameters for ${ins.id}")
             //enough parameters
             callInstance(vectorToParamTuple(currParams.toVector.sortBy(_._1).map(_._2)), ins).map {
               nextOutput =>
@@ -54,20 +58,33 @@ case class AliyunRunEngine(model: Model,
             } match {
               case Success(value) =>
               case Failure(exception) => {
-                println(s"calling ${ins.id} with param $output failed ${exception.getMessage}")
+                logger.error(s"calling ${ins.id} with param $output failed ${exception.getMessage}", exception)
               }
             }
           } else {
             waitingParams += (ins.id -> currParams)
           }
         } else {
+          logger.debug(s"got first parameter ${output.value} for $ins.$idx")
           waitingParams += (ins.id -> Map(idx -> output.value))
         }
       } else {
-        callInstance(output, ins).map {
-          nextOutput =>
-            val nextIns = nextInstances(nextOutput, ins)
-            callNextInstances(nextOutput, nextIns)
+        logger.debug(s"$ins have ${ins.definition.inputs.size} inputs")
+        if (ins.id == startFrom.id) {
+          logger.debug(s"next instance is the ${startFrom}, so it's a response")
+          saveResponse(output)
+        } else {
+          callInstance(output, ins).map {
+            nextOutput =>
+              val nextIns = nextInstances(nextOutput, ins)
+              callNextInstances(nextOutput, nextIns)
+          } match {
+            case Success(value) => logger.debug(s"call successfull")
+            case Failure(exception) => {
+              saveResponse(Param(exception.getMessage))
+              logger.error(s"callInstance failed", exception)
+            }
+          }
         }
       }
     }
@@ -101,11 +118,11 @@ case class AliyunRunEngine(model: Model,
         logger.debug(s"PureFunction $name's designed outputs are ${outputs.mkString(",")}")
         //TODO solve this .get later
         val index = 1
-//          outputs.find { ot =>
-//          val designedOutputTypeName = ModelUtil.removePrefix(ot.outputType.name).split('.').last
-//          logger.debug(s"comparing designed outputTypeName $designedOutputTypeName to actually outputTypeName ${outputType.name}")
-//          designedOutputTypeName == outputType.name
-//        }.get.index
+        //          outputs.find { ot =>
+        //          val designedOutputTypeName = ModelUtil.removePrefix(ot.outputType.name).split('.').last
+        //          logger.debug(s"comparing designed outputTypeName $designedOutputTypeName to actually outputTypeName ${outputType.name}")
+        //          designedOutputTypeName == outputType.name
+        //        }.get.index
         //        logger.debug(s"index is $index")
         val conns = flow.connections.filter(conn => conn.fromInstanceId == outputFrom.id && conn.outputIndex == index)
         //        logger.debug(s"find ${conns.size} connections")
@@ -128,12 +145,12 @@ case class AliyunRunEngine(model: Model,
 }
 
 object AliyunRunEngine {
-  def runFlow(bucketName: String, objectName: String, inputEndpointName: String, output: Param[Object],fcClient: FunctionComputeClient, ossClient: OSS): Try[Unit] = {
+  def runFlow(bucketName: String, objectName: String, inputEndpointName: String, output: Param[Object], fcClient: FunctionComputeClient, ossClient: OSS, saveResponse: Param[Object] => Unit): Try[Unit] = {
     ReadFileFromAliyunOSS(ossClient).execute(bucketName, s"$objectName.puml").map { puml =>
       val model = PlantUML2Model.execute(PlantUML(objectName, puml))
       val inputEndpoint = model.activeFlow.get.instances.find(_.id == inputEndpointName).get
-      val aliyunRunEngine = AliyunRunEngine(model,fcClient)
-      aliyunRunEngine.startFlow(output, inputEndpoint)
+      val aliyunRunEngine = AliyunRunEngine(model, fcClient, inputEndpoint, saveResponse)
+      aliyunRunEngine.startFlow(output)
     }
   }
 }
