@@ -40,6 +40,8 @@ object GenCode extends App {
     mkCodeDir(codeDirPath)
     if (platform == Model2Code.PLATFORM_ALIYUN) {
       mkCodeDir(s"$scalaCodeDirPath/aliyun")
+    }else {
+      mkCodeDir(s"$scalaCodeDirPath") //put scala code in local mode
     }
     codes.foreach { case (codeFileName, codeContent) =>
       val codeFilePath = if(codeFileName.endsWith(".scala")) s"$scalaCodeDirPath/$codeFileName" else s"$codeDirPath/$codeFileName"

@@ -12,9 +12,13 @@ object ReflectRunner {
     logger.debug(s"input.getClass is ${inputParams.map(_.map(_.getClass.getName).mkString(",")).getOrElse("no argument")}")
     definition match {
       case PureFunction(name, inputs, _) => {
-        val method = locateClass(packagePrefix, name).
+        logger.debug(s"running PureFuction $name who's input types are $inputs")
+        val clazz = locateClass(packagePrefix, name)
+        logger.debug(s"class located for $packagePrefix.$name")
+        val method = clazz.
           getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*)
-        val invokeResult = method.invoke(null, inputParams.get: _*)
+        val invokeResult = method.invoke(clazz.newInstance(), inputParams.get: _*)
+        logger.debug(s"result of calling $name with $inputParams is $invokeResult")
         invokeResult match {
           case value: Try[Any] =>
             value.getOrElse(new IllegalStateException(s"error running $name"))
@@ -26,10 +30,11 @@ object ReflectRunner {
         runInputEndpoint(packagePrefix, name)
       }
       case OutputEndpoint(name, inputs, outputType, errorOutput) => {
-        val method = locateClass(packagePrefix, name).
+        val clazz = locateClass(packagePrefix, name)
+        val method = clazz.
           getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*) //Class.forName(composeInputType(packagePrefix, inputType))
 
-        val invokeResult = method.invoke(null, inputParams.get: _*)
+        val invokeResult = method.invoke(clazz.newInstance(), inputParams.get: _*)
         invokeResult match {
           case value: Try[Any] =>
             value.getOrElse(new IllegalStateException(s"error running $name"))

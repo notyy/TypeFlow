@@ -61,13 +61,13 @@ class Model2CodeTest extends FunSpec with Matchers {
     }
     it("can generate return type for outputs in definition") {
       val oneOutput: Vector[Output] = Vector(Output(OutputType("Integer"), 1))
-      Model2Code.genReturnType(oneOutput) shouldBe "Integer"
+      Model2Code.genReturnType(oneOutput, LANG_SCALA) shouldBe "Integer"
       val unitOutput: Vector[Output] = Vector(Output(OutputType("Unit"), 1))
-      Model2Code.genReturnType(unitOutput) shouldBe "Unit"
+      Model2Code.genReturnType(unitOutput, LANG_SCALA) shouldBe "Unit"
       val emptyInput: Vector[Output] = Vector.empty
-      Model2Code.genReturnType(emptyInput) shouldBe "Unit"
+      Model2Code.genReturnType(emptyInput,LANG_SCALA) shouldBe "Unit"
       val twoOutputs: Vector[Output] = Vector(Output(OutputType("Integer"), 1), Output(OutputType("String"), 2))
-      Model2Code.genReturnType(twoOutputs) shouldBe "Any"
+      Model2Code.genReturnType(twoOutputs, LANG_SCALA) shouldBe "Object"
     }
   }
 }

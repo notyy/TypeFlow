@@ -12,6 +12,7 @@ object $InputEndpointName$ extends App {
 
   val modelFilePath = args(0)
   logger.debug(s"running flow $modelFilePath")
+  println(s"running flow $modelFilePath")
   val packageName = this.getClass.getPackage.getName
   val inputEndpointName = TypeUtil.getTypeShortName(this)
   logger.debug(s"inputEndpoint is $packageName.$inputEndpointName")

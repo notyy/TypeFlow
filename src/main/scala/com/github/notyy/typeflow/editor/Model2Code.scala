@@ -27,7 +27,10 @@ object Model2Code {
   def execute(model: Model, packageName: String, platform: String, lang: CodeLang): Map[CodeFileName, CodeContent] = {
     val definitions: Vector[Definition] = model.definitions
     val localCodes: Vector[(CodeFileName, CodeContent)] = definitions.flatMap { defi =>
-      val codeFileName = s"${defi.name}.${if (lang == LANG_SCALA) "scala" else "java"}"
+      val codeFileName = {
+        if(defi.isInstanceOf[CommandLineInputEndpoint]) s"${defi.name}.scala"
+        else s"${defi.name}.${if (lang == LANG_SCALA) "scala" else "java"}"
+      }
       val codeContent: Option[CodeContent] = defi match {
         case CommandLineInputEndpoint(name, outputType) => {
           Some(ReadFile.execute(Path("./code_template/scala/CommandLineInputEndpoint.scala")).get.
@@ -86,7 +89,7 @@ object Model2Code {
       s"""|package $packageName
           |
           |object ${defi.name} {
-          |  def execute(${genFormalParams(defi.inputs,lang)}): ${genReturnType(defi.outputs)} = {
+          |  def execute(${genFormalParams(defi.inputs,lang)}): ${genReturnType(defi.outputs, lang)} = {
           |    ???
           |  }
           |}
@@ -95,7 +98,7 @@ object Model2Code {
       s"""|package $packageName;
           |
           |public class ${defi.name} {
-          |  public ${genReturnType(defi.outputs)} execute(${genFormalParams(defi.inputs,lang)}) {
+          |  public ${genReturnType(defi.outputs, lang)} execute(${genFormalParams(defi.inputs,lang)}) {
           |    return null;
           |  }
           |}
@@ -149,15 +152,18 @@ object Model2Code {
     }
   }
 
-  def genReturnType(outputs: Vector[Output]): String = {
+  def genReturnType(outputs: Vector[Output], lang: CodeLang): String = {
     val distinctOutputs = outputs.distinct
     if (distinctOutputs.isEmpty) {
-      "Unit"
+      if(lang == LANG_SCALA) "Unit" else "void"
     } else {
-      if (distinctOutputs.size == 1) TypeUtil.removeDecorate(distinctOutputs.head.outputType.name)
+      if (distinctOutputs.size == 1) {
+        val rs = TypeUtil.removeDecorate(distinctOutputs.head.outputType.name)
+        if(lang == LANG_JAVA && rs == "Unit") "void" else rs
+      }
       else {
         if (distinctOutputs.forall(o => TypeUtil.PrimitiveTypeNameMap.contains(TypeUtil.removeDecorate(o.outputType.name)))) {
-          "Any"
+          "Object"
         } else {
           //TODO fix this later
           logger.warn("multiple outputs of different types, should fix this")
