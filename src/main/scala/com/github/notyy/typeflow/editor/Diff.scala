@@ -8,6 +8,7 @@ object Diff {
 
   private val lsep: String = System.lineSeparator()
 
+  //TODO should be a Try
   def execute(thisPlantUML: String, targetPlantUML: String): String = {
     val (thisDefBlock, thisConnBlock) = PlantUMLUtil.separatorBlocks(thisPlantUML)
     val (targetDefBlock, targetConnBlock) = PlantUMLUtil.separatorBlocks(targetPlantUML)
