@@ -86,6 +86,10 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
         val conns: Vector[Connection] = flow.connections.filter(_.fromInstanceId == outputFrom.id)
         connections2instances(conns)
       }
+      case _ => {
+        logger.error(s"what is this: $outputFrom")
+        ???
+      }
     }
     logger.debug(s"next should call:[${nIns.map { case (ins, idx) => s"${ins.id}.$idx" }.mkString(",")}]")
     nIns
