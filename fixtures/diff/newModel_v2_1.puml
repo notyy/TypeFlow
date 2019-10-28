@@ -21,6 +21,7 @@ NI::Integer --> Add2
 NI::Integer --> Multi3
 NI::Integer --> LoadData
 LoadData --> LD::Integer
+LoadData <.. AccuStore
 Add2 --> A2::Integer
 A2::Integer --> Add
 Multi3 --> M3::Integer
@@ -31,4 +32,5 @@ LD::Integer --> Accumulator
 Accumulator --> AC::Integer
 AC::Integer --> Print
 AC::Integer --> WriteData
+WriteData ..> AccuStore
 @enduml
