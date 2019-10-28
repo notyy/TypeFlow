@@ -55,5 +55,14 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
       flow.connections.count(conn => conn.toInstanceId == "AddAndPrint") shouldBe 2
       flow.connections.count(conn => conn.toInstanceId == "PrintEP") shouldBe 1
     }
+    it("can load model with multiple output endpoints") {
+      val puml = ReadFile.execute(Path("./fixtures/diff/newModel_v2_1.puml")).get
+      val model = PlantUML2Model.execute(PlantUML("newModel_v2_1", puml))
+      println(model)
+      val flow = model.activeFlow.get
+      val loadDataConn = flow.connections.find(_.fromInstanceId == "LoadData").get
+      println(loadDataConn)
+      loadDataConn.outputIndex shouldBe 1
+    }
   }
 }

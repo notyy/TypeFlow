@@ -6,6 +6,7 @@ import com.typesafe.scalalogging.Logger
 
 import scala.util.matching.Regex
 
+//TODO use type-flow to rewrite this tool. eat my own dog food!
 object PlantUML2Model {
   private val logger = Logger(PlantUML2Model.getClass)
   type ElementName = String
@@ -69,7 +70,7 @@ object PlantUML2Model {
               case CommandLineInputEndpoint(name, outputType) => 1
               case AliyunHttpInputEndpoint(name, outputType) => 1
               case PureFunction(name, inputs, outputs) => outputs.find(_ == ot).get.index
-              case OutputEndpoint(name, inputs, outputs, errorOutputs) => -1 //should not come here
+              case OutputEndpoint(name, inputs, outputs, errorOutputs) => 1
             }
             val conntions: Vector[Connection] = {
               val instanceConnectedByInput: Map[ElementName, Vector[Input]] = instanceFromInput.filter {
