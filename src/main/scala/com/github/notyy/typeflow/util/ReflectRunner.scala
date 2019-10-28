@@ -27,22 +27,34 @@ object ReflectRunner {
         }
       }
       case CommandLineInputEndpoint(name, output) => {
+        logger.debug(s"running CommandLineInputEndpoint $name")
         runInputEndpoint(packagePrefix, name)
       }
       case OutputEndpoint(name, inputs, outputType, errorOutput) => {
+        logger.debug(s"running OutputEndpoint $name who's input types are $inputs")
         val clazz = locateClass(packagePrefix, name)
+        logger.debug(s"class located for $packagePrefix.$name")
         val method = clazz.
-          getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*) //Class.forName(composeInputType(packagePrefix, inputType))
+        getDeclaredMethod("execute", inputs.map(input => Class.forName(TypeUtil.composeInputType(packagePrefix, input.inputType))):_*) //Class.forName(composeInputType(packagePrefix, inputType))
+        logger.debug(s"method located for $packagePrefix.$name.execute")
 
-        val invokeResult = method.invoke(clazz.newInstance(), inputParams.get: _*)
-        invokeResult match {
-          case value: Try[Any] =>
-            value.getOrElse(new IllegalStateException(s"error running $name"))
-          case _ =>
-            invokeResult
+        try {
+          val invokeResult = method.invoke(clazz.newInstance(), inputParams.get: _*)
+          logger.debug(s"invoke result is $invokeResult")
+          invokeResult match {
+            case value: Try[Any] =>
+              value.getOrElse(new IllegalStateException(s"error running $name"))
+            case _ =>
+              invokeResult
+          }
+        }catch{
+          case ex:Exception => ex.printStackTrace()
         }
       }
-      case _ => ???
+      case _ => {
+        logger.error(s"what's this? $definition")
+        ???
+      }
     }
   }
 
