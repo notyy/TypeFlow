@@ -1,0 +1,34 @@
+
+@startuml
+
+skinparam class {
+	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
+	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
+	BackgroundColor<<OutputEndpoint>> BurlyWood
+}
+
+class NumInput <<CommandLineInputEndpoint>>
+class Add2 <<PureFunction>>
+class Add <<PureFunction>>
+class Print <<OutputEndpoint>>
+class Multi3 <<PureFunction>>
+class LoadData <<OutputEndpoint>>
+class WriteData <<OutputEndpoint>>
+class Accumulator <<PureFunction>>
+
+NumInput --> NI::Integer
+NI::Integer --> Add2
+NI::Integer --> Multi3
+NI::Integer --> LoadData
+LoadData --> LD::Integer
+Add2 --> A2::Integer
+A2::Integer --> Add
+Multi3 --> M3::Integer
+M3::Integer --> Add
+Add --> A::Integer
+A::Integer --> Accumulator
+LD::Integer --> Accumulator
+Accumulator --> AC::Integer
+AC::Integer --> Print
+AC::Integer --> WriteData
+@enduml
