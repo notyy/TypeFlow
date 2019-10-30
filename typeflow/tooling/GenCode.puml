@@ -1,0 +1,39 @@
+@startuml
+skinparam class {
+	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
+	BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
+	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
+	BackgroundColor<<OutputEndpoint>> BurlyWood
+}
+
+class GenCodeScript <<CommandLineArgsInputEndpoint>>
+interface GenCodeReq
+CommandLineArgsInputEndpoint --|> GenCodeReq
+PureFunctionJava --|> GenCodeReq
+class ReadFile <<OutputEndpoint>>
+class PlantUML2Model <<PureFunction>>
+interface CodeLang
+CodeLang <|-- LANG_SCALA
+CodeLang <|-- LANG_JAVA
+class GenScalaCommandLineArgsInputEndpoint <<PureFunction>>
+class GenJavaPureFunction <<PureFunction>>
+
+modelFilePath::String --> "1" GenCodeScript
+outputPath::String --> "2" GenCodeScript
+lang::String --> "3" GenCodeScript
+packageName::String --> "4" GenCodeScript
+platform::String --> "5" GenCodeScript
+codeUri::String --> "6" GenCodeScript
+GenCodeScript --> Path
+Path --> ReadFile
+ReadFile --> PUML
+PUML --> PlantUML2Model
+PlantUML2Model --> com.github.notyy.typeflow.domain.Model
+GenCodeScript --> LANG_SCALA
+GenCodeScript --> LANG_JAVA
+LANG_SCALA --> GenScalaCommandLineArgsInputEndpoint
+com.github.notyy.typeflow.domain.Model --> GenScalaCommandLineArgsInputEndpoint
+LANG_JAVA --> GenJavaPureFunction
+com.github.notyy.typeflow.domain.Model --> GenJavaPureFunction
+
+@enduml
