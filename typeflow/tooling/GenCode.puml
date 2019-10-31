@@ -4,19 +4,21 @@ skinparam class {
 	BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
 	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
 	BackgroundColor<<OutputEndpoint>> BurlyWood
+	BackgroundColor<<PureFunction>> LightBlue
 }
+'class System << (S,#FF7700) Singleton >>
 
 class GenCodeScript <<CommandLineArgsInputEndpoint>>
-interface GenCodeReq
-CommandLineArgsInputEndpoint --|> GenCodeReq
-PureFunctionJava --|> GenCodeReq
 class ReadFile <<OutputEndpoint>>
 class PlantUML2Model <<PureFunction>>
+class GenPureJavaFunctions <<PureFunction>>
+class GenPureJavaFunction <<PureFunction>>
+class GenCommandLineArgsInputEndpoints <<PureFunction>>
+class GenCommandLineArgsInputEndpoint <<PureFunction>>
+class SaveCodes <<OutputEndpoint>>
 interface CodeLang
-CodeLang <|-- LANG_SCALA
 CodeLang <|-- LANG_JAVA
-class GenScalaCommandLineArgsInputEndpoint <<PureFunction>>
-class GenJavaPureFunction <<PureFunction>>
+CodeLang <|-- LANG_SCALA
 
 modelFilePath::String --> "1" GenCodeScript
 outputPath::String --> "2" GenCodeScript
@@ -24,16 +26,26 @@ lang::String --> "3" GenCodeScript
 packageName::String --> "4" GenCodeScript
 platform::String --> "5" GenCodeScript
 codeUri::String --> "6" GenCodeScript
-GenCodeScript --> Path
+GenCodeScript --> "1" Path
+GenCodeScript --> "2" LANG_JAVA
+GenCodeScript --> "2" LANG_SCALA
+LANG_JAVA -> GenPureJavaFunctions
 Path --> ReadFile
 ReadFile --> PUML
 PUML --> PlantUML2Model
-PlantUML2Model --> com.github.notyy.typeflow.domain.Model
-GenCodeScript --> LANG_SCALA
-GenCodeScript --> LANG_JAVA
-LANG_SCALA --> GenScalaCommandLineArgsInputEndpoint
-com.github.notyy.typeflow.domain.Model --> GenScalaCommandLineArgsInputEndpoint
-LANG_JAVA --> GenJavaPureFunction
-com.github.notyy.typeflow.domain.Model --> GenJavaPureFunction
-
+PlantUML2Model --> domain.Model
+domain.Model --> DispatchGenerators
+DispatchGenerators --> "1" "Vector[PureFunction]"
+DispatchGenerators --> "2" "Vector[CommandLineArgsInputEndpoint]"
+DispatchGenerators --> "3" "Vector[OutputEndpoint]"
+DispatchGenerators --> "4" "Vector[AliyunHttpInputEndpoint]"
+"Vector[PureFunction]" --> GenPureJavaFunctions
+GenPureJavaFunctions --> "Vector[JavaCode]"
+GenPureJavaFunctions *-- GenPureJavaFunction
+"Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
+GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
+GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
+"Vector[ScalaCode]" --> SaveCodes
+"Vector[JavaCode]" --> SaveCodes
+SaveCodes *-- SaveToFile
 @enduml
