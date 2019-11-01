@@ -26,9 +26,9 @@ lang::String --> "3" GenCodeScript
 packageName::String --> "4" GenCodeScript
 platform::String --> "5" GenCodeScript
 codeUri::String --> "6" GenCodeScript
-GenCodeScript --> "1" Path
-GenCodeScript --> "2" LANG_JAVA
-GenCodeScript --> "2" LANG_SCALA
+GenCodeScript "1" --> Path
+GenCodeScript "2" --> LANG_JAVA
+GenCodeScript "2" --> LANG_SCALA
 LANG_JAVA -> GenPureJavaFunctions
 Path --> ReadFile
 ReadFile --> PUML
