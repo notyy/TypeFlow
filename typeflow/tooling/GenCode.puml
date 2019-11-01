@@ -29,6 +29,7 @@ codeUri::String --> "6" GenCodeScript
 GenCodeScript "1" --> Path
 GenCodeScript "2" --> LANG_JAVA
 GenCodeScript "2" --> LANG_SCALA
+GenCodeScript "3" --> outputPath::Path
 LANG_JAVA -> GenPureJavaFunctions
 Path --> ReadFile
 ReadFile --> PUML
@@ -45,7 +46,8 @@ GenPureJavaFunctions *-- GenPureJavaFunction
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
-"Vector[ScalaCode]" --> SaveCodes
-"Vector[JavaCode]" --> SaveCodes
+"Vector[ScalaCode]" --> "1" SaveCodes
+"Vector[JavaCode]" --> "1" SaveCodes
+outputPath::Path --> "2" SaveCodes
 SaveCodes *-- SaveToFile
 @enduml
