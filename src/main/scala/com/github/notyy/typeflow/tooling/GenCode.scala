@@ -31,7 +31,7 @@ object GenCode extends App {
   println(s"generating source code for $modelFilePath to $outputPath")
 
   ReadFile.execute(Path(modelFilePath)).map { puml =>
-    val model = PlantUML2Model.execute(PlantUML(modelFilePath.dropRight(5).split('/').last, puml))
+    val model = PlantUML2Model.execute(modelFilePath.dropRight(5).split('/').last, puml)
     val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, "com.github.notyy", platform, codeLang)
     logger.debug(s"totally ${codes.size} code files to be generated")
     val codeDirPath = s"$outputPath/src/main/$lang/${packageName.replaceAllLiterally(".", "/")}"

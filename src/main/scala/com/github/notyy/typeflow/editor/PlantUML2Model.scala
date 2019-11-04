@@ -17,9 +17,7 @@ object PlantUML2Model {
   private val ElementPattern: Regex = """class (.*) <<(.*)>>""".r
   private val DescriptionPattern: Regex = """(.*) --> (.*)""".r
 
-  def execute(plantUML: PlantUML): Model = {
-    val modelName = plantUML.modelName
-    val content = plantUML.content
+  def execute(modelName: String, content: String): Model = {
     val (rawDefiBlock, connBlock) = PlantUMLUtil.separatorBlocks(content)
     val rawDefiNameType: Map[ElementName, ElementType] = rawDefiBlock.map {
       case ElementPattern(elementName, elementType) => (elementName, elementType)

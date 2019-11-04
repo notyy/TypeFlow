@@ -104,7 +104,7 @@ case class LocalRunEngine(model: Model, packagePrefix: Option[String]) {
 object LocalRunEngine {
   def runFlow(modelFilePath: Path, inputEndpointName: String, packageName: String, output: Any): Try[Unit] = {
     ReadFile.execute(modelFilePath).map { puml =>
-      val model = PlantUML2Model.execute(PlantUML(modelFilePath.value.dropRight(5).split('/').last, puml))
+      val model = PlantUML2Model.execute(modelFilePath.value.dropRight(5).split('/').last, puml)
       val inputEndpoint = model.activeFlow.get.instances.find(_.id == inputEndpointName).get
       val localRunEngine = LocalRunEngine(model, Some(packageName))
       localRunEngine.startFlow(output, inputEndpoint)

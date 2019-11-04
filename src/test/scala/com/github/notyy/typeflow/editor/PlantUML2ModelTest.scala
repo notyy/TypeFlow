@@ -7,7 +7,7 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
   describe("PlantUML2Model") {
     it("can transform from simple plantuml string to type flow model") {
       val puml = ReadFile.execute(Path("./fixtures/diff/newModel.puml")).get
-      val model = PlantUML2Model.execute(PlantUML("newModel", puml))
+      val model = PlantUML2Model.execute("newModel", puml)
       model.name shouldBe "newModel"
       model.definitions.size shouldBe 4
       model.definitions.map(_.name) should contain("NumInput")
@@ -26,7 +26,7 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
     }
     it("can transform from complex plantuml string to type flow model") {
       val puml = ReadFile.execute(Path("./fixtures/diff/multi_param.puml")).get
-      val model = PlantUML2Model.execute(PlantUML("multi_param", puml))
+      val model = PlantUML2Model.execute("multi_param", puml)
       model.name shouldBe "multi_param"
       model.definitions.size shouldBe 5
       model.definitions.map(_.name) should contain("NumInput")
@@ -57,7 +57,7 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
     }
     it("can load model with multiple output endpoints") {
       val puml = ReadFile.execute(Path("./fixtures/diff/newModel_v2_1.puml")).get
-      val model = PlantUML2Model.execute(PlantUML("newModel_v2_1", puml))
+      val model = PlantUML2Model.execute("newModel_v2_1", puml)
       println(model)
       val flow = model.activeFlow.get
       val loadDataConn = flow.connections.find(_.fromInstanceId == "LoadData").get

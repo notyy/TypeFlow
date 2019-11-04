@@ -8,7 +8,7 @@ class Model2CodeTest extends FunSpec with Matchers {
   describe("Model2Scala") {
     it("can generate code for typeflow model") {
       val puml = ReadFile.execute(Path("./fixtures/diff/newModel.puml")).get
-      val model = PlantUML2Model.execute(PlantUML("newModel", puml))
+      val model = PlantUML2Model.execute("newModel", puml)
 
       val packageName = "com.github.notyy.newModel"
       val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, packageName, Model2Code.PLATFORM_LOCAL,LANG_SCALA)
@@ -26,7 +26,7 @@ class Model2CodeTest extends FunSpec with Matchers {
     }
     it("can generate code for typeflow model for given platform") {
       val puml = ReadFile.execute(Path("./fixtures/diff/newModel.puml")).get
-      val model = PlantUML2Model.execute(PlantUML("newModel", puml))
+      val model = PlantUML2Model.execute("newModel", puml)
 
       val packageName = "com.github.notyy.newModel"
       val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, packageName, Model2Code.PLATFORM_ALIYUN,LANG_SCALA)

@@ -5,6 +5,7 @@ skinparam class {
 	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
 	BackgroundColor<<OutputEndpoint>> BurlyWood
 	BackgroundColor<<PureFunction>> LightBlue
+	BackgroundColor<<BadPath>> Crimson
 }
 'class System << (S,#FF7700) Singleton >>
 
@@ -17,6 +18,7 @@ class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
 class DispatchGenerators <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
+class "Failure[Exception]" <<BadPath>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
@@ -33,8 +35,9 @@ GenCodeScript "2" --> LANG_SCALA
 GenCodeScript "3" --> outputPath::Path
 LANG_JAVA -> GenPureJavaFunctions
 Path --> ReadFile
-ReadFile --> PUML
-PUML --> PlantUML2Model
+ReadFile --> "Success[puml::String]"
+ReadFile --> "Failure[Exception]"
+"Success[puml::String]" --> PlantUML2Model
 PlantUML2Model --> domain.Model
 domain.Model --> DispatchGenerators
 DispatchGenerators --> "1" "Vector[PureFunction]"

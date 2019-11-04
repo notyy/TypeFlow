@@ -147,7 +147,7 @@ case class AliyunRunEngine(model: Model,
 object AliyunRunEngine {
   def runFlow(bucketName: String, objectName: String, inputEndpointName: String, output: Param[Object], fcClient: FunctionComputeClient, ossClient: OSS, saveResponse: Param[Object] => Unit): Try[Unit] = {
     ReadFileFromAliyunOSS(ossClient).execute(bucketName, s"$objectName.puml").map { puml =>
-      val model = PlantUML2Model.execute(PlantUML(objectName, puml))
+      val model = PlantUML2Model.execute(objectName, puml)
       val inputEndpoint = model.activeFlow.get.instances.find(_.id == inputEndpointName).get
       val aliyunRunEngine = AliyunRunEngine(model, fcClient, inputEndpoint, saveResponse)
       aliyunRunEngine.startFlow(output)
