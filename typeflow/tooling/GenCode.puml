@@ -15,6 +15,7 @@ class GenPureJavaFunctions <<PureFunction>>
 class GenPureJavaFunction <<PureFunction>>
 class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
+class DispatchGenerators <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
