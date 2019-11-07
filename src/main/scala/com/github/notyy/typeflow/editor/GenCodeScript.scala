@@ -2,7 +2,7 @@ package com.github.notyy.typeflow.editor
 
 import com.typesafe.scalalogging.Logger
 
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 object GenCodeScript extends App {
   private val logger = Logger(GenCodeScript.getClass)
@@ -15,6 +15,7 @@ object GenCodeScript extends App {
     case Success(puml) => {
       val model = PlantUML2Model.execute(ModelPath2ModelName.execute(modelPath.value),puml)
     }
+    case Failure(exception) => ???
   }
 
   def execute(modelFilePath: String, outputPath: String, lang: String, packageName: String, platform: String, codeUri: String): (Path, CodeLang, Path) = {
