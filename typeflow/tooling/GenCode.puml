@@ -15,8 +15,12 @@ class GenPureJavaFunctions <<PureFunction>>
 class GenPureJavaFunction <<PureFunction>>
 class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
-class DispatchGenerators <<PureFunction>>
+class GenCustomTypes <<PureFunction>>
+class GenCustomType <<PureFunction>>
+class DefinitionSorter <<PureFunction>>
+class InputEndpointSorter <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
+class SaveToFile <<OutputEndpoint>>
 class "Failure[Exception]" <<AlternativePath>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
@@ -38,12 +42,18 @@ ReadFile --> "Success[puml::String]"
 ReadFile --> "Failure[Exception]"
 "Success[puml::String]" --> PlantUML2Model
 PlantUML2Model --> domain.Model
-domain.Model --> DispatchGenerators
-DispatchGenerators --> "1" "Vector[PureFunction]"
-DispatchGenerators --> "2" "Vector[CommandLineArgsInputEndpoint]"
-DispatchGenerators --> "3" "Vector[OutputEndpoint]"
-DispatchGenerators --> "4" "Vector[AliyunHttpInputEndpoint]"
+domain.Model --> DefinitionSorter
+DefinitionSorter --> "1" "Vector[PureFunction]"
+DefinitionSorter --> "2" "Vector[InputEndpoint]"
+DefinitionSorter --> "3" "Vector[OutputEndpoint]"
+DefinitionSorter --> "4" "Vector[CustomType]"
+"Vector[InputEndpoint]" --> InputEndpointSorter
+InputEndpointSorter --> "Vector[CommandLineArgsInputEndpoint]"
+InputEndpointSorter --> "Vector[AliyunHttpInputEndpoint]"
 "Vector[PureFunction]" --> GenPureJavaFunctions
+"Vector[CustomType]" --> GenCustomTypes
+GenCustomTypes --> "Vector[JavaCode]"
+GenCustomTypes *-- GenCustomType
 GenPureJavaFunctions --> "Vector[JavaCode]"
 GenPureJavaFunctions *-- GenPureJavaFunction
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
