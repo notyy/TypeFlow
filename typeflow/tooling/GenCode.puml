@@ -5,7 +5,7 @@ skinparam class {
 	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
 	BackgroundColor<<OutputEndpoint>> BurlyWood
 	BackgroundColor<<PureFunction>> LightBlue
-	BackgroundColor<<SidePath>> Crimson
+	BackgroundColor<<AlternativePath>> Crimson
 }
 
 class GenCodeScript <<CommandLineArgsInputEndpoint>>
@@ -17,7 +17,7 @@ class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
 class DispatchGenerators <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
-class "Failure[Exception]" <<SidePath>>
+class "Failure[Exception]" <<AlternativePath>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
