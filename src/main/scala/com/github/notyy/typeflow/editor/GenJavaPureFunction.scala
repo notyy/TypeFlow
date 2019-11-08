@@ -2,7 +2,7 @@ package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain.{Input, PureFunction}
 
-class GenPureJavaFunction {
+class GenJavaPureFunction {
   def execute(packageName: PackageName, pureFunction: PureFunction, codeTemplate: CodeTemplate): JavaCode = {
     val code = codeTemplate.value.replaceAllLiterally("$PackageName$", packageName.value).
       replaceAllLiterally("$DefinitionName$", pureFunction.name).

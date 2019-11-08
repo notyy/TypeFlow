@@ -3,7 +3,7 @@ package com.github.notyy.typeflow.editor
 import com.github.notyy.typeflow.domain.{Input, InputType, Output, OutputType, PureFunction}
 import org.scalatest.{FunSpec, Matchers}
 
-class GenPureJavaFunctionTest extends FunSpec with Matchers {
+class GenJavaPureFunctionTest extends FunSpec with Matchers {
   describe("GenPureJavaFunction") {
     it("should generate java code skeleton for pure function") {
       val packageName = PackageName("com.github.notyy.typeflow.editor")
@@ -21,7 +21,7 @@ class GenPureJavaFunctionTest extends FunSpec with Matchers {
             |    }
             |}
             |""".stripMargin
-      val genPureJavaFunction = new GenPureJavaFunction
+      val genPureJavaFunction = new GenJavaPureFunction
       val add2Code = genPureJavaFunction.execute(packageName, add2, CodeTemplate(codeTemplate))
       add2Code.qualifiedName shouldBe "com.github.notyy.typeflow.editor.Add2"
       add2Code.content shouldBe
