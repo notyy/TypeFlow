@@ -18,6 +18,9 @@ class GenCommandLineArgsInputEndpoint <<PureFunction>>
 class GenCustomTypes <<PureFunction>>
 class GenCustomType <<PureFunction>>
 class DefinitionSorter <<PureFunction>>
+class IsPureFunction <<PureFunction>>
+class IsInputEndpoint <<PureFunction>>
+class IsOutputEndpoint <<PureFunction>>
 class InputEndpointSorter <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
 class SaveToFile <<OutputEndpoint>>
@@ -47,6 +50,15 @@ DefinitionSorter --> "1" "Vector[PureFunction]"
 DefinitionSorter --> "2" "Vector[InputEndpoint]"
 DefinitionSorter --> "3" "Vector[OutputEndpoint]"
 DefinitionSorter --> "4" "Vector[CustomType]"
+DefinitionSorter *-- IsInputEndpoint
+DefinitionSorter *-- IsPureFunction
+DefinitionSorter *-- IsOutputEndpoint
+Definition --> IsInputEndpoint
+IsInputEndpoint --> Boolean
+Definition --> IsPureFunction
+IsPureFunction --> Boolean
+Definition --> IsOutputEndpoint
+IsOutputEndpoint --> Boolean
 "Vector[InputEndpoint]" --> InputEndpointSorter
 InputEndpointSorter --> "Vector[CommandLineArgsInputEndpoint]"
 InputEndpointSorter --> "Vector[AliyunHttpInputEndpoint]"
@@ -54,6 +66,8 @@ InputEndpointSorter --> "Vector[AliyunHttpInputEndpoint]"
 "Vector[CustomType]" --> GenCustomTypes
 GenCustomTypes --> "Vector[JavaCode]"
 GenCustomTypes *-- GenCustomType
+CustomType --> GenCustomType
+GenCustomType --> JavaCode
 GenPureJavaFunctions --> "Vector[JavaCode]"
 GenPureJavaFunctions *-- GenPureJavaFunction
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
