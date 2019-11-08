@@ -22,6 +22,7 @@ class InputEndpointSorter <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
 class SaveToFile <<OutputEndpoint>>
 class "Failure[Exception]" <<AlternativePath>>
+class LoadCodeTemplate <<OutputEndpoint>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
@@ -38,6 +39,11 @@ GenCodeScript "2" --> LANG_SCALA
 GenCodeScript "3" --> outputPath::Path
 GenCodeScript "4" --> PackageName
 LANG_JAVA -> "1" GenPureFunctions
+LANG_SCALA -> "1" GenPureFunctions
+LANG_JAVA --> LoadCodeTemplate
+LANG_SCALA --> LoadCodeTemplate
+LoadCodeTemplate --> CodeTemplate
+CodeTemplate --> "4" GenPureFunctions
 Path --> ReadFile
 ReadFile --> "Success[puml::String]"
 ReadFile --> "Failure[Exception]"
@@ -57,11 +63,12 @@ GenCustomTypes --> "Vector[JavaCode]"
 GenCustomTypes *-- GenCustomType
 CustomType --> GenCustomType
 GenCustomType --> JavaCode
+PackageName --> "3" GenPureFunctions
 GenPureFunctions --> "Vector[JavaCode]"
 GenPureFunctions *-- GenJavaPureFunction
 GPJFIN::PackageName --> "1" GenJavaPureFunction
 PureFunction --> "2" GenJavaPureFunction
-CodeTemplate --> "3" GenJavaPureFunction
+GPJFIN::CodeTemplate --> "3" GenJavaPureFunction
 GenJavaPureFunction --> GPJFOUT::JavaCode
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
