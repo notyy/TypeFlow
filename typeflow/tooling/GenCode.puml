@@ -36,6 +36,7 @@ GenCodeScript "1" --> Path
 GenCodeScript "2" --> LANG_JAVA
 GenCodeScript "2" --> LANG_SCALA
 GenCodeScript "3" --> outputPath::Path
+GenCodeScript "4" --> PackageName
 LANG_JAVA -> "1" GenPureFunctions
 Path --> ReadFile
 ReadFile --> "Success[puml::String]"
@@ -58,8 +59,9 @@ CustomType --> GenCustomType
 GenCustomType --> JavaCode
 GenPureFunctions --> "Vector[JavaCode]"
 GenPureFunctions *-- GenPureJavaFunction
-PureFunction --> GenPureJavaFunction
-GenPureJavaFunction --> JavaCode
+GPJFIN::PackageName --> "1" GenPureJavaFunction
+PureFunction --> "2" GenPureJavaFunction
+GenPureJavaFunction --> GPJFOUT::JavaCode
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
