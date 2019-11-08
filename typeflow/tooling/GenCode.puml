@@ -14,6 +14,8 @@ class ReadFile <<OutputEndpoint>>
 class PlantUML2Model <<PureFunction>>
 class GenPureFunctions <<PureFunction>>
 class GenJavaPureFunction <<PureFunction>>
+class GenOutputEndpoints <<PureFunction>>
+class GenJavaOutputEndpoint <<PureFunction>>
 class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
 class GenCustomTypes <<PureFunction>>
@@ -23,8 +25,9 @@ class InputEndpointSorter <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
 class SaveToFile <<OutputEndpoint>>
 class "Failure[Exception]" <<ErrorPath>>
-class "LoadPureFunctionCodeTemplateFailure::Failure[Exception]" <<ErrorPath>>
+class "LPFCTFailure::Failure[Exception]" <<ErrorPath>>
 class LoadPureFunctionCodeTemplate <<OutputEndpoint>>
+class LoadOutputEndpointCodeTemplate <<OutputEndpoint>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
@@ -45,9 +48,15 @@ LANG_JAVA -> "1" GenPureFunctions
 LANG_SCALA -> "1" GenPureFunctions
 LANG_JAVA --> "1" LoadPureFunctionCodeTemplate
 LANG_SCALA --> "1" LoadPureFunctionCodeTemplate
+LANG_JAVA -> "1" GenOutputEndpoints
+LANG_SCALA -> "1" GenOutputEndpoints
+LANG_JAVA --> "1" LoadOutputEndpointCodeTemplate
+LANG_SCALA --> "1" LoadOutputEndpointCodeTemplate
 LoadPureFunctionCodeTemplate --> CodeTemplate
-LoadPureFunctionCodeTemplate --> "LoadPureFunctionCodeTemplateFailure::Failure[Exception]"
+LoadPureFunctionCodeTemplate --> "LPFCTFailure::Failure[Exception]"
+LoadOutputEndpointCodeTemplate --> "OE::CodeTemplate"
 CodeTemplate --> "4" GenPureFunctions
+"OE::CodeTemplate" --> "4" GenOutputEndpoints
 Path --> ReadFile
 ReadFile --> "Success[puml::String]"
 ReadFile --> "Failure[Exception]"
@@ -68,12 +77,20 @@ GenCustomTypes *-- GenCustomType
 CustomType --> GenCustomType
 GenCustomType --> JavaCode
 PackageName --> "3" GenPureFunctions
+PackageName --> "3" GenOutputEndpoints
 GenPureFunctions --> "Vector[JavaCode]"
 GenPureFunctions *-- GenJavaPureFunction
 GPJFIN::PackageName --> "1" GenJavaPureFunction
 PureFunction --> "2" GenJavaPureFunction
 GPJFIN::CodeTemplate --> "3" GenJavaPureFunction
 GenJavaPureFunction --> GPJFOUT::JavaCode
+"Vector[OutputEndpoint]" --> "2" GenOutputEndpoints
+GenOutputEndpoints --> "Vector[JavaCode]"
+GenOutputEndpoints *-- GenJavaOutputEndpoint
+GJOEIN::PackageName --> "1" GenJavaOutputEndpoint
+OutputEndpoint --> "2" GenJavaOutputEndpoint
+GJOEIN::CodeTemplate --> "3" GenJavaOutputEndpoint
+GenJavaOutputEndpoint --> GJOE::JavaCode
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
