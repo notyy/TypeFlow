@@ -11,7 +11,7 @@ skinparam class {
 class GenCodeScript <<CommandLineArgsInputEndpoint>>
 class ReadFile <<OutputEndpoint>>
 class PlantUML2Model <<PureFunction>>
-class GenPureJavaFunctions <<PureFunction>>
+class GenPureFunctions <<PureFunction>>
 class GenPureJavaFunction <<PureFunction>>
 class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
@@ -36,7 +36,7 @@ GenCodeScript "1" --> Path
 GenCodeScript "2" --> LANG_JAVA
 GenCodeScript "2" --> LANG_SCALA
 GenCodeScript "3" --> outputPath::Path
-LANG_JAVA -> GenPureJavaFunctions
+LANG_JAVA -> "1" GenPureFunctions
 Path --> ReadFile
 ReadFile --> "Success[puml::String]"
 ReadFile --> "Failure[Exception]"
@@ -50,14 +50,16 @@ DefinitionSorter --> "4" "Vector[CustomType]"
 "Vector[InputEndpoint]" --> InputEndpointSorter
 InputEndpointSorter --> "Vector[CommandLineArgsInputEndpoint]"
 InputEndpointSorter --> "Vector[AliyunHttpInputEndpoint]"
-"Vector[PureFunction]" --> GenPureJavaFunctions
+"Vector[PureFunction]" --> "2" GenPureFunctions
 "Vector[CustomType]" --> GenCustomTypes
 GenCustomTypes --> "Vector[JavaCode]"
 GenCustomTypes *-- GenCustomType
 CustomType --> GenCustomType
 GenCustomType --> JavaCode
-GenPureJavaFunctions --> "Vector[JavaCode]"
-GenPureJavaFunctions *-- GenPureJavaFunction
+GenPureFunctions --> "Vector[JavaCode]"
+GenPureFunctions *-- GenPureJavaFunction
+PureFunction --> GenPureJavaFunction
+GenPureJavaFunction --> JavaCode
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
