@@ -5,7 +5,8 @@ skinparam class {
 	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
 	BackgroundColor<<OutputEndpoint>> BurlyWood
 	BackgroundColor<<PureFunction>> LightBlue
-	BackgroundColor<<AlternativePath>> Crimson
+	BackgroundColor<<AlternativePath>> LightGrey
+	BackgroundColor<<ErrorPath>> Crimson
 }
 
 class GenCodeScript <<CommandLineArgsInputEndpoint>>
@@ -21,8 +22,9 @@ class DefinitionSorter <<PureFunction>>
 class InputEndpointSorter <<PureFunction>>
 class SaveCodes <<OutputEndpoint>>
 class SaveToFile <<OutputEndpoint>>
-class "Failure[Exception]" <<AlternativePath>>
-class LoadCodeTemplate <<OutputEndpoint>>
+class "Failure[Exception]" <<ErrorPath>>
+class "LoadPureFunctionCodeTemplateFailure::Failure[Exception]" <<ErrorPath>>
+class LoadPureFunctionCodeTemplate <<OutputEndpoint>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
@@ -38,11 +40,13 @@ GenCodeScript "2" --> LANG_JAVA
 GenCodeScript "2" --> LANG_SCALA
 GenCodeScript "3" --> outputPath::Path
 GenCodeScript "4" --> PackageName
+
 LANG_JAVA -> "1" GenPureFunctions
 LANG_SCALA -> "1" GenPureFunctions
-LANG_JAVA --> LoadCodeTemplate
-LANG_SCALA --> LoadCodeTemplate
-LoadCodeTemplate --> CodeTemplate
+LANG_JAVA --> "1" LoadPureFunctionCodeTemplate
+LANG_SCALA --> "1" LoadPureFunctionCodeTemplate
+LoadPureFunctionCodeTemplate --> CodeTemplate
+LoadPureFunctionCodeTemplate --> "LoadPureFunctionCodeTemplateFailure::Failure[Exception]"
 CodeTemplate --> "4" GenPureFunctions
 Path --> ReadFile
 ReadFile --> "Success[puml::String]"
