@@ -12,7 +12,7 @@ class GenCodeScript <<CommandLineArgsInputEndpoint>>
 class ReadFile <<OutputEndpoint>>
 class PlantUML2Model <<PureFunction>>
 class GenPureFunctions <<PureFunction>>
-class GenPureJavaFunction <<PureFunction>>
+class GenJavaPureFunction <<PureFunction>>
 class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
 class GenCustomTypes <<PureFunction>>
@@ -58,10 +58,11 @@ GenCustomTypes *-- GenCustomType
 CustomType --> GenCustomType
 GenCustomType --> JavaCode
 GenPureFunctions --> "Vector[JavaCode]"
-GenPureFunctions *-- GenPureJavaFunction
-GPJFIN::PackageName --> "1" GenPureJavaFunction
-PureFunction --> "2" GenPureJavaFunction
-GenPureJavaFunction --> GPJFOUT::JavaCode
+GenPureFunctions *-- GenJavaPureFunction
+GPJFIN::PackageName --> "1" GenJavaPureFunction
+PureFunction --> "2" GenJavaPureFunction
+CodeTemplate --> "3" GenJavaPureFunction
+GenJavaPureFunction --> GPJFOUT::JavaCode
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
