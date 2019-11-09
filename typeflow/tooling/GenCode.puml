@@ -28,6 +28,7 @@ class "Failure[Exception]" <<ErrorPath>>
 class "LPFCTFailure::Failure[Exception]" <<ErrorPath>>
 class LoadPureFunctionCodeTemplate <<OutputEndpoint>>
 class LoadOutputEndpointCodeTemplate <<OutputEndpoint>>
+class GenFormalParams <<PureFunction>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
@@ -43,6 +44,10 @@ GenCodeScript "2" --> LANG_JAVA
 GenCodeScript "2" --> LANG_SCALA
 GenCodeScript "3" --> outputPath::Path
 GenCodeScript "4" --> PackageName
+
+"Vector[Input]" --> GenFormalParams
+GenFormalParams --> String
+GenJavaPureFunction *-- GenFormalParams
 
 LANG_JAVA -> "1" GenPureFunctions
 LANG_SCALA -> "1" GenPureFunctions

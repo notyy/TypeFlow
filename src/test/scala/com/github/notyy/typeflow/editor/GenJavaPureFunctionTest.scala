@@ -21,7 +21,7 @@ class GenJavaPureFunctionTest extends FunSpec with Matchers {
             |    }
             |}
             |""".stripMargin
-      val genPureJavaFunction = new GenJavaPureFunction
+      val genPureJavaFunction = new GenJavaPureFunction(new GenFormalParams)
       val add2Code = genPureJavaFunction.execute(packageName, add2, CodeTemplate(codeTemplate))
       add2Code.qualifiedName shouldBe "com.github.notyy.typeflow.editor.Add2"
       add2Code.content shouldBe
