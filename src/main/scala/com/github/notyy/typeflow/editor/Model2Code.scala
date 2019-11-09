@@ -5,13 +5,13 @@ import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
 sealed trait CodeLang
-case object LANG_SCALA extends CodeLang
-case object LANG_JAVA extends CodeLang
+case object SCALA_LANG extends CodeLang
+case object JAVA_LANG extends CodeLang
 
 object CodeLang {
   def from(lang: String): CodeLang = lang match {
-    case "scala" => LANG_SCALA
-    case "java" => LANG_JAVA
+    case "scala" => SCALA_LANG
+    case "java" => JAVA_LANG
   }
 }
 
@@ -29,7 +29,7 @@ object Model2Code {
     val localCodes: Vector[(CodeFileName, CodeContent)] = definitions.flatMap { defi =>
       val codeFileName = {
         if(defi.isInstanceOf[CommandLineInputEndpoint]) s"${defi.name}.scala"
-        else s"${defi.name}.${if (lang == LANG_SCALA) "scala" else "java"}"
+        else s"${defi.name}.${if (lang == SCALA_LANG) "scala" else "java"}"
       }
       val codeContent: Option[CodeContent] = defi match {
         case CommandLineInputEndpoint(name, outputType) => {
@@ -68,7 +68,7 @@ object Model2Code {
                 replaceAllLiterally("$packageName$", packageName).
                 replaceAllLiterally("$paramCall$", genParamCall(defi.inputs)).
                 replaceAllLiterally("$writeOutput$", genWriteOutput(defi.outputs)).
-                replaceAllLiterally("$Callee$", if(lang == LANG_SCALA) defi.name else s"new ${defi.name}()")
+                replaceAllLiterally("$Callee$", if(lang == SCALA_LANG) defi.name else s"new ${defi.name}()")
               )
             }
           }
@@ -85,7 +85,7 @@ object Model2Code {
   }
 
   private def genLocalCode(packageName: String, defi: Definition, lang: CodeLang): String = {
-    if (lang == LANG_SCALA) {
+    if (lang == SCALA_LANG) {
       s"""|package $packageName
           |
           |object ${defi.name} {
@@ -117,9 +117,9 @@ object Model2Code {
           val inputParamTypeName = if (inputTypeName == "Unit") "" else inputTypeName
           val paramName = s"param${input.index}"
           lang match {
-            case LANG_SCALA =>
+            case SCALA_LANG =>
               s"$paramName: $inputParamTypeName"
-            case LANG_JAVA => s"$inputParamTypeName $paramName"
+            case JAVA_LANG => s"$inputParamTypeName $paramName"
           }
         }
       }.reduce((x1, x2) => s"$x1,$x2")
@@ -155,11 +155,11 @@ object Model2Code {
   def genReturnType(outputs: Vector[Output], lang: CodeLang): String = {
     val distinctOutputs = outputs.distinct
     if (distinctOutputs.isEmpty) {
-      if(lang == LANG_SCALA) "Unit" else "void"
+      if(lang == SCALA_LANG) "Unit" else "void"
     } else {
       if (distinctOutputs.size == 1) {
         val rs = TypeUtil.removeDecorate(distinctOutputs.head.outputType.name)
-        if(lang == LANG_JAVA && rs == "Unit") "void" else rs
+        if(lang == JAVA_LANG && rs == "Unit") "void" else rs
       }
       else {
         if (distinctOutputs.forall(o => TypeUtil.PrimitiveTypeNameMap.contains(TypeUtil.removeDecorate(o.outputType.name)))) {

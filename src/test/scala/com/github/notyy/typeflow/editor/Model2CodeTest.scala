@@ -11,7 +11,7 @@ class Model2CodeTest extends FunSpec with Matchers {
       val model = PlantUML2Model.execute("newModel", puml)
 
       val packageName = "com.github.notyy.newModel"
-      val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, packageName, Model2Code.PLATFORM_LOCAL,LANG_SCALA)
+      val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, packageName, Model2Code.PLATFORM_LOCAL,SCALA_LANG)
       codes.size shouldBe 4
       codes("NumInput.scala").contains("LocalRunEngine.runFlow") shouldBe true
       codes("AddAndPrint.scala") shouldBe
@@ -29,19 +29,19 @@ class Model2CodeTest extends FunSpec with Matchers {
       val model = PlantUML2Model.execute("newModel", puml)
 
       val packageName = "com.github.notyy.newModel"
-      val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, packageName, Model2Code.PLATFORM_ALIYUN,LANG_SCALA)
+      val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, packageName, Model2Code.PLATFORM_ALIYUN,SCALA_LANG)
       codes.size shouldBe 7
       codes.get("aliyun/Add2Handler.scala").isDefined shouldBe(true)
     }
     it("can generate formal params for inputs in definition") {
       val oneInput: Vector[Input] = Vector(Input(InputType("Integer"), 1))
-      Model2Code.genFormalParams(oneInput,LANG_SCALA) shouldBe "param1: Integer"
+      Model2Code.genFormalParams(oneInput,SCALA_LANG) shouldBe "param1: Integer"
       val unitInput: Vector[Input] = Vector(Input(InputType("Unit"), 1))
-      Model2Code.genFormalParams(unitInput,LANG_SCALA) shouldBe ""
+      Model2Code.genFormalParams(unitInput,SCALA_LANG) shouldBe ""
       val emptyInput: Vector[Input] = Vector.empty
-      Model2Code.genFormalParams(emptyInput,LANG_SCALA) shouldBe ""
+      Model2Code.genFormalParams(emptyInput,SCALA_LANG) shouldBe ""
       val twoInputs: Vector[Input] = Vector(Input(InputType("Integer"), 1), Input(InputType("String"), 2))
-      Model2Code.genFormalParams(twoInputs,LANG_SCALA) shouldBe "param1: Integer,param2: String"
+      Model2Code.genFormalParams(twoInputs,SCALA_LANG) shouldBe "param1: Integer,param2: String"
     }
     it("can generate actual params for inputs in definition") {
       val oneInput: Vector[Input] = Vector(Input(InputType("Integer"), 1))
@@ -61,13 +61,13 @@ class Model2CodeTest extends FunSpec with Matchers {
     }
     it("can generate return type for outputs in definition") {
       val oneOutput: Vector[Output] = Vector(Output(OutputType("Integer"), 1))
-      Model2Code.genReturnType(oneOutput, LANG_SCALA) shouldBe "Integer"
+      Model2Code.genReturnType(oneOutput, SCALA_LANG) shouldBe "Integer"
       val unitOutput: Vector[Output] = Vector(Output(OutputType("Unit"), 1))
-      Model2Code.genReturnType(unitOutput, LANG_SCALA) shouldBe "Unit"
+      Model2Code.genReturnType(unitOutput, SCALA_LANG) shouldBe "Unit"
       val emptyInput: Vector[Output] = Vector.empty
-      Model2Code.genReturnType(emptyInput,LANG_SCALA) shouldBe "Unit"
+      Model2Code.genReturnType(emptyInput,SCALA_LANG) shouldBe "Unit"
       val twoOutputs: Vector[Output] = Vector(Output(OutputType("Integer"), 1), Output(OutputType("String"), 2))
-      Model2Code.genReturnType(twoOutputs, LANG_SCALA) shouldBe "Object"
+      Model2Code.genReturnType(twoOutputs, SCALA_LANG) shouldBe "Object"
     }
   }
 }
