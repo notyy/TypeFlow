@@ -49,6 +49,10 @@ GenCodeScript "4" --> PackageName
 GenFormalParams --> String
 GenJavaPureFunction *-- GenFormalParams
 
+"1::Vector[Input]" --> 1::GenFormalParams
+1::GenFormalParams --> 1::String
+GenJavaOutputEndpoint *-- 1::GenFormalParams
+
 LANG_JAVA -> "1" GenPureFunctions
 LANG_SCALA -> "1" GenPureFunctions
 LANG_JAVA --> "1" LoadPureFunctionCodeTemplate
