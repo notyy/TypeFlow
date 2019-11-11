@@ -30,6 +30,7 @@ class "Failure[Exception]" <<ErrorPath>>
 class "LPFCTFailure::Failure[Exception]" <<ErrorPath>>
 class LoadPureFunctionCodeTemplate <<OutputEndpoint>>
 class LoadOutputEndpointCodeTemplate <<OutputEndpoint>>
+class LoadInputEndpointCodeTemplate <<OutputEndpoint>>
 class GenFormalParams <<PureFunction>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
@@ -55,19 +56,23 @@ GenJavaPureFunction *-- GenFormalParams
 1::GenFormalParams --> 1::String
 GenJavaOutputEndpoint *-- 1::GenFormalParams
 
-LANG_JAVA -> "1" GenPureFunctions
-LANG_SCALA -> "1" GenPureFunctions
+LANG_JAVA --> "1" GenPureFunctions
+LANG_SCALA --> "1" GenPureFunctions
 LANG_JAVA --> "1" LoadPureFunctionCodeTemplate
 LANG_SCALA --> "1" LoadPureFunctionCodeTemplate
-LANG_JAVA -> "1" GenOutputEndpoints
-LANG_SCALA -> "1" GenOutputEndpoints
+LANG_JAVA --> "1" GenOutputEndpoints
+LANG_SCALA --> "1" GenOutputEndpoints
 LANG_JAVA --> "1" LoadOutputEndpointCodeTemplate
 LANG_SCALA --> "1" LoadOutputEndpointCodeTemplate
+LANG_JAVA --> "1" LoadInputEndpointCodeTemplate
+LANG_SCALA --> "1" LoadInputEndpointCodeTemplate
 LoadPureFunctionCodeTemplate --> CodeTemplate
 LoadPureFunctionCodeTemplate --> "LPFCTFailure::Failure[Exception]"
 LoadOutputEndpointCodeTemplate --> "OE::CodeTemplate"
+LoadInputEndpointCodeTemplate --> "IE::CodeTemplate"
 CodeTemplate --> "4" GenPureFunctions
 "OE::CodeTemplate" --> "4" GenOutputEndpoints
+"IE::CodeTemplate" --> "4" GenCommandLineInputEndpoints
 Path --> ReadFile
 ReadFile --> "Success[puml::String]"
 ReadFile --> "Failure[Exception]"
