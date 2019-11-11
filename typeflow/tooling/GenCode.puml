@@ -18,6 +18,8 @@ class GenOutputEndpoints <<PureFunction>>
 class GenJavaOutputEndpoint <<PureFunction>>
 class GenCommandLineArgsInputEndpoints <<PureFunction>>
 class GenCommandLineArgsInputEndpoint <<PureFunction>>
+class GenCommandLineInputEndpoints <<PureFunction>>
+class GenCommandLineInputEndpoint <<PureFunction>>
 class GenCustomTypes <<PureFunction>>
 class GenCustomType <<PureFunction>>
 class DefinitionSorter <<PureFunction>>
@@ -77,8 +79,9 @@ DefinitionSorter --> "2" "Vector[InputEndpoint]"
 DefinitionSorter --> "3" "Vector[OutputEndpoint]"
 DefinitionSorter --> "4" "Vector[CustomType]"
 "Vector[InputEndpoint]" --> InputEndpointSorter
-InputEndpointSorter --> "Vector[CommandLineArgsInputEndpoint]"
-InputEndpointSorter --> "Vector[AliyunHttpInputEndpoint]"
+InputEndpointSorter --> "1" "Vector[CommandLineArgsInputEndpoint]"
+InputEndpointSorter --> "2" "Vector[CommandLineInputEndpoint]"
+InputEndpointSorter --> "3" "Vector[AliyunHttpInputEndpoint]"
 "Vector[PureFunction]" --> "2" GenPureFunctions
 "Vector[CustomType]" --> GenCustomTypes
 GenCustomTypes --> "Vector[JavaCode]"
@@ -103,6 +106,13 @@ GenJavaOutputEndpoint --> GJOE::JavaCode
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
+"Vector[CommandLineInputEndpoint]" --> GenCommandLineInputEndpoints
+GenCommandLineInputEndpoints --> "Vector[ScalaCode]"
+GenCommandLineInputEndpoints *-- GenCommandLineInputEndpoint
+GCLIE::PackageName --> "1" GenCommandLineInputEndpoint
+CommandLineInputEndpoint --> "2" GenCommandLineInputEndpoint
+GCLIE::CodeTemplate --> "3" GenCommandLineInputEndpoint
+GenCommandLineInputEndpoint --> ScalaCode
 "Vector[ScalaCode]" --> "1" SaveCodes
 "Vector[JavaCode]" --> "1" SaveCodes
 outputPath::Path --> "2" SaveCodes
