@@ -8,7 +8,7 @@ skinparam class {
 	BackgroundColor<<PureFunction>> LightBlue
 	BackgroundColor<<AlternativePath>> Crimson
 }
-class NumInput <<CommandLineArgsInputEndpoint>>
+class NumInput <<CommandLineInputEndpoint>>
 class Multi3 <<PureFunction>>
 class Add2 <<PureFunction>>
 class AddAndPrint <<OutputEndpoint>>
