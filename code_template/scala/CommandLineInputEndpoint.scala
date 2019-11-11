@@ -7,15 +7,8 @@ import com.typesafe.scalalogging.Logger
 import scala.io.StdIn
 import scala.util.{Failure, Success, Try}
 
-object $InputEndpointName$ extends App {
-  private val logger = Logger($InputEndpointName$.getClass)
-
-  val modelFilePath = args(0)
-  logger.debug(s"running flow $modelFilePath")
-  println(s"running flow $modelFilePath")
-  val packageName = this.getClass.getPackage.getName
-  val inputEndpointName = TypeUtil.getTypeShortName(this)
-  logger.debug(s"inputEndpoint is $packageName.$inputEndpointName")
+object $DefinitionName$ extends App {
+  private val logger = Logger($DefinitionName$.getClass)
 
   execute()
 
@@ -23,12 +16,12 @@ object $InputEndpointName$ extends App {
   def execute(): Unit = {
     println("input an integer")
     Try {
-      val output = StdIn.readLine().toInt
-      LocalRunEngine.runFlow(Path(modelFilePath), inputEndpointName, packageName, output)
+      val input = StdIn.readLine().toInt
+      $CallingChain$
     } match {
       case Success(value) => ()
       case Failure(exception) => {
-        println("can only accept integer")
+        logger.error("error occurs", exception)
       }
     }
     execute()
