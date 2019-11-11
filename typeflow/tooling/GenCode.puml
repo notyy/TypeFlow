@@ -109,6 +109,7 @@ GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
 "Vector[CommandLineInputEndpoint]" --> GenCommandLineInputEndpoints
 GenCommandLineInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineInputEndpoints *-- GenCommandLineInputEndpoint
+GenCommandLineInputEndpoint *-- domain.Model
 GCLIE::PackageName --> "1" GenCommandLineInputEndpoint
 CommandLineInputEndpoint --> "2" GenCommandLineInputEndpoint
 GCLIE::CodeTemplate --> "3" GenCommandLineInputEndpoint
