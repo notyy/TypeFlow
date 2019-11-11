@@ -12,13 +12,21 @@ trait Definition {
 }
 
 trait InputEndpoint extends Definition {
+  def subName: String
   def outputType: OutputType
   override def inputs: Vector[Input] = Vector.empty
 
   override def outputs: Vector[Output] = Vector(Output(outputType,1))
 }
-case class CommandLineInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint
-case class AliyunHttpInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint
+case class CommandLineInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint {
+  override def subName: String = "CommandLineInputEndpoint"
+}
+case class CommandLineArgsInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint {
+  override def subName: String = "CommandLineArgsInputEndpoint"
+}
+case class AliyunHttpInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint {
+  override def subName: String = "AliyunHttpInputEndpoint"
+}
 
 case class PureFunction(name: String, inputs: Vector[Input], outputs: Vector[Output]) extends Definition
 
