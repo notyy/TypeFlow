@@ -1,10 +1,12 @@
 
 @startuml
-
 skinparam class {
-	BackgroundColor<<InputEndpoint>> BurlyWood
 	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
+	BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
+	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
 	BackgroundColor<<OutputEndpoint>> BurlyWood
+	BackgroundColor<<PureFunction>> LightBlue
+	BackgroundColor<<AlternativePath>> Crimson
 }
 
 class NumInput <<CommandLineInputEndpoint>>
