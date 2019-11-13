@@ -72,7 +72,7 @@ LoadOutputEndpointCodeTemplate --> "OE::CodeTemplate"
 LoadInputEndpointCodeTemplate --> "IE::CodeTemplate"
 CodeTemplate --> "4" GenPureFunctions
 "OE::CodeTemplate" --> "4" GenOutputEndpoints
-"IE::CodeTemplate" --> "4" GenCommandLineInputEndpoints
+"IE::CodeTemplate" --> "3" GenCommandLineInputEndpoints
 Path --> ReadFile
 ReadFile --> "Success[puml::String]"
 ReadFile --> "Failure[Exception]"
@@ -111,7 +111,8 @@ GenJavaOutputEndpoint --> GJOE::JavaCode
 "Vector[CommandLineArgsInputEndpoint]" --> GenCommandLineArgsInputEndpoints
 GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
-"Vector[CommandLineInputEndpoint]" --> GenCommandLineInputEndpoints
+"Vector[CommandLineInputEndpoint]" --> "1" GenCommandLineInputEndpoints
+PackageName --> "2" GenCommandLineInputEndpoints
 GenCommandLineInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineInputEndpoints *-- GenCommandLineInputEndpoint
 GenCommandLineInputEndpoint *-- domain.Model
