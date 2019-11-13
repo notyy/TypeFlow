@@ -8,6 +8,6 @@ class GenJavaPureFunction(val genFormalParams: GenFormalParams) {
       replaceAllLiterally("$DefinitionName$", pureFunction.name).
       replaceAllLiterally("$ReturnType$", pureFunction.outputs.head.outputType.name).
       replaceAllLiterally("$Params$", genFormalParams.execute(pureFunction.inputs))
-    JavaCode(s"${packageName.value}.${pureFunction.name}",code)
+    JavaCode(QualifiedName(s"${packageName.value}.${pureFunction.name}"), code)
   }
 }

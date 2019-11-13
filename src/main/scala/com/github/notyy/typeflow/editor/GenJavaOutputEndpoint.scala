@@ -8,10 +8,10 @@ class GenJavaOutputEndpoint(val genFormalParams: GenFormalParams) {
       replaceAllLiterally("$DefinitionName$", outputEndpoint.name).
       replaceAllLiterally("$ReturnType$", replaceEmptyReturnTypeWithVoid(outputEndpoint.outputs.head.outputType.name)).
       replaceAllLiterally("$Params$", genFormalParams.execute(outputEndpoint.inputs))
-    JavaCode(s"${packageName.value}.${outputEndpoint.name}",code)
+    JavaCode(QualifiedName(s"${packageName.value}.${outputEndpoint.name}"), code)
   }
 
   def replaceEmptyReturnTypeWithVoid(returnType: String): String = {
-    if(returnType == "Unit") "void" else returnType
+    if (returnType == "Unit") "void" else returnType
   }
 }

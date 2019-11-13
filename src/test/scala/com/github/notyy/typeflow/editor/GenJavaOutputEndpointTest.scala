@@ -24,7 +24,7 @@ class GenJavaOutputEndpointTest extends FunSpec with Matchers {
            |""".stripMargin
       val genJavaOutputEndpoint = new GenJavaOutputEndpoint(new GenFormalParams)
       val printCode = genJavaOutputEndpoint.execute(packageName, print, CodeTemplate(codeTemplate))
-      printCode.qualifiedName shouldBe "com.github.notyy.typeflow.editor.Print"
+      printCode.qualifiedName.value shouldBe "com.github.notyy.typeflow.editor.Print"
       printCode.content shouldBe
         """|package com.github.notyy.typeflow.editor;
            |
