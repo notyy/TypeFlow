@@ -32,6 +32,7 @@ class LoadPureFunctionCodeTemplate <<OutputEndpoint>>
 class LoadOutputEndpointCodeTemplate <<OutputEndpoint>>
 class LoadInputEndpointCodeTemplate <<OutputEndpoint>>
 class GenFormalParams <<PureFunction>>
+class QualifiedName2CodeStructurePath <<PureFunction>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
@@ -58,6 +59,10 @@ GenJavaPureFunction *-- GenFormalParams
 "1::Vector[Input]" --> 1::GenFormalParams
 1::GenFormalParams --> 1::String
 GenJavaOutputEndpoint *-- 1::GenFormalParams
+
+QualifiedName --> "1" QualifiedName2CodeStructurePath
+qn2cs::CodeLang --> "2" QualifiedName2CodeStructurePath
+QualifiedName2CodeStructurePath --> CodeStructurePath
 
 LANG_JAVA --> "1" GenPureFunctions
 LANG_SCALA --> "1" GenPureFunctions
@@ -128,4 +133,5 @@ GenCommandLineInputEndpoint --> ScalaCode
 "Vector[JavaCode]" --> "1" SaveCodes
 OutputPath --> "2" SaveCodes
 SaveCodes *-- SaveToFile
+SaveCodes *-- QualifiedName2CodeStructurePath
 @enduml

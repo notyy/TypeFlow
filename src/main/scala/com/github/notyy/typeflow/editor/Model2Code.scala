@@ -13,6 +13,10 @@ object CodeLang {
     case "scala" => SCALA_LANG
     case "java" => JAVA_LANG
   }
+  def str(codeLang: CodeLang): String = codeLang match {
+    case SCALA_LANG => "scala"
+    case JAVA_LANG => "java"
+  }
 }
 
 object Model2Code {
