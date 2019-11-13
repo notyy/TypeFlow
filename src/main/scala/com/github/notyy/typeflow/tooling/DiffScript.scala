@@ -12,7 +12,7 @@ object DiffScript extends App {
       srcPlantUML <- ReadFile.execute(ModelFilePath(args(1)))
       targetPlantUML <- ReadFile.execute(ModelFilePath(args(2)))
     } yield Diff.execute(srcPlantUML, targetPlantUML)).
-      foreach(diffPlantUML => SaveToFile.execute(outputPath,diffPlantUML))
+      foreach(diffPlantUML => new SaveToFile().execute(outputPath,diffPlantUML))
     Process(s"java -jar $plantUMLJarPath  ${outputPath.value}").!!
     Process(s"open ${outputPath.value.dropRight("puml".length) ++ "png"}").!!
   } else {

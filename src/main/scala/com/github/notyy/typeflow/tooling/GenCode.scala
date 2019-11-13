@@ -49,7 +49,7 @@ object GenCode extends App {
       if (file.exists() && file.isFile) {
         println(s"$codeFilePath already exist,skipped")
       } else {
-        SaveToFile.execute(OutputPath(codeFilePath), codeContent) match {
+        new SaveToFile().execute(OutputPath(codeFilePath), codeContent) match {
           case Success(_) => println(s"$codeFilePath generated")
           case Failure(exception) => logger.error(s"error when saving file to $codeFilePath", exception)
         }
@@ -73,7 +73,7 @@ object GenCode extends App {
     }
     val yml = AliyunConfigGen.execute(serviceName, functions, codeUri)
     val aliyunYMLPath = s"$outputPath/template.yml"
-    SaveToFile.execute(OutputPath(aliyunYMLPath), yml)
+    new SaveToFile().execute(OutputPath(aliyunYMLPath), yml)
     logger.debug(s"aliyun config file saved to $aliyunYMLPath")
   }
 

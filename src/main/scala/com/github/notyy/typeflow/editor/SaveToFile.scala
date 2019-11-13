@@ -4,7 +4,7 @@ import java.io.{File, PrintWriter}
 
 import scala.util.Try
 
-object SaveToFile {
+class SaveToFile {
   def execute(path: Path, content: String): Try[Unit] = Try {
     val file = new File(path.value)
     if (file.exists() && file.isFile) {

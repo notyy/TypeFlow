@@ -14,7 +14,7 @@ class SaveToFileTest extends FunSpec with Matchers {
       val file = new File(path)
       if (file.exists()) file.delete() else ()
       val content = "test content"
-      SaveToFile.execute(OutputPath(path), content) shouldBe Success(())
+      new SaveToFile().execute(OutputPath(path), content) shouldBe Success(())
       Source.fromFile(path).mkString shouldBe content
     }
   }

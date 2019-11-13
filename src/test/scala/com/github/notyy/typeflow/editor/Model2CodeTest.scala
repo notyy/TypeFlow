@@ -13,7 +13,6 @@ class Model2CodeTest extends FunSpec with Matchers {
       val packageName = "com.github.notyy.newModel"
       val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, packageName, Model2Code.PLATFORM_LOCAL,SCALA_LANG)
       codes.size shouldBe 4
-      codes("NumInput.scala").contains("LocalRunEngine.runFlow") shouldBe true
       codes("AddAndPrint.scala") shouldBe
         s"""|package $packageName
             |
