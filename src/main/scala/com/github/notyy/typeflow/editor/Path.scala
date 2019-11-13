@@ -1,3 +1,9 @@
 package com.github.notyy.typeflow.editor
 
-case class Path(value: String)
+trait Path {
+  def value: String
+}
+
+case class OutputPath(value: String) extends Path
+
+case class ModelFilePath(value: String) extends Path

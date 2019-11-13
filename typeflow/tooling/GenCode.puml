@@ -35,6 +35,9 @@ class GenFormalParams <<PureFunction>>
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
+interface Path
+Path <|-- OutputPath
+Path <|-- ModelFilePath
 
 modelFilePath::String --> "1" GenCodeScript
 outputPath::String --> "2" GenCodeScript
@@ -42,10 +45,10 @@ lang::String --> "3" GenCodeScript
 packageName::String --> "4" GenCodeScript
 platform::String --> "5" GenCodeScript
 codeUri::String --> "6" GenCodeScript
-GenCodeScript "1" --> Path
+GenCodeScript "1" --> ModelFilePath
 GenCodeScript "2" --> LANG_JAVA
 GenCodeScript "2" --> LANG_SCALA
-GenCodeScript "3" --> outputPath::Path
+GenCodeScript "3" --> OutputPath
 GenCodeScript "4" --> PackageName
 
 "Vector[Input]" --> GenFormalParams
@@ -73,7 +76,7 @@ LoadInputEndpointCodeTemplate --> "IE::CodeTemplate"
 CodeTemplate --> "4" GenPureFunctions
 "OE::CodeTemplate" --> "4" GenOutputEndpoints
 "IE::CodeTemplate" --> "3" GenCommandLineInputEndpoints
-Path --> ReadFile
+ModelFilePath --> ReadFile
 ReadFile --> "Success[puml::String]"
 ReadFile --> "Failure[Exception]"
 "Success[puml::String]" --> PlantUML2Model
@@ -113,15 +116,16 @@ GenCommandLineArgsInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineArgsInputEndpoints *-- GenCommandLineArgsInputEndpoint
 "Vector[CommandLineInputEndpoint]" --> "1" GenCommandLineInputEndpoints
 PackageName --> "2" GenCommandLineInputEndpoints
+domain.Model --> "4" GenCommandLineInputEndpoints
 GenCommandLineInputEndpoints --> "Vector[ScalaCode]"
 GenCommandLineInputEndpoints *-- GenCommandLineInputEndpoint
-GenCommandLineInputEndpoint *-- domain.Model
 GCLIE::PackageName --> "1" GenCommandLineInputEndpoint
 CommandLineInputEndpoint --> "2" GenCommandLineInputEndpoint
 GCLIE::CodeTemplate --> "3" GenCommandLineInputEndpoint
+GCLIE::domain.Model --> "4" GenCommandLineInputEndpoint
 GenCommandLineInputEndpoint --> ScalaCode
 "Vector[ScalaCode]" --> "1" SaveCodes
 "Vector[JavaCode]" --> "1" SaveCodes
-outputPath::Path --> "2" SaveCodes
+OutputPath --> "2" SaveCodes
 SaveCodes *-- SaveToFile
 @enduml
