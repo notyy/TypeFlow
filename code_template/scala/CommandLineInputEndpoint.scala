@@ -1,7 +1,5 @@
-package $packageName$
+package $PackageName$
 
-import com.github.notyy.typeflow.editor.{LocalRunEngine, Path}
-import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
 import scala.io.StdIn

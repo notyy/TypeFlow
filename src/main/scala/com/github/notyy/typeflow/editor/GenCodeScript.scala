@@ -6,10 +6,13 @@ import scala.util.{Failure, Success, Try}
 
 object GenCodeScript extends App {
   private val logger = Logger(GenCodeScript.getClass)
-  if (args.length != 5) {
-    println("usage: genCode {modelFilePath} {outputPath} {lang} {packageName} {platform}")
+  if (args.length != 6) {
+    println("usage: genCode {modelFilePath} {outputPath} {lang} {packageName} {platform} {codeUri}")
+    System.exit(1)
   }
-  val (modelPath, codeLang, outputPath, packageName) = execute(args(0), args(1), args(2), args(3), args(4), args(5))
+  val (modelPath, codeLang, outputPath, packageName) =
+    execute(modelFilePath = args(0), outputPath = args(1), lang = args(2),
+      packageName = args(3), platform = args(4), codeUri = args(5))
   val result = ReadFile.execute(modelPath).map { puml =>
     val model = PlantUML2Model.execute(ModelPath2ModelName.execute(modelPath.value), puml)
     val (pureFunctions, inputEndpoints, outputEndpoints, customTypes) = DefinitionSorter.execute(model)
