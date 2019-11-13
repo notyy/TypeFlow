@@ -1,16 +1,16 @@
 package com.github.notyy.typeflow.tooling
 
-import com.github.notyy.typeflow.editor.{Diff, Path, ReadFile, SaveToFile}
+import com.github.notyy.typeflow.editor.{Diff, ModelFilePath, OutputPath, Path, ReadFile, SaveToFile}
 
 import scala.sys.process.Process
 
 object DiffScript extends App {
   if (args.length == 4) {
     val plantUMLJarPath = args(0)
-    val outputPath: Path = Path(args(3))
+    val outputPath: OutputPath = OutputPath(args(3))
     (for {
-      srcPlantUML <- ReadFile.execute(Path(args(1)))
-      targetPlantUML <- ReadFile.execute(Path(args(2)))
+      srcPlantUML <- ReadFile.execute(ModelFilePath(args(1)))
+      targetPlantUML <- ReadFile.execute(ModelFilePath(args(2)))
     } yield Diff.execute(srcPlantUML, targetPlantUML)).
       foreach(diffPlantUML => SaveToFile.execute(outputPath,diffPlantUML))
     Process(s"java -jar $plantUMLJarPath  ${outputPath.value}").!!

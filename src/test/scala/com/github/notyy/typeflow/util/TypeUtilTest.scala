@@ -24,9 +24,6 @@ class TypeUtilTest extends FunSpec with Matchers {
       TypeUtil.composeInputType(Some("xyz"),InputType("String")) shouldBe "java.lang.String"
       TypeUtil.composeInputType(Some("xyz"),InputType("Object")) shouldBe "java.lang.Object"
     }
-    it("AnyVal should be ok"){
-      TypeUtil.getTypeShortName(Path("xxx")) shouldBe "Path"
-    }
     it("can transform decorated type to origin type") {
       TypeUtil.removeDecorate("NI::Integer") shouldBe "Integer"
     }

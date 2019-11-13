@@ -7,7 +7,7 @@ import org.scalatest.{FunSpec, Matchers}
 class Model2CodeTest extends FunSpec with Matchers {
   describe("Model2Scala") {
     it("can generate code for typeflow model") {
-      val puml = ReadFile.execute(Path("./fixtures/diff/newModel.puml")).get
+      val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel.puml")).get
       val model = PlantUML2Model.execute("newModel", puml)
 
       val packageName = "com.github.notyy.newModel"
@@ -25,7 +25,7 @@ class Model2CodeTest extends FunSpec with Matchers {
             |""".stripMargin
     }
     it("can generate code for typeflow model for given platform") {
-      val puml = ReadFile.execute(Path("./fixtures/diff/newModel.puml")).get
+      val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel.puml")).get
       val model = PlantUML2Model.execute("newModel", puml)
 
       val packageName = "com.github.notyy.newModel"

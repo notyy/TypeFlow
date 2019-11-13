@@ -5,7 +5,7 @@ import java.io.File
 import com.github.notyy.typeflow.domain.{AliyunHttpInputEndpoint, Definition}
 import com.github.notyy.typeflow.editor.Model2Code.{CodeContent, CodeFileName}
 import com.github.notyy.typeflow.editor.aliyun.{AliyunConfigGen, AliyunFunction, Trigger}
-import com.github.notyy.typeflow.editor.{CodeLang, Model2Code, Path, PlantUML, PlantUML2Model, ReadFile, SaveToFile}
+import com.github.notyy.typeflow.editor.{CodeLang, Model2Code, ModelFilePath, OutputPath, Path, PlantUML, PlantUML2Model, ReadFile, SaveToFile}
 import com.typesafe.scalalogging.Logger
 
 import scala.util.{Failure, Success}
@@ -30,7 +30,7 @@ object GenCode extends App {
 
   println(s"generating source code for $modelFilePath to $outputPath")
 
-  ReadFile.execute(Path(modelFilePath)).map { puml =>
+  ReadFile.execute(ModelFilePath(modelFilePath)).map { puml =>
     val model = PlantUML2Model.execute(modelFilePath.dropRight(5).split('/').last, puml)
     val codes: Map[CodeFileName, CodeContent] = Model2Code.execute(model, "com.github.notyy", platform, codeLang)
     logger.debug(s"totally ${codes.size} code files to be generated")
@@ -49,7 +49,7 @@ object GenCode extends App {
       if (file.exists() && file.isFile) {
         println(s"$codeFilePath already exist,skipped")
       } else {
-        SaveToFile.execute(Path(codeFilePath), codeContent) match {
+        SaveToFile.execute(OutputPath(codeFilePath), codeContent) match {
           case Success(_) => println(s"$codeFilePath generated")
           case Failure(exception) => logger.error(s"error when saving file to $codeFilePath", exception)
         }
@@ -73,7 +73,7 @@ object GenCode extends App {
     }
     val yml = AliyunConfigGen.execute(serviceName, functions, codeUri)
     val aliyunYMLPath = s"$outputPath/template.yml"
-    SaveToFile.execute(Path(aliyunYMLPath), yml)
+    SaveToFile.execute(OutputPath(aliyunYMLPath), yml)
     logger.debug(s"aliyun config file saved to $aliyunYMLPath")
   }
 

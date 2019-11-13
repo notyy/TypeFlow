@@ -5,7 +5,7 @@ import org.scalatest.{FunSpec, Matchers}
 class DefinitionSorterTest extends FunSpec with Matchers {
   describe("DefinitionSorter") {
     it("will sort definitions by type, for later code generation") {
-      val puml = ReadFile.execute(Path("./fixtures/diff/newModel.puml")).get
+      val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel.puml")).get
       val model = PlantUML2Model.execute("newModel", puml)
       val (pureFunctions, inputEndpoints, outputEndpoints, customTypes) = DefinitionSorter.execute(model)
       pureFunctions.size shouldBe 2

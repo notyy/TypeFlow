@@ -33,7 +33,7 @@ object Model2Code {
       }
       val codeContent: Option[CodeContent] = defi match {
         case CommandLineInputEndpoint(name, outputType) => {
-          Some(ReadFile.execute(Path("./code_template/scala/CommandLineInputEndpoint.scala")).get.
+          Some(ReadFile.execute(CodeTemplatePath("./code_template/scala/CommandLineInputEndpoint.scala")).get.
             replaceAllLiterally("$InputEndpointName$", defi.name).
             replaceAllLiterally("$packageName$", packageName))
         }
@@ -53,7 +53,7 @@ object Model2Code {
               None
             }
             case AliyunHttpInputEndpoint(name, outputType) => {
-              Some(ReadFile.execute(Path("./code_template/scala/AliyunHttpInputEndpoint.scala")).get.
+              Some(ReadFile.execute(CodeTemplatePath("./code_template/scala/AliyunHttpInputEndpoint.scala")).get.
                 replaceAllLiterally("$InputEndpointName$", defi.name).
                 replaceAllLiterally("$packageName$", packageName).
                 replaceAllLiterally("$OutputType$", TypeUtil.removeDecorate(outputType.name)).
@@ -62,7 +62,7 @@ object Model2Code {
                 replaceAllLiterally("$objectName$", s"${model.name}"))
             }
             case _ if platform == PLATFORM_ALIYUN => {
-              Some(ReadFile.execute(Path("./code_template/scala/StreamRequestHandlerTemplate.scala")).get.
+              Some(ReadFile.execute(CodeTemplatePath("./code_template/scala/StreamRequestHandlerTemplate.scala")).get.
                 replaceAllLiterally("$TypeFlowFunction$", defi.name).
                 replaceAllLiterally("$params$", genActualParams(defi.inputs)).
                 replaceAllLiterally("$packageName$", packageName).

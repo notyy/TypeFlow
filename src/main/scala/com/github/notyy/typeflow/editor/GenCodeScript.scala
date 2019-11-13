@@ -18,7 +18,7 @@ object GenCodeScript extends App {
     case Failure(exception) => ???
   }
 
-  def execute(modelFilePath: String, outputPath: String, lang: String, packageName: String, platform: String, codeUri: String): (Path, CodeLang, Path, PackageName) = {
-    (Path(modelFilePath),CodeLang.from(lang),Path(outputPath), PackageName(packageName))
+  def execute(modelFilePath: String, outputPath: String, lang: String, packageName: String, platform: String, codeUri: String): (ModelFilePath, CodeLang, OutputPath, PackageName) = {
+    (ModelFilePath(modelFilePath),CodeLang.from(lang),OutputPath(outputPath), PackageName(packageName))
   }
 }

@@ -7,7 +7,7 @@ import scala.util.Failure
 class Json2ModelTest extends FunSpec with Matchers {
   describe("Json2Model") {
     it("can transform from json string to Model") {
-      val json = ReadFile.execute(Path("./src/main/resources/TypeFlowEditor.typeflow")).get
+      val json = ReadFile.execute(ModelFilePath("./src/main/resources/TypeFlowEditor.typeflow")).get
       val model = Json2Model.execute(json).get
       model.name shouldBe "typeflow_editor"
       model.definitions.foreach(println)
