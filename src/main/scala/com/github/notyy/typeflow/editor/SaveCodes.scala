@@ -17,7 +17,7 @@ class SaveCodes(private val saveToFile: SaveToFile, private val qualifiedName2Co
       val codeStructurePath = qualifiedName2CodeStructurePath.execute(sc.qualifiedName, codeLang)
       val codeDir = QualifiedName2CodeDir.execute(sc.qualifiedName)
       mkCodeDir(CodeDir(s"${outputPath.value}/src/main/${CodeLang.str(codeLang)}/${codeDir.value}"))
-      saveToFile.execute(OutputPath(s"${outputPath.value}/src/main/${CodeLang.str(codeLang)}/${codeStructurePath.value}"), sc.content)
+      saveToFile.execute(OutputPath(s"${outputPath.value}/src/main/${CodeLang.str(codeLang)}/${codeStructurePath.value}"), Content(sc.content))
     }
     if (saveResult.exists(_.isFailure)) {
       saveResult.filter(rs => rs.isFailure).map(_.asInstanceOf[Failure[Unit]]).reduce {

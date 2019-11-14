@@ -5,7 +5,7 @@ import java.io.File
 import com.github.notyy.typeflow.domain.{AliyunHttpInputEndpoint, Definition}
 import com.github.notyy.typeflow.editor.Model2Code.{CodeContent, CodeFileName}
 import com.github.notyy.typeflow.editor.aliyun.{AliyunConfigGen, AliyunFunction, Trigger}
-import com.github.notyy.typeflow.editor.{CodeLang, Model2Code, ModelFilePath, OutputPath, Path, PlantUML, PlantUML2Model, ReadFile, SaveToFile}
+import com.github.notyy.typeflow.editor.{CodeLang, Content, Model2Code, ModelFilePath, OutputPath, Path, PlantUML, PlantUML2Model, ReadFile, SaveToFile}
 import com.typesafe.scalalogging.Logger
 
 import scala.util.{Failure, Success}
@@ -49,7 +49,7 @@ object GenCode extends App {
       if (file.exists() && file.isFile) {
         println(s"$codeFilePath already exist,skipped")
       } else {
-        new SaveToFile().execute(OutputPath(codeFilePath), codeContent) match {
+        new SaveToFile().execute(OutputPath(codeFilePath), Content(codeContent)) match {
           case Success(_) => println(s"$codeFilePath generated")
           case Failure(exception) => logger.error(s"error when saving file to $codeFilePath", exception)
         }
@@ -73,7 +73,7 @@ object GenCode extends App {
     }
     val yml = AliyunConfigGen.execute(serviceName, functions, codeUri)
     val aliyunYMLPath = s"$outputPath/template.yml"
-    new SaveToFile().execute(OutputPath(aliyunYMLPath), yml)
+    new SaveToFile().execute(OutputPath(aliyunYMLPath), Content(yml))
     logger.debug(s"aliyun config file saved to $aliyunYMLPath")
   }
 

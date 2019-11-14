@@ -8,7 +8,7 @@ class DiffTest extends FunSpec with Matchers {
       val newModel = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel.puml")).get
       val multi_param = ReadFile.execute(ModelFilePath("./fixtures/diff/multi_param.puml")).get
       val diff = Diff.execute(multi_param, newModel)
-      new SaveToFile().execute(OutputPath("./localoutput/diff/diff.puml"),diff)
+      new SaveToFile().execute(OutputPath("./localoutput/diff/diff.puml"),Content(diff))
     }
   }
 }

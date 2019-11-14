@@ -17,7 +17,7 @@ object CreateNewModel {
       file.createNewFile()
       val model = Model(modelName,Vector.empty,Vector.empty,None)
       val json = Model2Json.execute(model)
-      new SaveToFile().execute(OutputPath(path), json)
+      new SaveToFile().execute(OutputPath(path), Content(json))
       ModelCreationSuccess(modelName)
     }
 }
