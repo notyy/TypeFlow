@@ -15,9 +15,11 @@ class GenCommandLineInputEndpoint {
     val flow: Flow = model.activeFlow.get
     val code = codeTemplate.value.replaceAllLiterally("$PackageName$", packageName.value).
       replaceAllLiterally("$DefinitionName$", commandLineInputEndpoint.name).
-      replaceAllLiterally("$CallingChain$", accuStatements(flow.instances.find(_.id == commandLineInputEndpoint.name).get, 1, "input", flow.connections, flow.instances, Vector.empty).mkString(System.lineSeparator()))
+      replaceAllLiterally("$CallingChain$", prettifyStatements(accuStatements(flow.instances.find(_.id == commandLineInputEndpoint.name).get, 1, "input", flow.connections, flow.instances, Vector.empty)).mkString(System.lineSeparator()))
     ScalaCode(QualifiedName(s"${packageName.value}.${commandLineInputEndpoint.name}"), code)
   }
+
+  def prettifyStatements(statements: Vector[String]): Vector[String] = statements.map(s => s"      $s")
 
   def accuStatements(outFrom: Instance, outputIndex: Int, outputParamName: String, connections: Vector[Connection], instances: Vector[Instance], currStatements: Vector[String]): Vector[String] = {
     val connsFromThis = connections.filter(conn => conn.fromInstanceId == outFrom.id && conn.outputIndex == outputIndex)

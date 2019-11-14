@@ -13,11 +13,13 @@ object $DefinitionName$ extends App {
   @scala.annotation.tailrec
   def execute(): Unit = {
     println("input an integer")
+    val input = StdIn.readLine().toInt
     Try {
-      val input = StdIn.readLine().toInt
-      $CallingChain$
+$CallingChain$
     } match {
-      case Success(value) => ()
+      case Success(value) => {
+        logger.info(s"processing input: $input successfully complete")
+      }
       case Failure(exception) => {
         logger.error("error occurs", exception)
       }
