@@ -36,7 +36,7 @@ class GenCommandLineInputEndpoint {
         //TODO only support java for now
         val targetOutputs = targetDefinition.outputs
         if (targetOutputs.size == 1) {
-          val statement = genCallStatement(outputParamName, targetInstance, targetInstanceInputIndex, resultName)
+          val statement = genCallStatements(outputParamName, targetInstance, targetInstanceInputIndex, resultName)
           if (statement.isDefined) {
             accuStatements(targetInstance, 1, resultName, connections, instances, currStatements.appended(statement.get))
           } else {
@@ -51,11 +51,11 @@ class GenCommandLineInputEndpoint {
     }
   }
 
-  private def genCallStatement(outputParamName: String, targetInstance: Instance, targetInstanceInputIndex: Int, resultName: String): Option[String] = {
+  private def genCallStatements(outputParamName: String, targetInstance: Instance, targetInstanceInputIndex: Int, resultName: String): Option[String] = {
     val targetDefinition = targetInstance.definition
     val targetInputs = targetDefinition.inputs
     if (targetInputs.size == 1) {
-      Some(s"val $resultName = new ${targetDefinition.name}().execute($outputParamName)")
+      genCallStatement(outputParamName, resultName, targetDefinition)
     } else {
       if (waitingParams.contains(targetInstance.id)) {
         val prevParams = waitingParams(targetInstance.id)
@@ -63,9 +63,10 @@ class GenCommandLineInputEndpoint {
         if (currParams.size == targetInstance.definition.inputs.size) {
           //enough parameters
           val params = currParams.toVector.sortBy(_._1).map(_._2).reduce((param1, param2) => s"$param1,$param2")
-          val statement = s"val $resultName = new ${targetDefinition.name}().execute($params)"
+//          val statement = s"val $resultName = new ${targetDefinition.name}().execute($params)"
+          val statement = genCallStatement(params, resultName,targetDefinition)
           waitingParams.remove(targetInstance.id)
-          Some(statement)
+          statement
         } else {
           waitingParams += (targetInstance.id -> currParams)
           None
@@ -75,5 +76,22 @@ class GenCommandLineInputEndpoint {
         None
       }
     }
+  }
+
+  private def genCallStatement(outputParamName: String, resultName: String, targetDefinition: Definition): Option[String] = {
+    val executeStatement = genExecuteStatement(targetDefinition, outputParamName)
+    if (haveReturnType(targetDefinition)) {
+      Some(s"val $resultName = $executeStatement")
+    } else {
+      Some(s"$executeStatement")
+    }
+  }
+
+  private def genExecuteStatement(targetDefinition: Definition, outputParamName: String): String = {
+    s"new ${targetDefinition.name}().execute($outputParamName)"
+  }
+
+  private def haveReturnType(targetDefinition: Definition) = {
+    targetDefinition.outputs.size == 1 && targetDefinition.outputs.head.outputType.name != "Unit"
   }
 }
