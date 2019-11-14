@@ -39,4 +39,8 @@ object TypeUtil {
     "Object" -> "java.lang.Object",
     "Unit" -> "scala.runtime.BoxedUnit"
   )
+
+  def firstCharToLowercase(src: String): String = {
+    src.head.toLower + src.tail
+  }
 }

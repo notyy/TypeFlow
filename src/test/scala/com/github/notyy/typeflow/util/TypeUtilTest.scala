@@ -27,5 +27,8 @@ class TypeUtilTest extends FunSpec with Matchers {
     it("can transform decorated type to origin type") {
       TypeUtil.removeDecorate("NI::Integer") shouldBe "Integer"
     }
+    it("can transform first char of string to lower case") {
+      TypeUtil.firstCharToLowercase("HelloWorld") shouldBe "helloWorld"
+    }
   }
 }

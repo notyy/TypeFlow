@@ -1,6 +1,7 @@
 package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain._
+import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
 class GenCommandLineInputEndpoint {
@@ -32,7 +33,7 @@ class GenCommandLineInputEndpoint {
         val targetInstanceInputIndex = conn.inputIndex
         val targetInstance = instances.find(_.id == targetInstanceId).get
         val targetDefinition = targetInstance.definition
-        val resultName = s"${targetInstanceId}Result"
+        val resultName = TypeUtil.firstCharToLowercase(s"${targetInstanceId}Result")
         //TODO only support java for now
         val targetOutputs = targetDefinition.outputs
         if (targetOutputs.size == 1) {
