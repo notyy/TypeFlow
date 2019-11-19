@@ -8,7 +8,7 @@ class GenCommandLineInputEndpointTest extends FunSpec with Matchers {
     it("will generate command line input endpoint will it's calling chain") {
       val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel.puml")).get
       val model = PlantUML2Model.execute("newModel", puml)
-      val genCommandLineInputEndpoint = new GenCommandLineInputEndpoint
+      val genCommandLineInputEndpoint = new GenCommandLineInputEndpoint(new GenCallingChain)
       val numInput = model.definitions.find(_.name == "NumInput").get.asInstanceOf[CommandLineInputEndpoint]
       val codeTemplate = LoadInputEndpointCodeTemplate.execute(SCALA_LANG).get
       val code = genCommandLineInputEndpoint.execute(PackageName("com.github.notyy.typeflow.editor"),numInput, codeTemplate, model)
