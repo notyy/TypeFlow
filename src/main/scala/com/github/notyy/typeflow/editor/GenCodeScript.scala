@@ -17,7 +17,7 @@ object GenCodeScript extends App {
     val model = PlantUML2Model.execute(ModelPath2ModelName.execute(modelPath.value), puml)
     val (pureFunctions, inputEndpoints, outputEndpoints, customTypes) = DefinitionSorter.execute(model)
     val genPureFunctions = new GenPureFunctions(new GenJavaPureFunction(new GenFormalParams))
-    val genCommandLineInputEndpoints = new GenCommandLineInputEndpoints(new GenCommandLineInputEndpoint(new GenCallingChain))
+    val genCommandLineInputEndpoints = new GenCommandLineInputEndpoints(new GenCommandLineInputEndpoint(new GenCallingChain(new GenLocalCallStatement)))
     val genOutputEndpoints = new GenOutputEndpoints(new GenJavaOutputEndpoint(new GenFormalParams))
     val saveCodes = new SaveCodes(new SaveToFile, new QualifiedName2CodeStructurePath)
 

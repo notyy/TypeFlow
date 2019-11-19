@@ -4,7 +4,7 @@ import com.github.notyy.typeflow.domain.{Connection, Definition, Instance}
 import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
-class GenCallingChain {
+class GenCallingChain(val genCallStatement: GenCallStatement) {
   type InstanceId = String
   type InputIndex = Int
   type ParamName = String
@@ -54,7 +54,7 @@ class GenCallingChain {
     val targetDefinition = targetInstance.definition
     val targetInputs = targetDefinition.inputs
     if (targetInputs.size == 1) {
-      genCallStatement(outputParamName, resultName, targetDefinition)
+      genCallStatement.execute(outputParamName, resultName, targetDefinition)
     } else {
       if (waitingParams.contains(targetInstance.id)) {
         val prevParams = waitingParams(targetInstance.id)
@@ -63,7 +63,7 @@ class GenCallingChain {
           //enough parameters
           val params = currParams.toVector.sortBy(_._1).map(_._2).reduce((param1, param2) => s"$param1,$param2")
           //          val statement = s"val $resultName = new ${targetDefinition.name}().execute($params)"
-          val statement = genCallStatement(params, resultName,targetDefinition)
+          val statement = genCallStatement.execute(params, resultName,targetDefinition)
           waitingParams.remove(targetInstance.id)
           statement
         } else {
@@ -75,22 +75,5 @@ class GenCallingChain {
         None
       }
     }
-  }
-
-  private def genCallStatement(outputParamName: String, resultName: String, targetDefinition: Definition): Option[String] = {
-    val executeStatement = genExecuteStatement(targetDefinition, outputParamName)
-    if (haveReturnType(targetDefinition)) {
-      Some(s"val $resultName = $executeStatement")
-    } else {
-      Some(s"$executeStatement")
-    }
-  }
-
-  private def genExecuteStatement(targetDefinition: Definition, outputParamName: String): String = {
-    s"new ${targetDefinition.name}().execute($outputParamName)"
-  }
-
-  private def haveReturnType(targetDefinition: Definition) = {
-    targetDefinition.outputs.size == 1 && targetDefinition.outputs.head.outputType.name != "Unit"
   }
 }
