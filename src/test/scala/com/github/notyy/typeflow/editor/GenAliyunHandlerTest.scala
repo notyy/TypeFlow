@@ -8,7 +8,7 @@ class GenAliyunHandlerTest extends FunSpec with Matchers {
       val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel.puml")).get
       val model = PlantUML2Model.execute("newModel", puml)
       val add2 = model.definitions.find(_.name == "Add2").get
-      val genAliyunHandler = new GenAliyunHandler(new GenFormalParams)
+      val genAliyunHandler = new GenAliyunHandler(new GenJSonParamType)
       val codeTemplate = LoadAliyunHandlerCodeTemplate.execute().get
       val scalaCode = genAliyunHandler.execute(PackageName("com.github.notyy.calculator"),add2,codeTemplate)
       println(scalaCode.content)

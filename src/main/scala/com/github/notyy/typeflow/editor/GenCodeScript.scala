@@ -10,7 +10,7 @@ object GenCodeScript extends App {
     println("usage: genCode {modelFilePath} {outputPath} {lang} {packageName} {platform} {codeUri}")
     System.exit(1)
   }
-  val (modelPath, codeLang, outputPath, packageName) =
+  val (modelPath, codeLang, outputPath, packageName, platform) =
     execute(modelFilePath = args(0), outputPath = args(1), lang = args(2),
       packageName = args(3), platform = args(4), codeUri = args(5))
   val result = ReadFile.execute(modelPath).map { puml =>
@@ -37,6 +37,27 @@ object GenCodeScript extends App {
       saveCodes.execute(outputEndpointCodes, outputPath)
     }
 
+    if(platform != Local) {
+      val platformCodesRs = LoadAliyunHandlerCodeTemplate.execute().flatMap {
+        aliyunHandlerCodeTemplate => {
+          LoadAliyunHttpInputEndpointCodeTemplate.execute().map {
+            aliyunHttpInputEndpointCodeTemplate => {
+              val genPlatformHandlers = new GenPlatformHandlers(new GenAliyunHandler(new GenJSonParamType), new GenAliyunHttpInputEndpointHandler(new GenFormalParams))
+              genPlatformHandlers.execute(platform, aliyunHandlerCodeTemplate, aliyunHttpInputEndpointCodeTemplate, packageName, model)
+            }
+          }
+          }.flatMap { platformCodes =>
+          saveCodes.execute(platformCodes, outputPath)
+        }
+      }
+      platformCodesRs match {
+        case Success(_) => println("platform code generation successfully")
+        case Failure(exception) => {
+          logger.error(s"error when generating code for ${modelPath.value} ", exception)
+        }
+      }
+    }
+
     val totalRs: Vector[Try[Unit]] = Vector(pureFunctionSaveRs, commandLineInputEndpointSaveRs, outputEndpointSaveRs)
     if (totalRs.exists(_.isFailure)) {
       totalRs.filter(_.isFailure).map(_.asInstanceOf[Failure[Unit]]).reduce {
@@ -56,7 +77,11 @@ object GenCodeScript extends App {
     }
   }
 
-  def execute(modelFilePath: String, outputPath: String, lang: String, packageName: String, platform: String, codeUri: String): (ModelFilePath, CodeLang, OutputPath, PackageName) = {
-    (ModelFilePath(modelFilePath), CodeLang.from(lang), OutputPath(outputPath), PackageName(packageName))
+  def execute(modelFilePath: String, outputPath: String, lang: String, packageName: String, platform: String, codeUri: String): (ModelFilePath, CodeLang, OutputPath, PackageName, Platform) = {
+    val platformEnum = platform match {
+      case "local" => Local
+      case "aliyun" => Aliyun
+    }
+    (ModelFilePath(modelFilePath), CodeLang.from(lang), OutputPath(outputPath), PackageName(packageName), platformEnum)
   }
 }

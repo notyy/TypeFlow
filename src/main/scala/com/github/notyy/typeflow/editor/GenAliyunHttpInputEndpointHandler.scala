@@ -2,15 +2,15 @@ package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain.{Definition, Input, Output}
 
-class GenAliyunHandler(val genJSonParamType: GenJSonParamType) {
+class GenAliyunHttpInputEndpointHandler(val genFormalParams: GenFormalParams) {
   def execute(packageName: PackageName, definition: Definition, codeTemplate: CodeTemplate): ScalaCode = {
     val code = codeTemplate.value.replaceAllLiterally("$PackageName$", packageName.value).
       replaceAllLiterally("$DefinitionName$", definition.name).
-      replaceAllLiterally("$Params$", genJSonParamType.execute(definition.inputs)).
+      replaceAllLiterally("$Params$", genFormalParams.execute(definition.inputs)).
       replaceAllLiterally("$Callee$", s"new ${definition.name}()").
-      replaceAllLiterally("$WriteOutput$", genWriteOutput(definition.outputs)).
-      replaceAllLiterally("$ParamCall$", genParamCall(definition.inputs))
-    ScalaCode(QualifiedName(s"${packageName.value}.aliyun.${definition.name}Handler"), code)
+      replaceAllLiterally("$writeOutput$", genWriteOutput(definition.outputs)).
+      replaceAllLiterally("$paramCall$", genParamCall(definition.inputs))
+    ScalaCode(QualifiedName(s"${packageName.value}.${definition.name}"), code)
   }
 
   def genWriteOutput(outputs: Vector[Output]): String = {

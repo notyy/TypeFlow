@@ -3,8 +3,11 @@
 
 skinparam class {
 	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
-	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
-	BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
+    BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
+    BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<PureFunction>> LightBlue
+    BackgroundColor<<AlternativePath>> Crimson
 }
 
 class NumInput <<AliyunHttpInputEndpoint>>

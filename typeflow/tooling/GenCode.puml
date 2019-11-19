@@ -31,14 +31,30 @@ class "LPFCTFailure::Failure[Exception]" <<ErrorPath>>
 class LoadPureFunctionCodeTemplate <<OutputEndpoint>>
 class LoadOutputEndpointCodeTemplate <<OutputEndpoint>>
 class LoadInputEndpointCodeTemplate <<OutputEndpoint>>
+class LoadAliyunHandlerCodeTemplate <<OutputEndpoint>>
+class LoadAliyunHttpInputEndpointCodeTemplate <<OutputEndpoint>>
 class GenFormalParams <<PureFunction>>
+class GenJSonParamType <<PureFunction>>
 class QualifiedName2CodeStructurePath <<PureFunction>>
+together {
+class GenPlatformHandlers <<PureFunction>>
+class GenAliyunHandler <<PureFunction>>
+class GenPlatformConfig <<PureFunction>>
+class GenAliyunConfig <<PureFunction>>
+class GenAliyunHttpInputEndpoint <<PureFunction>>
+}
+
 interface CodeLang
 CodeLang <|-- LANG_JAVA
 CodeLang <|-- LANG_SCALA
+
 interface Path
 Path <|-- OutputPath
 Path <|-- ModelFilePath
+
+interface Platform
+Platform <|-- Aliyun
+Platform <|-- Local
 
 modelFilePath::String --> "1" GenCodeScript
 outputPath::String --> "2" GenCodeScript
@@ -51,10 +67,19 @@ GenCodeScript "2" --> LANG_JAVA
 GenCodeScript "2" --> LANG_SCALA
 GenCodeScript "3" --> OutputPath
 GenCodeScript "4" --> PackageName
+GenCodeScript "5" --> Aliyun
+GenCodeScript "5" --> Local
+GenCodeScript --> LAHCT::Unit
 
 "Vector[Input]" --> GenFormalParams
 GenFormalParams --> String
 GenJavaPureFunction *-- GenFormalParams
+
+"GASH::Vector[Input]" --> GASH::GenFormalParams
+GASH::GenFormalParams --> GASH::String
+GenAliyunHandler *-- GenJSonParamType
+"GJPT::Vector[Input]" --> GenJSonParamType
+GenJSonParamType --> GJPT::String
 
 "1::Vector[Input]" --> 1::GenFormalParams
 1::GenFormalParams --> 1::String
@@ -129,9 +154,46 @@ CommandLineInputEndpoint --> "2" GenCommandLineInputEndpoint
 GCLIE::CodeTemplate --> "3" GenCommandLineInputEndpoint
 GCLIE::domain.Model --> "4" GenCommandLineInputEndpoint
 GenCommandLineInputEndpoint --> ScalaCode
+Aliyun --> "1" GenPlatformHandlers
+PackageName --> "4" GenPlatformHandlers
+GenPlatformHandlers --> "Vector[ScalaCode]"
+GenPlatformHandlers *-- GenAliyunHandler
+GenPlatformHandlers *-- GenAliyunHttpInputEndpoint
+
+GAH::PackageName --> "1" GenAliyunHandler
+GAH::domain.Definition --> "2" GenAliyunHandler
+GAH::CodeTemplate --> "3" GenAliyunHandler
+GenAliyunHandler --> GAH::ScalaCode
+
+GAH::PackageName --> "1" GenAliyunHttpInputEndpoint
+GAH::domain.Definition --> "2" GenAliyunHttpInputEndpoint
+GAH::CodeTemplate --> "3" GenAliyunHttpInputEndpoint
+GenAliyunHttpInputEndpoint --> GAH::ScalaCode
+
+domain.Model --> "5" GenPlatformHandlers
+Aliyun --> GenPlatformConfig
+
+LAHCT::Unit --> LoadAliyunHandlerCodeTemplate
+LoadAliyunHandlerCodeTemplate --> LAHCT::CodeTemplate
+LAHCT::CodeTemplate --> "2" GenPlatformHandlers
+
+LAHIECT::Unit --> LoadAliyunHttpInputEndpointCodeTemplate
+LoadAliyunHttpInputEndpointCodeTemplate --> LAHIECT::CodeTemplate
+LAHIECT::CodeTemplate --> "3" GenPlatformHandlers
+
+GenPlatformConfig --> "1" GPC::Path
+GenPlatformConfig --> "2" Content
+GPC::Path --> "1" SCT::SaveToFile
+Content --> "2" SCT::SaveToFile
+
 "Vector[ScalaCode]" --> "1" SaveCodes
 "Vector[JavaCode]" --> "1" SaveCodes
 OutputPath --> "2" SaveCodes
+
+STF::Path --> "1" SaveToFile
+STF::Content --> "2" SaveToFile
+SaveToFile --> Unit
+
 SaveCodes *-- SaveToFile
 SaveCodes *-- QualifiedName2CodeStructurePath
 @enduml
