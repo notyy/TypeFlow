@@ -42,7 +42,7 @@ object GenCodeScript extends App {
         aliyunHandlerCodeTemplate => {
           LoadAliyunHttpInputEndpointCodeTemplate.execute().map {
             aliyunHttpInputEndpointCodeTemplate => {
-              val genPlatformHandlers = new GenPlatformHandlers(new GenAliyunHandler(new GenJSonParamType), new GenAliyunHttpInputEndpointHandler(new GenJSonParamType))
+              val genPlatformHandlers = new GenPlatformHandlers(new GenAliyunHandler(new GenJSonParamType), new GenAliyunHttpInputEndpointHandler(new GenJSonParamType, new GenCallingChain(new GenAliyunlCallStatement(model.name))))
               genPlatformHandlers.execute(platform, aliyunHandlerCodeTemplate, aliyunHttpInputEndpointCodeTemplate, packageName, model)
             }
           }

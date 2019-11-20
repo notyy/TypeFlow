@@ -1,16 +1,15 @@
-package $packageName$.aliyun
+package $PackageName$.aliyun
 
 import com.aliyun.fc.runtime.{Context, HttpRequestHandler}
 import com.aliyun.oss.{OSS, OSSClientBuilder}
 import com.aliyuncs.fc.client.FunctionComputeClient
-import com.github.notyy.typeflow.editor.aliyun.AliyunRunEngine
-import com.github.notyy.typeflow.util.{JSONUtil, Param}
+import com.github.notyy.typeflow.util.{JSONUtil, Param, AliyunUtil}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import scala.io.Source
 import scala.util.{Failure, Success}
 
-class $InputEndpointName$Handler extends HttpRequestHandler{
+class $DefinitionName$Handler extends HttpRequestHandler{
   private var result: Option[Param[Object]] = None
 
   override def handleRequest(request: HttpServletRequest, response: HttpServletResponse, context: Context): Unit = {
@@ -22,8 +21,8 @@ class $InputEndpointName$Handler extends HttpRequestHandler{
     val fcClient = new FunctionComputeClient("cn-shanghai", accountId, accessKey, accessSecretKey)
     val ossClient: OSS = new OSSClientBuilder().build("oss-cn-shanghai-internal.aliyuncs.com", accessKey, accessSecretKey)
     val source = Source.fromInputStream(request.getInputStream)
-    JSONUtil.fromJSON[Param[$OutputType$]](source.mkString).flatMap{ output =>
-      AliyunRunEngine.runFlow("$bucketName$", "$objectName$", "$InputEndpointName$", output.asInstanceOf[Param[Object]],fcClient,ossClient, setResponse)
+    JSONUtil.fromJSON[Param[$Params$]](source.mkString).flatMap{ input =>
+$CallingChain$
     } match {
       case Success(value) => {
         if(result.isDefined) {
