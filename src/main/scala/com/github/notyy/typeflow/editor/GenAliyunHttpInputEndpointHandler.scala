@@ -2,19 +2,12 @@ package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain.{Definition, Flow, Input, Model, Output}
 
-class GenAliyunHttpInputEndpointHandler(val genJSonParamType: GenJSonParamType, val genCallingChain: GenCallingChain) {
+class GenAliyunHttpInputEndpointHandler(val genJSonParamType4InputEndpoint: GenJSonParamType4InputEndpoint, val genCallingChain: GenCallingChain) {
   def execute(packageName: PackageName, definition: Definition, codeTemplate: CodeTemplate, model: Model): ScalaCode = {
-    //    val code = codeTemplate.value.replaceAllLiterally("$PackageName$", packageName.value).
-    //      replaceAllLiterally("$DefinitionName$", definition.name).
-    //      replaceAllLiterally("$Params$", genJSonParamType.execute(definition.inputs)).
-    //      replaceAllLiterally("$Callee$", s"new ${definition.name}()").
-    //      replaceAllLiterally("$writeOutput$", genWriteOutput(definition.outputs)).
-    //      replaceAllLiterally("$paramCall$", genParamCall(definition.inputs))
-    //    ScalaCode(QualifiedName(s"${packageName.value}.${definition.name}"), code)
     val flow: Flow = model.activeFlow.get
     val code = codeTemplate.value.replaceAllLiterally("$PackageName$", packageName.value).
       replaceAllLiterally("$DefinitionName$", definition.name).
-      replaceAllLiterally("$Params$", genJSonParamType.execute(definition.inputs)).
+      replaceAllLiterally("$Params$", genJSonParamType4InputEndpoint.execute(definition.outputs)).
       replaceAllLiterally("$CallingChain$", genCallingChain.execute(flow.instances.find(_.id == definition.name).get, 1, "input", flow.connections, flow.instances, Vector.empty).mkString(System.lineSeparator()))
     ScalaCode(QualifiedName(s"${packageName.value}.aliyun.${definition.name}Handler"), code)
   }

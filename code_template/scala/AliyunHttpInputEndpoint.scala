@@ -30,7 +30,7 @@ $CallingChain$
           response.getWriter.println(JSONUtil.toJSON(result.get))
         } else {
           val successResult = "success complete, but no result"
-          response.setStatus(500)
+          response.setStatus(200)
           response.getWriter.println(successResult)
           println(successResult)
         }

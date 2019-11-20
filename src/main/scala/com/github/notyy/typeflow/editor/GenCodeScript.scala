@@ -10,7 +10,7 @@ object GenCodeScript extends App {
     println("usage: genCode {modelFilePath} {outputPath} {lang} {packageName} {platform} {codeUri}")
     System.exit(1)
   }
-  val (modelPath, codeLang, outputPath, packageName, platform) =
+  val (modelPath, codeLang, outputPath, packageName, platform, codeUri) =
     execute(modelFilePath = args(0), outputPath = args(1), lang = args(2),
       packageName = args(3), platform = args(4), codeUri = args(5))
   val result = ReadFile.execute(modelPath).map { puml =>
@@ -42,7 +42,7 @@ object GenCodeScript extends App {
         aliyunHandlerCodeTemplate => {
           LoadAliyunHttpInputEndpointCodeTemplate.execute().map {
             aliyunHttpInputEndpointCodeTemplate => {
-              val genPlatformHandlers = new GenPlatformHandlers(new GenAliyunHandler(new GenJSonParamType), new GenAliyunHttpInputEndpointHandler(new GenJSonParamType, new GenCallingChain(new GenAliyunlCallStatement(model.name))))
+              val genPlatformHandlers = new GenPlatformHandlers(new GenAliyunHandler(new GenJSonParamType), new GenAliyunHttpInputEndpointHandler(new GenJSonParamType4InputEndpoint, new GenCallingChain(new GenAliyunlCallStatement(model.name))))
               genPlatformHandlers.execute(platform, aliyunHandlerCodeTemplate, aliyunHttpInputEndpointCodeTemplate, packageName, model)
             }
           }
@@ -56,6 +56,7 @@ object GenCodeScript extends App {
           logger.error(s"error when generating code for ${modelPath.value} ", exception)
         }
       }
+      GenAliyunTemplate.execute(model.name,model.definitions, codeUri, packageName, outputPath)
     }
 
     val totalRs: Vector[Try[Unit]] = Vector(pureFunctionSaveRs, commandLineInputEndpointSaveRs, outputEndpointSaveRs)
@@ -77,11 +78,11 @@ object GenCodeScript extends App {
     }
   }
 
-  def execute(modelFilePath: String, outputPath: String, lang: String, packageName: String, platform: String, codeUri: String): (ModelFilePath, CodeLang, OutputPath, PackageName, Platform) = {
+  def execute(modelFilePath: String, outputPath: String, lang: String, packageName: String, platform: String, codeUri: String): (ModelFilePath, CodeLang, OutputPath, PackageName, Platform, CodeUri) = {
     val platformEnum = platform match {
       case "local" => Local
       case "aliyun" => Aliyun
     }
-    (ModelFilePath(modelFilePath), CodeLang.from(lang), OutputPath(outputPath), PackageName(packageName), platformEnum)
+    (ModelFilePath(modelFilePath), CodeLang.from(lang), OutputPath(outputPath), PackageName(packageName), platformEnum, CodeUri(codeUri))
   }
 }

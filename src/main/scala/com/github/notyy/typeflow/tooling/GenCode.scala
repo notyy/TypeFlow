@@ -5,7 +5,7 @@ import java.io.File
 import com.github.notyy.typeflow.domain.{AliyunHttpInputEndpoint, Definition}
 import com.github.notyy.typeflow.editor.Model2Code.{CodeContent, CodeFileName}
 import com.github.notyy.typeflow.editor.aliyun.{AliyunConfigGen, AliyunFunction, Trigger}
-import com.github.notyy.typeflow.editor.{CodeLang, Content, Model2Code, ModelFilePath, OutputPath, Path, PlantUML, PlantUML2Model, ReadFile, SaveToFile}
+import com.github.notyy.typeflow.editor.{CodeLang, CodeUri, Content, Model2Code, ModelFilePath, OutputPath, Path, PlantUML, PlantUML2Model, ReadFile, SaveToFile}
 import com.typesafe.scalalogging.Logger
 
 import scala.util.{Failure, Success}
@@ -71,7 +71,7 @@ object GenCode extends App {
         case _ => AliyunFunction(defi.name, s"$packageName.aliyun.${defi.name}Handler", None)
       }
     }
-    val yml = AliyunConfigGen.execute(serviceName, functions, codeUri)
+    val yml = AliyunConfigGen.execute(serviceName, functions, CodeUri(codeUri))
     val aliyunYMLPath = s"$outputPath/template.yml"
     new SaveToFile().execute(OutputPath(aliyunYMLPath), Content(yml))
     logger.debug(s"aliyun config file saved to $aliyunYMLPath")

@@ -54,14 +54,15 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
     val targetDefinition = targetInstance.definition
     val targetInputs = targetDefinition.inputs
     if (targetInputs.size == 1) {
-      genCallStatement.execute(outputParamName, resultName, targetDefinition)
+      genCallStatement.execute(Vector(outputParamName), resultName, targetDefinition)
     } else {
       if (waitingParams.contains(targetInstance.id)) {
         val prevParams = waitingParams(targetInstance.id)
         val currParams = prevParams + (targetInstanceInputIndex -> outputParamName)
         if (currParams.size == targetInstance.definition.inputs.size) {
           //enough parameters
-          val params = currParams.toVector.sortBy(_._1).map(_._2).reduce((param1, param2) => s"$param1,$param2")
+          //TODO should keep params here and let callee to solve multiple params
+          val params = currParams.toVector.sortBy(_._1).map(_._2)
           //          val statement = s"val $resultName = new ${targetDefinition.name}().execute($params)"
           val statement = genCallStatement.execute(params, resultName,targetDefinition)
           waitingParams.remove(targetInstance.id)

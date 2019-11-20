@@ -1,5 +1,6 @@
 package com.github.notyy.typeflow.editor.aliyun
 
+import com.github.notyy.typeflow.editor.CodeUri
 import com.typesafe.scalalogging.Logger
 import org.scalatest.{FunSpec, Matchers}
 
@@ -12,7 +13,7 @@ class AliyunConfigGenTest extends FunSpec with Matchers {
         AliyunFunction("B", "com.github.notyy.aliyun.BHandler", None),
         AliyunFunction("C", "com.github.notyy.aliyun.CHandler", Some(Trigger("C-http-trigger","HTTP")))
       )
-      val yml = AliyunConfigGen.execute("SampleService", functions, "oss://type-flow/type-flow-assembly-0.0.1.jar")
+      val yml = AliyunConfigGen.execute("SampleService", functions, CodeUri("oss://type-flow/type-flow-assembly-0.0.1.jar"))
       logger.debug(yml)
       yml shouldBe
         """|ROSTemplateFormatVersion: '2015-09-01'

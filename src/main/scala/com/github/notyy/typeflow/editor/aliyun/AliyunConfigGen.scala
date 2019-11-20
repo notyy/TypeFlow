@@ -1,7 +1,9 @@
 package com.github.notyy.typeflow.editor.aliyun
 
+import com.github.notyy.typeflow.editor.CodeUri
+
 object AliyunConfigGen {
-  def execute(serviceName: String, functions: Vector[AliyunFunction], codeUri: String): String = {
+  def execute(serviceName: String, functions: Vector[AliyunFunction], codeUri: CodeUri): String = {
     val template =
        s"""|ROSTemplateFormatVersion: '2015-09-01'
            |Transform: 'Aliyun::Serverless-2018-04-03'
@@ -9,7 +11,7 @@ object AliyunConfigGen {
            |  $serviceName: # service name
            |    Type: 'Aliyun::Serverless::Service'
            |
-           |${functionBlock(functions,codeUri)}
+           |${functionBlock(functions,codeUri.value)}
            |""".stripMargin
     template
   }
