@@ -4,6 +4,9 @@ import com.github.notyy.typeflow.domain.{Connection, Instance}
 import com.github.notyy.typeflow.util.TypeUtil
 import com.typesafe.scalalogging.Logger
 
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
+
 class GenCallingChain(val genCallStatement: GenCallStatement) {
   type InstanceId = String
   type InputIndex = Int
@@ -14,29 +17,33 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
   //use mutable map to store param names for definition that requires multiple inputs
   private val waitingParams: scala.collection.mutable.Map[InstanceId, Map[InputIndex, ParamName]] = scala.collection.mutable.Map.empty
   private var startInstance: Option[Instance] = None
+  private var statements:ArrayBuffer[String] = ArrayBuffer.empty
 
-  def execute(outFrom: Instance, outputIndex: Int, outputParamName: String, connections: Vector[Connection], instances: Vector[Instance], statements: Vector[String]): Vector[String] = {
+  def execute(outFrom: Instance, outputIndex: Int, outputParamName: String, connections: Vector[Connection], instances: Vector[Instance]): Vector[String] = {
     startInstance = Some(outFrom)
-    val accuStatementsResult = accuStatements(outFrom, Map(outputIndex -> outputParamName), connections, instances, statements)
-    prettifyStatements(accuStatementsResult)
+    accuStatements(outFrom, Map(outputIndex -> outputParamName), connections, instances)
+    logger.debug("calling chain codes are:")
+    statements.foreach(s => logger.debug(s))
+    prettifyStatements(statements.toVector)
   }
 
   private def prettifyStatements(statements: Vector[String]): Vector[String] = statements.map(s => s"      $s")
 
-  private def accuStatements(outFrom: Instance, outputParams: Map[Int, String], connections: Vector[Connection], instances: Vector[Instance], currStatements: Vector[String]): Vector[String] = {
+  private def accuStatements(outFrom: Instance, outputParams: Map[Int, String], connections: Vector[Connection], instances: Vector[Instance]): Unit = {
     val connsFromThis = connections.filter(conn => conn.fromInstanceId == outFrom.id)
     if (connsFromThis.isEmpty) {
       logger.warn(s"no connection found for ${outFrom.id}")
-      currStatements
     } else {
-      connsFromThis.flatMap { conn =>
+      connsFromThis.foreach { conn =>
         val paramName = outputParams.getOrElse(conn.outputIndex, "")
         val targetInstanceId = conn.toInstanceId
         val targetInstanceInputIndex = conn.inputIndex
         val targetInstance = instances.find(_.id == targetInstanceId).get
         if (targetInstance == startInstance.get) {
           val statement: String = genResponse4request(paramName)
-          currStatements.appended(statement)
+          logger.debug(s"append statement: $statement")
+//          currStatements.appended(statement)
+          statements += statement
         } else {
           val resultNamesMap = genResultName(targetInstance)
           val resultName = if (resultNamesMap.size == 1) resultNamesMap.head._2
@@ -44,9 +51,9 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
           //TODO only support java for now
           val statement = genCallStatements(paramName, targetInstance, targetInstanceInputIndex, resultName)
           if (statement.isDefined) {
-            accuStatements(targetInstance, resultNamesMap, connections, instances, currStatements.appended(statement.get))
-          } else {
-            currStatements
+            logger.debug(s"append statement: $statement")
+            statements += statement.get
+            accuStatements(targetInstance, resultNamesMap, connections, instances)
           }
         }
       }

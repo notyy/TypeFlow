@@ -8,7 +8,7 @@ class GenAliyunHttpInputEndpointHandler(val genJSonParamType4InputEndpoint: GenJ
     val code = codeTemplate.value.replaceAllLiterally("$PackageName$", packageName.value).
       replaceAllLiterally("$DefinitionName$", definition.name).
       replaceAllLiterally("$Params$", genJSonParamType4InputEndpoint.execute(definition.outputs)).
-      replaceAllLiterally("$CallingChain$", genCallingChain.execute(flow.instances.find(_.id == definition.name).get, 1, "input", flow.connections, flow.instances, Vector.empty).mkString(System.lineSeparator()))
+      replaceAllLiterally("$CallingChain$", genCallingChain.execute(flow.instances.find(_.id == definition.name).get, 1, "input", flow.connections, flow.instances).mkString(System.lineSeparator()))
     ScalaCode(QualifiedName(s"${packageName.value}.aliyun.${definition.name}Handler"), code)
   }
 

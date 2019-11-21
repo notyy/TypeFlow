@@ -1,0 +1,45 @@
+
+@startuml
+
+skinparam class {
+	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
+    BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
+    BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
+    BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<PureFunction>> LightBlue
+    BackgroundColor<<AlternativePath>> Crimson
+    BackgroundColor<<Resource>> Brown
+}
+
+class NumInput <<CommandLineInputEndpoint>>
+class Add2 <<PureFunction>>
+class Add <<PureFunction>>
+class Print <<OutputEndpoint>>
+class Multi3 <<PureFunction>>
+class Accumulate <<PureFunction>>
+class LoadAccumulateValue <<OutputEndpoint>>
+class SaveAccumulateValue <<OutputEndpoint>>
+class AccumulateValueResource <<Resource>>
+class Dispatch <<PureFunction>>
+
+LoadAccumulateValue .. AccumulateValueResource
+SaveAccumulateValue .. AccumulateValueResource
+NumInput --> NI::Integer
+NI::Integer --> Dispatch
+Dispatch --> DI::Integer
+Dispatch --> DI::Unit
+DI::Unit --> LoadAccumulateValue
+LoadAccumulateValue --> LAL::Integer
+LAL::Integer --> Accumulate
+DI::Integer --> Add2
+DI::Integer --> Multi3
+Add2 --> A2::Integer
+A2::Integer --> Add
+Multi3 --> M3::Integer
+M3::Integer --> Add
+Add --> A::Integer
+A::Integer --> Accumulate
+Accumulate --> AC::Integer
+AC::Integer --> Print
+AC::Integer --> SaveAccumulateValue
+@enduml
