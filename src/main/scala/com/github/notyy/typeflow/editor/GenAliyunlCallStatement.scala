@@ -3,8 +3,8 @@ package com.github.notyy.typeflow.editor
 import com.github.notyy.typeflow.domain.Definition
 
 class GenAliyunlCallStatement(val serviceName: String) extends GenCallStatement {
-  override def execute(outputParamNames: Vector[String], resultName: String, targetDefinition: Definition): Option[String] = {
-    val executeStatement = genExecuteStatement(targetDefinition, outputParamNames)
+  override def execute(paramNames: Vector[String], resultName: String, targetDefinition: Definition): Option[String] = {
+    val executeStatement = genExecuteStatement(targetDefinition, paramNames)
     if (haveReturnType(targetDefinition)) {
       Some(s"val $resultName = $executeStatement.get")
     } else {

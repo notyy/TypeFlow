@@ -3,8 +3,8 @@ package com.github.notyy.typeflow.editor
 import com.github.notyy.typeflow.domain.Definition
 
 class GenLocalCallStatement extends GenCallStatement {
-  override def execute(outputParamNames: Vector[String], resultName: String, targetDefinition: Definition): Option[String] = {
-    val executeStatement = genExecuteStatement(targetDefinition, outputParamNames)
+  override def execute(paramNames: Vector[String], resultName: String, targetDefinition: Definition): Option[String] = {
+    val executeStatement = genExecuteStatement(targetDefinition, paramNames)
     if (haveReturnType(targetDefinition)) {
       Some(s"val $resultName = $executeStatement")
     } else {
@@ -18,10 +18,10 @@ class GenLocalCallStatement extends GenCallStatement {
     } else {
       outputParamNames.reduce((param1, param2) => s"$param1,$param2")
     }
-    s"new ${targetDefinition.name}().execute(${params})"
+    s"new ${targetDefinition.name}().execute($params)"
   }
 
   private def haveReturnType(targetDefinition: Definition) = {
-    targetDefinition.outputs.size == 1 && targetDefinition.outputs.head.outputType.name != "Unit"
+    targetDefinition.outputs.nonEmpty && targetDefinition.outputs.head.outputType.name != "Unit"
   }
 }
