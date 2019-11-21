@@ -21,7 +21,7 @@ object PlantUML2Model {
     val (rawDefiBlock, connBlock) = PlantUMLUtil.separatorBlocks(content)
     val rawDefiNameType: Map[ElementName, ElementType] = rawDefiBlock.map {
       case ElementPattern(elementName, elementType) => (elementName, elementType)
-    }.toMap[ElementName, ElementType]
+    }.filterNot(_._2 == "Resource").toMap[ElementName, ElementType]
     logger.debug(s"find ${rawDefiNameType.keySet.size} raw definitions")
 
     val fromTos: Vector[(ElementName, String)] =
