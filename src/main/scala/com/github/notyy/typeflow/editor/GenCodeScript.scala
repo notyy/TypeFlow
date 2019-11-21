@@ -31,6 +31,10 @@ object GenCodeScript extends App {
       val commandLineInputEndpointCodes = genCommandLineInputEndpoints.execute(commandLineInputEndpoints, packageName, scalaCommandLineInputEndpointCodeTemplate, model)
       saveCodes.execute(commandLineInputEndpointCodes, outputPath)
     }
+    commandLineInputEndpointSaveRs match {
+      case Success(_) => logger.info("commandLineInputEndpoint save successfully")
+      case Failure(exception) => logger.error("commandLineInputEndpoint save failed", exception)
+    }
 
     val outputEndpointSaveRs = LoadOutputEndpointCodeTemplate.execute(JAVA_LANG).flatMap { javaOutputEndpointCodeTemplate =>
       val outputEndpointCodes = genOutputEndpoints.execute(JAVA_LANG, outputEndpoints, packageName, javaOutputEndpointCodeTemplate)

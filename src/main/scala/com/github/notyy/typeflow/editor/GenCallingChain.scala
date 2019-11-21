@@ -17,7 +17,8 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
 
   def execute(outFrom: Instance, outputIndex: Int, outputParamName: String, connections: Vector[Connection], instances: Vector[Instance], statements: Vector[String]): Vector[String] = {
     startInstance = Some(outFrom)
-    prettifyStatements(accuStatements(outFrom, Map(outputIndex -> outputParamName), connections, instances, statements))
+    val accuStatementsResult = accuStatements(outFrom, Map(outputIndex -> outputParamName), connections, instances, statements)
+    prettifyStatements(accuStatementsResult)
   }
 
   private def prettifyStatements(statements: Vector[String]): Vector[String] = statements.map(s => s"      $s")
@@ -29,7 +30,7 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
       currStatements
     } else {
       connsFromThis.flatMap { conn =>
-        val paramName = outputParams(conn.outputIndex)
+        val paramName = outputParams.getOrElse(conn.outputIndex, "")
         val targetInstanceId = conn.toInstanceId
         val targetInstanceInputIndex = conn.inputIndex
         val targetInstance = instances.find(_.id == targetInstanceId).get
@@ -53,7 +54,9 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
   }
 
   private def genResultName(targetInstance: Instance): Map[Int,String] = {
-    targetInstance.definition.outputs.filterNot(ot => TypeUtil.removeDecorate(ot.outputType.name) == "Unit").map { o =>
+    val outputs = targetInstance.definition.outputs
+    val filterOutUnit = outputs.filterNot(ot => TypeUtil.removeDecorate(ot.outputType.name) == "Unit")
+    filterOutUnit.map { o =>
       o.index -> TypeUtil.firstCharToLowercase(s"${targetInstance.id}Result${o.index}")
     }.toMap
   }
