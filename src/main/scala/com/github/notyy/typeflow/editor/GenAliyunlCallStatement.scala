@@ -8,7 +8,7 @@ class GenAliyunlCallStatement(val serviceName: String) extends GenCallStatement 
     if (haveReturnType(targetDefinition)) {
       Some(s"val $resultName = $executeStatement.get")
     } else {
-      Some(s"$executeStatement")
+      Some(s"$executeStatement.get")
     }
   }
 

@@ -13,8 +13,10 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
 
   //use mutable map to store param names for definition that requires multiple inputs
   private val waitingParams: scala.collection.mutable.Map[InstanceId, Map[InputIndex, ParamName]] = scala.collection.mutable.Map.empty
+  private var startInstance: Option[Instance] = None
 
   def execute(outFrom: Instance, outputIndex: Int, outputParamName: String, connections: Vector[Connection], instances: Vector[Instance],statements: Vector[String]): Vector[String] = {
+    startInstance = Some(outFrom)
     prettifyStatements(accuStatements(outFrom,outputIndex,outputParamName,connections,instances,statements))
   }
 
@@ -31,23 +33,33 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
         val targetInstanceInputIndex = conn.inputIndex
         val targetInstance = instances.find(_.id == targetInstanceId).get
         val targetDefinition = targetInstance.definition
-        val resultName = TypeUtil.firstCharToLowercase(s"${targetInstanceId}Result")
-        //TODO only support java for now
-        val targetOutputs = targetDefinition.outputs
-        if (targetOutputs.size == 1) {
-          val statement = genCallStatements(outputParamName, targetInstance, targetInstanceInputIndex, resultName)
-          if (statement.isDefined) {
-            accuStatements(targetInstance, 1, resultName, connections, instances, currStatements.appended(statement.get))
+        if(targetInstance == startInstance.get) {
+          val statement: String = genResponse4request(outputParamName)
+          currStatements.appended(statement)
+        } else {
+          val resultName = TypeUtil.firstCharToLowercase(s"${targetInstanceId}Result")
+          //TODO only support java for now
+          val targetOutputs = targetDefinition.outputs
+          if (targetOutputs.size == 1) {
+            val statement = genCallStatements(outputParamName, targetInstance, targetInstanceInputIndex, resultName)
+            if (statement.isDefined) {
+              accuStatements(targetInstance, 1, resultName, connections, instances, currStatements.appended(statement.get))
+            } else {
+              currStatements
+            }
           } else {
+            //TODO complete this
+            logger.error("multiple output not supported yet")
             currStatements
           }
-        } else {
-          //TODO complete this
-          logger.error("multiple output not supported yet")
-          currStatements
         }
       }
     }
+  }
+
+  private def genResponse4request(outputParamName: String) = {
+    val statement = s"setResponse($outputParamName)"
+    statement
   }
 
   private def genCallStatements(outputParamName: String, targetInstance: Instance, targetInstanceInputIndex: Int, resultName: String): Option[String] = {
