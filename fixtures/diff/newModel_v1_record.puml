@@ -21,14 +21,16 @@ class LoadAccumulateValue <<OutputEndpoint>>
 class SaveAccumulateValue <<OutputEndpoint>>
 class AccumulateValueResource <<Resource>>
 class Dispatch <<PureFunction>>
-class Record <<OutputEndpoint>>
-class AccumulateRecord <<Resource>>
+class RecordInput <<OutputEndpoint>>
+class RecordAccumulateResult <<OutputEndpoint>>
+class AccumulateResultRecord <<Resource>>
+class InputRecord <<Resource>>
 
 LoadAccumulateValue .. AccumulateValueResource
 SaveAccumulateValue .. AccumulateValueResource
 NumInput --> NI::Integer
-NI::Integer --> Record
-Record .. AccumulateRecord
+NI::Integer --> RecordInput
+RecordInput .. InputRecord
 NI::Integer --> Dispatch
 Dispatch --> DI::Integer
 Dispatch --> DI::Unit
@@ -46,5 +48,6 @@ A::Integer --> Accumulate
 Accumulate --> AC::Integer
 AC::Integer --> Print
 AC::Integer --> SaveAccumulateValue
-AC::Integer --> Record
+AC::Integer --> RecordAccumulateResult
+RecordAccumulateResult .. AccumulateResultRecord
 @enduml
