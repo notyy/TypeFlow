@@ -1,7 +1,7 @@
 package com.github.notyy.typeflow.editor
 
 import com.github.notyy.typeflow.domain._
-import com.github.notyy.typeflow.util.PlantUMLUtil
+import com.github.notyy.typeflow.util.{PlantUMLUtil, TypeUtil}
 import com.typesafe.scalalogging.Logger
 
 import scala.util.matching.Regex
@@ -16,6 +16,7 @@ object PlantUML2Model {
 
   private val ElementPattern: Regex = """class (.*) <<(.*)>>""".r
   private val DescriptionPattern: Regex = """(.*) --> (.*)""".r
+  private val ConnectionWithIndexAnnoPattern: Regex = """(.*) --> "(.*)" (.*)""".r
 
   def execute(modelName: String, content: String): Model = {
     val (rawDefiBlock, connBlock) = PlantUMLUtil.separatorBlocks(content)
@@ -24,20 +25,30 @@ object PlantUML2Model {
     }.filterNot(_._2 == "Resource").toMap[ElementName, ElementType]
     logger.debug(s"find ${rawDefiNameType.keySet.size} raw definitions")
 
-    val fromTos: Vector[(ElementName, String)] =
+    val fromTos: Vector[(ElementName, Int, String)] =
       connBlock.map {
-        case DescriptionPattern(from, to) => (from, to)
+        case ConnectionWithIndexAnnoPattern(from, index, to) => (from, index.toInt, to)
+        case DescriptionPattern(from, to) => (from, 1, to)
       }
 
-    val instanceToOutput: Map[ElementName, Vector[Output]] = (fromTos.
-      filter { case (from, to) => rawDefiNameType.keySet.contains(from) }.
-      groupMap(_._1)(_._2)).mapValues(_.foldLeft(Vector.empty[Output])((acc, ot) => acc.appended(Output(OutputType(ot), acc.size + 1)))).toMap
-    val outputToInstance = fromTos.filter { case (from, to) => rawDefiNameType.keySet.contains(to) }
-    val instanceFromInput: Map[ElementName, Vector[Input]] = (outputToInstance.map { case (from, to) => (to, from) }.
-      groupMap(_._1)(_._2)).mapValues(_.foldLeft(Vector.empty[Input])((acc, it) => acc.appended(Input(InputType(it), acc.size + 1)))).toMap
+    val instanceToOutput: Map[ElementName, Vector[Output]] =
+      fromTos.filter {
+        case (from, index, to) => rawDefiNameType.keySet.contains(from)
+      }.groupMap(_._1)(x => (x._2, x._3)).view.
+        mapValues(_.map {
+          case (index, to) => Output(OutputType(TypeUtil.removeDecorate(to)), index)
+        }.distinct).toMap
+    val outputToInstance = fromTos.filter { case (from, index, to) => rawDefiNameType.keySet.contains(to) }
+    val instanceFromInput: Map[ElementName, Vector[Input]] =
+      outputToInstance.map { case (from, index, to) => (to, index, from) }.
+        groupMap(_._1)(x => (x._2, x._3)).view.
+        mapValues(_.map {
+          case (index, from) => Input(InputType(TypeUtil.removeDecorate(from)), index)
+        }.distinct).toMap
 
     val definitionsWithDecorates: Vector[Definition] = rawDefiNameType.toVector.map {
       case (name, "CommandLineInputEndpoint") => CommandLineInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
+      case (name, "FileInputEndpoint") => FileInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
       case (name, "AliyunHttpInputEndpoint") => AliyunHttpInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
       case (name, "PureFunction") => {
         PureFunction(name,
@@ -63,32 +74,33 @@ object PlantUML2Model {
     val connections: Vector[Connection] =
       instanceToOutput.toVector.flatMap {
         case (instanceId, outputs) =>
-          outputs.flatMap{ ot =>
+          outputs.flatMap { ot =>
             val outputIndex: Int = definitionsWithDecorates.find(_.name == instanceId).get match {
               case CommandLineInputEndpoint(name, outputType) => 1
+              case FileInputEndpoint(name, outputType) => 1
               case AliyunHttpInputEndpoint(name, outputType) => 1
               case PureFunction(name, inputs, outputs) => outputs.find(_ == ot).get.index
               case OutputEndpoint(name, inputs, outputs, errorOutputs) => 1
             }
-            val conntions: Vector[Connection] = {
+            val connections: Vector[Connection] = {
               val instanceConnectedByInput: Map[ElementName, Vector[Input]] = instanceFromInput.filter {
                 case (elementName, inputs) => inputs.exists(_.inputType.name == ot.outputType.name)
               }
 
               instanceConnectedByInput.map {
-                case (eleName, ins) =>  {
+                case (eleName, ins) => {
                   val inputIndex = ins.find(_.inputType.name == ot.outputType.name).get.index
                   Connection(instanceId, outputIndex, eleName, inputIndex)
                 }
               }.toVector
             }
-            conntions
+            connections
           }
       }
     logger.debug(s"extract connections:${System.lineSeparator()}${connections.mkString(System.lineSeparator())}")
 
     val cleanDefinitions: Vector[Definition] = definitionsWithDecorates.filterNot(_.name.contains("::")).
-      map{ defi =>
+      map { defi =>
         val cleanInputs = defi.inputs.map(in => Input(InputType(in.inputType.name.split("::").last), in.index))
         defi match {
           case i: InputEndpoint => i
@@ -104,7 +116,7 @@ object PlantUML2Model {
     val activeFlow: Option[Flow] = Some(flow)
 
     //create model
-    val model = Model(modelName,cleanDefinitions, flows, activeFlow)
+    val model = Model(modelName, cleanDefinitions, flows, activeFlow)
     model
   }
 }

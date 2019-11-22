@@ -21,8 +21,8 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
       add2.inputs.head shouldBe Input(InputType("Integer"), 1)
       val addAndPrint: OutputEndpoint = model.definitions.find(_.name == "AddAndPrint").get.asInstanceOf[OutputEndpoint]
       addAndPrint.inputs.size shouldBe 2
-      addAndPrint.inputs.head shouldBe Input(InputType("Integer"), 1)
-      addAndPrint.inputs.last shouldBe Input(InputType("Integer"), 2)
+      addAndPrint.inputs.head shouldBe Input(InputType("Integer"), 2)
+      addAndPrint.inputs.last shouldBe Input(InputType("Integer"), 1)
     }
     it("can transform from complex plantuml string to type flow model") {
       val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/multi_param.puml")).get
@@ -42,8 +42,8 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
       add2.inputs.head shouldBe Input(InputType("Integer"), 1)
       val addAndPrint: OutputEndpoint = model.definitions.find(_.name == "AddAndPrint").get.asInstanceOf[OutputEndpoint]
       addAndPrint.inputs.size shouldBe 2
-      addAndPrint.inputs.head shouldBe Input(InputType("Integer"), 1)
-      addAndPrint.inputs.last shouldBe Input(InputType("Integer"), 2)
+      addAndPrint.inputs.head shouldBe Input(InputType("Integer"), 2)
+      addAndPrint.inputs.last shouldBe Input(InputType("Integer"), 1)
 
       val flow = model.activeFlow.get
       flow.name shouldBe model.name
@@ -63,6 +63,12 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
       val loadDataConn = flow.connections.find(_.fromInstanceId == "LoadData").get
       println(loadDataConn)
       loadDataConn.outputIndex shouldBe 1
+    }
+    it("can load model with index annotated inputs") {
+      val puml = ReadFile.execute(ModelFilePath("./fixtures/OneOfTwo.puml")).get
+      val model = PlantUML2Model.execute("OneOfTwo", puml)
+      val multi3 = model.definitions.find(_.name == "Multi3").get
+      multi3.inputs.size shouldBe 1
     }
   }
 }
