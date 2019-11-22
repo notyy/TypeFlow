@@ -32,19 +32,19 @@ NumInput --> NI::Integer
 NI::Integer --> RecordInput
 RecordInput .. InputRecord
 NI::Integer --> Dispatch
-Dispatch --> DI::Integer
-Dispatch --> DI::Unit
+Dispatch --> "1" DI::Integer
+Dispatch --> "2" DI::Unit
 DI::Unit --> LoadAccumulateValue
 LoadAccumulateValue --> LAL::Integer
-LAL::Integer --> Accumulate
+LAL::Integer --> "1" Accumulate
 DI::Integer --> Add2
 DI::Integer --> Multi3
 Add2 --> A2::Integer
-A2::Integer --> Add
+A2::Integer --> "2" Add
 Multi3 --> M3::Integer
-M3::Integer --> Add
+M3::Integer --> "1" Add
 Add --> A::Integer
-A::Integer --> Accumulate
+A::Integer --> "2" Accumulate
 Accumulate --> AC::Integer
 AC::Integer --> Print
 AC::Integer --> SaveAccumulateValue

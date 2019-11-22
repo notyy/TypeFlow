@@ -18,7 +18,7 @@ NumInput --> NI::Integer
 NI::Integer --> Add2
 NI::Integer --> Multi3
 Add2 --> A2::Integer
-A2::Integer --> AddAndPrint
+A2::Integer --> "2" AddAndPrint
 Multi3 --> M3::Integer
-M3::Integer --> AddAndPrint
+M3::Integer --> "1" AddAndPrint
 @enduml

@@ -3,6 +3,7 @@
 
 skinparam class {
 	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
+	BackgroundColor<<FileInputEndpoint>> BurlyWood
     BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
     BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
     BackgroundColor<<OutputEndpoint>> BurlyWood
@@ -21,14 +22,24 @@ class LoadAccumulateValue <<OutputEndpoint>>
 class SaveAccumulateValue <<OutputEndpoint>>
 class AccumulateValueResource <<Resource>>
 class Dispatch <<PureFunction>>
+class AccumulateRecord <<Resource>>
+class LoadAccumulateRecord <<OutputEndpoint>>
+class LoadInputRecord <<FileInputEndpoint>>
+class InputRecord <<Resource>>
+class Compare <<PureFunction>>
+class PrintCompareResult <<OutputEndpoint>>
 
 LoadAccumulateValue .. AccumulateValueResource
 SaveAccumulateValue .. AccumulateValueResource
 NumInput --> NI::Integer
-NI::Integer --> Dispatch
+LoadInputRecord --> LIR::Integer
+LoadInputRecord .. InputRecord
+LIR::Integer --> "1" Dispatch
+NI::Integer --> "1" Dispatch
 Dispatch --> "1" DI::Integer
 Dispatch --> "2" DI::Unit
 DI::Unit --> LoadAccumulateValue
+DI::Unit --> LoadAccumulateRecord
 LoadAccumulateValue --> LAL::Integer
 LAL::Integer --> "1" Accumulate
 DI::Integer --> Add2
@@ -42,4 +53,10 @@ A::Integer --> "2" Accumulate
 Accumulate --> AC::Integer
 AC::Integer --> Print
 AC::Integer --> SaveAccumulateValue
+AccumulateRecord .. LoadAccumulateRecord
+LoadAccumulateRecord --> LAR1::Integer
+AC::Integer --> Compare
+LAR1::Integer --> Compare
+Compare --> Boolean
+Boolean --> PrintCompareResult
 @enduml
