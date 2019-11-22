@@ -15,7 +15,7 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
       model.definitions.map(_.name) should contain("Multi3")
       model.definitions.map(_.name) should contain("AddAndPrint")
       val numInput: InputEndpoint = model.definitions.find(_.name == "NumInput").get.asInstanceOf[InputEndpoint]
-      numInput.outputType.name shouldBe "NI::Integer"
+      numInput.outputType.name shouldBe "Integer"
       val add2: PureFunction = model.definitions.find(_.name == "Add2").get.asInstanceOf[PureFunction]
       add2.inputs.size shouldBe 1
       add2.inputs.head shouldBe Input(InputType("Integer"), 1)
@@ -36,7 +36,7 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
       model.definitions.map(_.name) should contain("PrintEP")
 
       val numInput: InputEndpoint = model.definitions.find(_.name == "NumInput").get.asInstanceOf[InputEndpoint]
-      numInput.outputType.name shouldBe "NI::Integer"
+      numInput.outputType.name shouldBe "Integer"
       val add2: PureFunction = model.definitions.find(_.name == "Add2").get.asInstanceOf[PureFunction]
       add2.inputs.size shouldBe 1
       add2.inputs.head shouldBe Input(InputType("Integer"), 1)

@@ -3,8 +3,12 @@
 
 skinparam class {
 	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
-	BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
-	BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
+    BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
+    BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<PureFunction>> LightBlue
+    BackgroundColor<<AlternativePath>> Crimson
+    BackgroundColor<<Resource>> Brown
 }
 
 class NumInput <<CommandLineInputEndpoint>>
@@ -23,12 +27,12 @@ NI::Integer --> LoadData
 LoadData --> LD::Integer
 LoadData <.. AccuStore
 Add2 --> A2::Integer
-A2::Integer --> Add
+A2::Integer --> "2" Add
 Multi3 --> M3::Integer
-M3::Integer --> Add
+M3::Integer --> "1" Add
 Add --> A::Integer
-A::Integer --> Accumulator
-LD::Integer --> Accumulator
+A::Integer --> "1" Accumulator
+LD::Integer --> "2" Accumulator
 Accumulator --> AC::Integer
 AC::Integer --> Print
 AC::Integer --> WriteData

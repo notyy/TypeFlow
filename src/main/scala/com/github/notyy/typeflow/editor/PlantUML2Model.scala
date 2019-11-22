@@ -36,15 +36,15 @@ object PlantUML2Model {
         case (from, index, to) => rawDefiNameType.keySet.contains(from)
       }.groupMap(_._1)(x => (x._2, x._3)).view.
         mapValues(_.map {
-          case (index, to) => Output(OutputType(TypeUtil.removeDecorate(to)), index)
-        }.distinct).toMap
+          case (index, to) => Output(OutputType(to), index)
+        }.distinctBy(_.index)).toMap
     val outputToInstance = fromTos.filter { case (from, index, to) => rawDefiNameType.keySet.contains(to) }
     val instanceFromInput: Map[ElementName, Vector[Input]] =
       outputToInstance.map { case (from, index, to) => (to, index, from) }.
         groupMap(_._1)(x => (x._2, x._3)).view.
         mapValues(_.map {
-          case (index, from) => Input(InputType(TypeUtil.removeDecorate(from)), index)
-        }.distinct).toMap
+          case (index, from) => Input(InputType(from), index)
+        }.distinctBy(_.index)).toMap
 
     val definitionsWithDecorates: Vector[Definition] = rawDefiNameType.toVector.map {
       case (name, "CommandLineInputEndpoint") => CommandLineInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
@@ -82,7 +82,7 @@ object PlantUML2Model {
               case PureFunction(name, inputs, outputs) => outputs.find(_ == ot).get.index
               case OutputEndpoint(name, inputs, outputs, errorOutputs) => 1
             }
-            val connections: Vector[Connection] = {
+            val conns: Vector[Connection] = {
               val instanceConnectedByInput: Map[ElementName, Vector[Input]] = instanceFromInput.filter {
                 case (elementName, inputs) => inputs.exists(_.inputType.name == ot.outputType.name)
               }
@@ -94,18 +94,21 @@ object PlantUML2Model {
                 }
               }.toVector
             }
-            connections
+            conns
           }
       }
     logger.debug(s"extract connections:${System.lineSeparator()}${connections.mkString(System.lineSeparator())}")
 
     val cleanDefinitions: Vector[Definition] = definitionsWithDecorates.filterNot(_.name.contains("::")).
       map { defi =>
-        val cleanInputs = defi.inputs.map(in => Input(InputType(in.inputType.name.split("::").last), in.index))
+        val cleanInputs = defi.inputs.map(in => Input(InputType(TypeUtil.removeDecorate(in.inputType.name)), in.index))
+        val cleanOutputs = defi.outputs.map(out => Output(OutputType(TypeUtil.removeDecorate(out.outputType.name)), out.index))
         defi match {
-          case i: InputEndpoint => i
-          case p: PureFunction => p.copy(inputs = cleanInputs)
-          case o: OutputEndpoint => o.copy(inputs = cleanInputs)
+          case ci: CommandLineInputEndpoint => ci.copy(outputType = cleanOutputs.head.outputType)
+          case fi: FileInputEndpoint => fi.copy(outputType = cleanOutputs.head.outputType)
+          case ahi: AliyunHttpInputEndpoint => ahi.copy(outputType = cleanOutputs.head.outputType)
+          case p: PureFunction => p.copy(inputs = cleanInputs, outputs = cleanOutputs)
+          case o: OutputEndpoint => o.copy(inputs = cleanInputs, outputType = cleanOutputs.head.outputType)
         }
       }
 
