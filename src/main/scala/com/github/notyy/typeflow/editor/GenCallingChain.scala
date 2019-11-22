@@ -54,6 +54,8 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
             logger.debug(s"append statement: $statement")
             statements += statement.get
             accuStatements(targetInstance, resultNamesMap, connections, instances)
+          }else{
+            logger.warn(s"no statement generated for: $paramName, $targetInstance, $targetInstanceInputIndex, $resultName")
           }
         }
       }

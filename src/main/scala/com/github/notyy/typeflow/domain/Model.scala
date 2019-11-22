@@ -21,6 +21,9 @@ trait InputEndpoint extends Definition {
 case class CommandLineInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint {
   override def subName: String = "CommandLineInputEndpoint"
 }
+case class FileInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint {
+  override def subName: String = "FileInputEndpoint"
+}
 case class CommandLineArgsInputEndpoint(name: String, outputType: OutputType) extends InputEndpoint {
   override def subName: String = "CommandLineArgsInputEndpoint"
 }

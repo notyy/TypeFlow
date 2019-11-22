@@ -5,7 +5,7 @@ import org.scalatest.{FunSpec, Matchers}
 class LoadCommandLineInputEndpointCodeTemplateTest extends FunSpec with Matchers {
   describe("LoadInputEndpointCodeTemplate") {
     it("can load command line input endpoint code template") {
-      val codeTemplate: CodeTemplate = LoadCommandLineInputEndpointCodeTemplate.execute(JAVA_LANG).get
+      val codeTemplate: CodeTemplate = LoadFileInputEndpointCodeTemplate.execute(JAVA_LANG).get
       codeTemplate.value.isEmpty shouldNot be(true)
     }
   }

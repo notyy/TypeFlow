@@ -55,8 +55,8 @@ AC::Integer --> Print
 AC::Integer --> SaveAccumulateValue
 AccumulateRecord .. LoadAccumulateRecord
 LoadAccumulateRecord --> LAR1::Integer
-AC::Integer --> Compare
-LAR1::Integer --> Compare
+AC::Integer --> "1" Compare
+LAR1::Integer --> "2" Compare
 Compare --> Boolean
 Boolean --> PrintCompareResult
 @enduml

@@ -18,6 +18,7 @@ object GenCodeScript extends App {
     val (pureFunctions, inputEndpoints, outputEndpoints, customTypes) = DefinitionSorter.execute(model)
     val genPureFunctions = new GenPureFunctions(new GenJavaPureFunction(new GenFormalParams))
     val genCommandLineInputEndpoints = new GenCommandLineInputEndpoints(new GenCommandLineInputEndpoint(new GenCallingChain(new GenLocalCallStatement)))
+    val genFileInputEndpoints = new GenFileInputEndpoints(new GenFileInputEndpoint(new GenCallingChain(new GenLocalCallStatement)))
     val genOutputEndpoints = new GenOutputEndpoints(new GenJavaOutputEndpoint(new GenFormalParams))
     val saveCodes = new SaveCodes(new SaveToFile, new QualifiedName2CodeStructurePath)
 
@@ -26,14 +27,23 @@ object GenCodeScript extends App {
       saveCodes.execute(pureFunctionCodes, outputPath)
     }
 
-    val (commandLineArgsInputEndpoints, commandLineInputEndpoints, aliyunHttpInputEndpoints) = InputEndpointSorter.execute(inputEndpoints)
-    val commandLineInputEndpointSaveRs = LoadInputEndpointCodeTemplate.execute(SCALA_LANG).flatMap { scalaCommandLineInputEndpointCodeTemplate =>
+    val (commandLineArgsInputEndpoints, commandLineInputEndpoints, aliyunHttpInputEndpoints, fileInputEndpoints) = InputEndpointSorter.execute(inputEndpoints)
+    val commandLineInputEndpointSaveRs = LoadFileInputEndpointCodeTemplate.execute(SCALA_LANG).flatMap { scalaCommandLineInputEndpointCodeTemplate =>
       val commandLineInputEndpointCodes = genCommandLineInputEndpoints.execute(commandLineInputEndpoints, packageName, scalaCommandLineInputEndpointCodeTemplate, model)
       saveCodes.execute(commandLineInputEndpointCodes, outputPath)
     }
     commandLineInputEndpointSaveRs match {
       case Success(_) => logger.info("commandLineInputEndpoint save successfully")
       case Failure(exception) => logger.error("commandLineInputEndpoint save failed", exception)
+    }
+
+    val fileInputEndpointSaveRs = LoadFileInputEndpointCodeTemplate.execute(SCALA_LANG).flatMap { scalaFileInputEndpointCodeTemplate =>
+      val fileInputEndpointCodes = genFileInputEndpoints.execute(fileInputEndpoints, packageName, scalaFileInputEndpointCodeTemplate, model)
+      saveCodes.execute(fileInputEndpointCodes, outputPath)
+    }
+    fileInputEndpointSaveRs match {
+      case Success(_) => logger.info("fileInputEndpoint save successfully")
+      case Failure(exception) => logger.error("fileInputEndpoint save failed", exception)
     }
 
     val outputEndpointSaveRs = LoadOutputEndpointCodeTemplate.execute(JAVA_LANG).flatMap { javaOutputEndpointCodeTemplate =>

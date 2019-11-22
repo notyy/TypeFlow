@@ -12,7 +12,8 @@ class InputEndpointSorterTest extends FunSpec with Matchers {
           CommandLineInputEndpoint("numInput", OutputType("Integer")),
           AliyunHttpInputEndpoint("aliyunNumInput", OutputType("Integer"))
         )
-      val (cmlargs, numInputs, aliyunNumInputs) = InputEndpointSorter.execute(inputs)
+      val (cmlargs, numInputs, aliyunNumInputs, fileInputEndpoints) = InputEndpointSorter.execute(inputs)
+      fileInputEndpoints shouldBe empty
       cmlargs.length shouldBe 1
       cmlargs.exists(_.name == "cmlargs1") shouldBe true
       numInputs.length shouldBe 1
