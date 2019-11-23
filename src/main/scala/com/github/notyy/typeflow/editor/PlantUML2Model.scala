@@ -37,14 +37,14 @@ object PlantUML2Model {
       }.groupMap(_._1)(x => (x._2, x._3)).view.
         mapValues(_.map {
           case (index, to) => Output(OutputType(to), index)
-        }.distinctBy(_.index)).toMap
+        }).toMap
     val outputToInstance = fromTos.filter { case (from, index, to) => rawDefiNameType.keySet.contains(to) }
     val instanceFromInput: Map[ElementName, Vector[Input]] =
       outputToInstance.map { case (from, index, to) => (to, index, from) }.
         groupMap(_._1)(x => (x._2, x._3)).view.
         mapValues(_.map {
           case (index, from) => Input(InputType(from), index)
-        }.distinctBy(_.index)).toMap
+        }).toMap
 
     val definitionsWithDecorates: Vector[Definition] = rawDefiNameType.toVector.map {
       case (name, "CommandLineInputEndpoint") => CommandLineInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
@@ -52,8 +52,8 @@ object PlantUML2Model {
       case (name, "AliyunHttpInputEndpoint") => AliyunHttpInputEndpoint(name, instanceToOutput(name).map(ot => OutputType(ot.outputType.name)).head)
       case (name, "PureFunction") => {
         PureFunction(name,
-          instanceFromInput(name),
-          instanceToOutput(name))
+          instanceFromInput(name).distinctBy(_.index),
+          instanceToOutput(name).distinctBy(_.index))
       }
       case (name, "OutputEndpoint") => {
         OutputEndpoint(name,
@@ -74,6 +74,7 @@ object PlantUML2Model {
     val connections: Vector[Connection] =
       instanceToOutput.toVector.flatMap {
         case (instanceId, outputs) =>
+          logger.debug(s"extracting connection from $instanceId, $outputs")
           outputs.flatMap { ot =>
             val outputIndex: Int = definitionsWithDecorates.find(_.name == instanceId).get match {
               case CommandLineInputEndpoint(name, outputType) => 1
