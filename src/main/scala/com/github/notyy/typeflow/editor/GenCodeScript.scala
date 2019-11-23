@@ -15,11 +15,12 @@ object GenCodeScript extends App {
       packageName = args(3), platform = args(4), codeUri = args(5))
   val result = ReadFile.execute(modelPath).map { puml =>
     val model = PlantUML2Model.execute(ModelPath2ModelName.execute(modelPath.value), puml)
-    val (pureFunctions, inputEndpoints, outputEndpoints, customTypes) = DefinitionSorter.execute(model)
+    val (pureFunctions, inputEndpoints, outputEndpoints, customTypes, fileOutputEndpoints) = DefinitionSorter.execute(model)
     val genPureFunctions = new GenPureFunctions(new GenJavaPureFunction(new GenFormalParams))
     val genCommandLineInputEndpoints = new GenCommandLineInputEndpoints(new GenCommandLineInputEndpoint(new GenCallingChain(new GenLocalCallStatement)))
     val genFileInputEndpoints = new GenFileInputEndpoints(new GenFileInputEndpoint(new GenCallingChain(new GenLocalCallStatement)))
     val genOutputEndpoints = new GenOutputEndpoints(new GenJavaOutputEndpoint(new GenFormalParams))
+    val genFileOutputEndpoints = new GenFileOutputEndpoints(new GenFileOutputEndpoint(new GenFormalParams))
     val saveCodes = new SaveCodes(new SaveToFile, new QualifiedName2CodeStructurePath)
 
     val pureFunctionSaveRs = LoadPureFunctionCodeTemplate.execute(JAVA_LANG).flatMap { javaPureFunctionCodeTemplate =>
@@ -51,6 +52,11 @@ object GenCodeScript extends App {
       saveCodes.execute(outputEndpointCodes, outputPath)
     }
 
+    val fileOutputEndpointSaveRs = LoadFileOutputEndpointCodeTemplate.execute(JAVA_LANG).flatMap { fileOutputEndpointCodeTemplate =>
+      val fileOutputEndpointCodes = genFileOutputEndpoints.execute(JAVA_LANG, fileOutputEndpoints, packageName, fileOutputEndpointCodeTemplate)
+      saveCodes.execute(fileOutputEndpointCodes, outputPath)
+    }
+
     if(platform != Local) {
       val platformCodesRs = LoadAliyunHandlerCodeTemplate.execute().flatMap {
         aliyunHandlerCodeTemplate => {
@@ -73,7 +79,7 @@ object GenCodeScript extends App {
       GenAliyunTemplate.execute(model.name,model.definitions, codeUri, packageName, outputPath)
     }
 
-    val totalRs: Vector[Try[Unit]] = Vector(pureFunctionSaveRs, commandLineInputEndpointSaveRs, outputEndpointSaveRs)
+    val totalRs: Vector[Try[Unit]] = Vector(pureFunctionSaveRs, commandLineInputEndpointSaveRs, outputEndpointSaveRs, fileOutputEndpointSaveRs)
     if (totalRs.exists(_.isFailure)) {
       totalRs.filter(_.isFailure).map(_.asInstanceOf[Failure[Unit]]).reduce {
         (f1, f2) => Failure(new IllegalArgumentException(s"${f1.exception.getMessage}${System.lineSeparator()}${f2.exception.getMessage}", f1.exception))

@@ -7,7 +7,7 @@ class DefinitionSorterTest extends FunSpec with Matchers {
     it("will sort definitions by type, for later code generation") {
       val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel.puml")).get
       val model = PlantUML2Model.execute("newModel", puml)
-      val (pureFunctions, inputEndpoints, outputEndpoints, customTypes) = DefinitionSorter.execute(model)
+      val (pureFunctions, inputEndpoints, outputEndpoints, customTypes, fileOutputEndpoints) = DefinitionSorter.execute(model)
       pureFunctions.size shouldBe 2
       pureFunctions.exists(_.name == "Add2") shouldBe true
       pureFunctions.exists(_.name == "Multi3") shouldBe true
@@ -16,6 +16,7 @@ class DefinitionSorterTest extends FunSpec with Matchers {
       outputEndpoints.size shouldBe 1
       outputEndpoints.exists(_.name == "AddAndPrint") shouldBe true
       customTypes.isEmpty shouldBe true
+      fileOutputEndpoints.isEmpty shouldBe true
     }
   }
 }

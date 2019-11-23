@@ -6,6 +6,7 @@ skinparam class {
     BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
     BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
     BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<FileOutputEndpoint>> BurlyWood
     BackgroundColor<<PureFunction>> LightBlue
     BackgroundColor<<AlternativePath>> Crimson
     BackgroundColor<<Resource>> Brown
@@ -17,20 +18,18 @@ class Add <<PureFunction>>
 class Print <<OutputEndpoint>>
 class Multi3 <<PureFunction>>
 class Accumulate <<PureFunction>>
-class LoadAccumulateValue <<OutputEndpoint>>
-class SaveAccumulateValue <<OutputEndpoint>>
+class LoadAccumulateValue <<FileOutputEndpoint>>
+class SaveAccumulateValue <<FileOutputEndpoint>>
 class AccumulateValueResource <<Resource>>
 class Dispatch <<PureFunction>>
-class RecordInput <<OutputEndpoint>>
-class RecordAccumulateResult <<OutputEndpoint>>
-class AccumulateResultRecord <<Resource>>
-class InputRecord <<Resource>>
+class Record <<FileOutputEndpoint>>
+class TestRecord <<Resource>>
 
 LoadAccumulateValue .. AccumulateValueResource
 SaveAccumulateValue .. AccumulateValueResource
 NumInput --> NI::Integer
-NI::Integer --> RecordInput
-RecordInput .. InputRecord
+NI::Integer --> "1" Record
+Record .. TestRecord
 NI::Integer --> Dispatch
 Dispatch --> "1" DI::Integer
 Dispatch --> "2" DI::Unit
@@ -48,6 +47,5 @@ A::Integer --> "2" Accumulate
 Accumulate --> AC::Integer
 AC::Integer --> Print
 AC::Integer --> SaveAccumulateValue
-AC::Integer --> RecordAccumulateResult
-RecordAccumulateResult .. AccumulateResultRecord
+AC::Integer --> "2" Record
 @enduml

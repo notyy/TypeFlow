@@ -36,6 +36,9 @@ case class PureFunction(name: String, inputs: Vector[Input], outputs: Vector[Out
 case class OutputEndpoint(name: String, inputs: Vector[Input], outputType: OutputType, errorOutputs: Vector[Output]) extends Definition {
   override def outputs: Vector[Output] = Vector(Output(outputType,1))
 }
+case class FileOutputEndpoint(name: String, inputs: Vector[Input], outputType: OutputType, errorOutputs: Vector[Output]) extends Definition {
+  override def outputs: Vector[Output] = Vector(Output(outputType,1))
+}
 
 case class Input(inputType: InputType, index: Int)
 

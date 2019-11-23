@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class $DefinitionName$ {
-    public void execute($Params$) {
+    public $ReturnType$ execute($Params$) {
         //TODO give me path
         File file = new File("./give-me-path");
         BufferedWriter writer = null;
