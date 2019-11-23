@@ -28,7 +28,7 @@ object GenCodeScript extends App {
     }
 
     val (commandLineArgsInputEndpoints, commandLineInputEndpoints, aliyunHttpInputEndpoints, fileInputEndpoints) = InputEndpointSorter.execute(inputEndpoints)
-    val commandLineInputEndpointSaveRs = LoadFileInputEndpointCodeTemplate.execute(SCALA_LANG).flatMap { scalaCommandLineInputEndpointCodeTemplate =>
+    val commandLineInputEndpointSaveRs = LoadCommandLineInputEndpointCodeTemplate.execute(SCALA_LANG).flatMap { scalaCommandLineInputEndpointCodeTemplate =>
       val commandLineInputEndpointCodes = genCommandLineInputEndpoints.execute(commandLineInputEndpoints, packageName, scalaCommandLineInputEndpointCodeTemplate, model)
       saveCodes.execute(commandLineInputEndpointCodes, outputPath)
     }
