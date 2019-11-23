@@ -70,7 +70,8 @@ libraryDependencies ++= Seq(
   "com.aliyun" % "aliyun-java-sdk-fc" % "1.4.0",
   "com.aliyun.fc.runtime" % "fc-java-core" % "1.3.0",
   "com.aliyun.oss" % "aliyun-sdk-oss" % "3.6.0",
-  "org.json4s" %% "json4s-native" % "3.6.7"
+  "org.json4s" %% "json4s-native" % "3.6.7",
+  "io.vavr" % "vavr" % "0.9.3"
 )
 
 logBuffered := false
