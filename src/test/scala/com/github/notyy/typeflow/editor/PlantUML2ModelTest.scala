@@ -72,14 +72,14 @@ class PlantUML2ModelTest extends FunSpec with Matchers {
     }
     it("can load model with multiple input end points") {
       val puml = ReadFile.execute(ModelFilePath("./fixtures/diff/newModel_v1_replay.puml")).get
-      val model = PlantUML2Model.execute("OneOfTwo", puml)
+      val model = PlantUML2Model.execute("newModel_v1_replay", puml)
       val numInput = model.definitions.find(_.name == "NumInput").get
       numInput.outputs.size shouldBe 1
-      val loadInputRecord = model.definitions.find(_.name == "LoadInputRecord").get
+      val loadInputRecord = model.definitions.find(_.name == "LoadTestRecord").get
       loadInputRecord.outputs.size shouldBe 1
       val connections = model.activeFlow.get.connections
       connections.exists(_.fromInstanceId == "NumInput") shouldBe true
-      connections.exists(_.fromInstanceId == "LoadInputRecord") shouldBe true
+      connections.exists(_.fromInstanceId == "LoadTestRecord") shouldBe true
     }
   }
 }
