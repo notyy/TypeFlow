@@ -17,7 +17,7 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
   //use mutable map to store param names for definition that requires multiple inputs
   private val waitingParams: scala.collection.mutable.Map[InstanceId, Map[InputIndex, ParamName]] = scala.collection.mutable.Map.empty
   private var startInstance: Option[Instance] = None
-  private var statements:ArrayBuffer[String] = ArrayBuffer.empty
+  private var statements: ArrayBuffer[String] = ArrayBuffer.empty
 
   def execute(outFrom: Instance, outputIndex: Int, outputParamName: String, connections: Vector[Connection], instances: Vector[Instance]): Vector[String] = {
     startInstance = Some(outFrom)
@@ -42,27 +42,25 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
         if (targetInstance == startInstance.get) {
           val statement: String = genResponse4request(paramName)
           logger.debug(s"append statement: $statement")
-//          currStatements.appended(statement)
+          //          currStatements.appended(statement)
           statements += statement
         } else {
           val resultNamesMap = genResultName(targetInstance)
-          val resultName = if (resultNamesMap.size == 1) resultNamesMap.head._2
-          else s"(${resultNamesMap.values.mkString(",")})"
           //TODO only support java for now
-          val statement = genCallStatements(paramName, targetInstance, targetInstanceInputIndex, resultName)
-          if (statement.isDefined) {
+          val statement = genCallStatements(paramName, targetInstance, targetInstanceInputIndex, resultNamesMap)
+          if (statement.nonEmpty) {
             logger.debug(s"append statement: $statement")
-            statements += statement.get
+            statements.appendAll(statement)
             accuStatements(targetInstance, resultNamesMap, connections, instances)
-          }else{
-            logger.warn(s"no statement generated for: $paramName, $targetInstance, $targetInstanceInputIndex, $resultName")
+          } else {
+            logger.warn(s"no statement generated for: $paramName, $targetInstance, $targetInstanceInputIndex, $resultNamesMap")
           }
         }
       }
     }
   }
 
-  private def genResultName(targetInstance: Instance): Map[Int,String] = {
+  private def genResultName(targetInstance: Instance): Map[Int, String] = {
     val outputs = targetInstance.definition.outputs
     val filterOutUnit = outputs.filterNot(ot => TypeUtil.removeDecorate(ot.outputType.name) == "Unit")
     filterOutUnit.map { o =>
@@ -75,11 +73,11 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
     statement
   }
 
-  private def genCallStatements(paramNames: String, targetInstance: Instance, targetInstanceInputIndex: Int, resultName: String): Option[String] = {
+  private def genCallStatements(paramNames: String, targetInstance: Instance, targetInstanceInputIndex: Int, resultNamesMap: Map[Int,String]): Vector[String] = {
     val targetDefinition = targetInstance.definition
     val targetInputs = targetDefinition.inputs
     if (targetInputs.size == 1) {
-      genCallStatement.execute(Vector(paramNames), resultName, targetDefinition)
+      genCallStatement.execute(Vector(paramNames), resultNamesMap, targetDefinition)
     } else {
       if (waitingParams.contains(targetInstance.id)) {
         val prevParams = waitingParams(targetInstance.id)
@@ -88,16 +86,16 @@ class GenCallingChain(val genCallStatement: GenCallStatement) {
           //enough parameters
           val params = currParams.toVector.sortBy(_._1).map(_._2)
           //          val statement = s"val $resultName = new ${targetDefinition.name}().execute($params)"
-          val statement = genCallStatement.execute(params, resultName, targetDefinition)
+          val statement = genCallStatement.execute(params, resultNamesMap, targetDefinition)
           waitingParams.remove(targetInstance.id)
           statement
         } else {
           waitingParams += (targetInstance.id -> currParams)
-          None
+          Vector.empty
         }
       } else {
         waitingParams += (targetInstance.id -> Map(targetInstanceInputIndex -> paramNames))
-        None
+        Vector.empty
       }
     }
   }

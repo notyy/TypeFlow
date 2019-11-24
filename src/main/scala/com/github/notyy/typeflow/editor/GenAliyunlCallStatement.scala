@@ -3,12 +3,21 @@ package com.github.notyy.typeflow.editor
 import com.github.notyy.typeflow.domain.Definition
 
 class GenAliyunlCallStatement(val serviceName: String) extends GenCallStatement {
-  override def execute(paramNames: Vector[String], resultName: String, targetDefinition: Definition): Option[String] = {
+  override def execute(paramNames: Vector[String], resultNamesMap: Map[Int,String], targetDefinition: Definition): Vector[String] = {
     val executeStatement = genExecuteStatement(targetDefinition, paramNames)
     if (haveReturnType(targetDefinition)) {
-      Some(s"val $resultName = $executeStatement.get")
+      if (resultNamesMap.size == 1) {
+        Vector(s"val ${resultNamesMap.head._2} = $executeStatement.get")
+      } else {
+        val tupleReturnName = resultNamesMap.head._2.init
+        val returnLine = s"val $tupleReturnName  = $executeStatement.get"
+        val splitLines = resultNamesMap.toSeq.sortBy(_._1).map{
+          case (i,name) => s"val $name = $tupleReturnName._i"
+        }
+        Vector(splitLines.prepended(returnLine).mkString(System.lineSeparator()))
+      }
     } else {
-      Some(s"$executeStatement.get")
+      Vector(s"$executeStatement.get")
     }
   }
 

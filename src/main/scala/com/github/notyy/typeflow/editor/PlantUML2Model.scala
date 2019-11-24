@@ -86,7 +86,10 @@ object PlantUML2Model {
               case CommandLineInputEndpoint(name, outputType) => 1
               case FileInputEndpoint(name, outputType) => 1
               case AliyunHttpInputEndpoint(name, outputType) => 1
-              case PureFunction(name, inputs, outputs) => outputs.find(_ == ot).get.index
+              case PureFunction(name, inputs, outputs) => {
+                val maybeOutput = outputs.find(_ == ot)
+                maybeOutput.get.index
+              }
               case OutputEndpoint(name, inputs, outputs, errorOutputs) => 1
               case FileOutputEndpoint(name, inputs, outputs, errorOutputs) => 1
             }

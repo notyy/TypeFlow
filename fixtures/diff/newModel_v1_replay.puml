@@ -22,24 +22,25 @@ class LoadAccumulateValue <<OutputEndpoint>>
 class SaveAccumulateValue <<OutputEndpoint>>
 class AccumulateValueResource <<Resource>>
 class Dispatch <<PureFunction>>
-class AccumulateRecord <<Resource>>
-class LoadAccumulateRecord <<OutputEndpoint>>
-class LoadInputRecord <<FileInputEndpoint>>
-class InputRecord <<Resource>>
+class LoadTestRecord <<FileInputEndpoint>>
+class Split <<PureFunction>>
+class TestRecord <<Resource>>
 class Compare <<PureFunction>>
 class PrintCompareResult <<OutputEndpoint>>
 
 LoadAccumulateValue .. AccumulateValueResource
 SaveAccumulateValue .. AccumulateValueResource
 NumInput --> NI::Integer
-LoadInputRecord --> LIR::Integer
-LoadInputRecord .. InputRecord
-LIR::Integer --> "1" Dispatch
+LoadTestRecord --> LTR::String
+LoadTestRecord .. TestRecord
+LTR::String --> Split
+Split --> "1" SPL_INPUT::Integer
+Split --> "2" SPL_ACCU::Integer
+SPL_INPUT::Integer --> "1" Dispatch
 NI::Integer --> "1" Dispatch
 Dispatch --> "1" DI::Integer
 Dispatch --> "2" DI::Unit
 DI::Unit --> LoadAccumulateValue
-DI::Unit --> LoadAccumulateRecord
 LoadAccumulateValue --> LAL::Integer
 LAL::Integer --> "1" Accumulate
 DI::Integer --> Add2
@@ -53,10 +54,8 @@ A::Integer --> "2" Accumulate
 Accumulate --> AC::Integer
 AC::Integer --> Print
 AC::Integer --> SaveAccumulateValue
-AccumulateRecord .. LoadAccumulateRecord
-LoadAccumulateRecord --> LAR1::Integer
 AC::Integer --> "1" Compare
-LAR1::Integer --> "2" Compare
+SPL_ACCU::Integer --> "2" Compare
 Compare --> Boolean
 Boolean --> PrintCompareResult
 @enduml
