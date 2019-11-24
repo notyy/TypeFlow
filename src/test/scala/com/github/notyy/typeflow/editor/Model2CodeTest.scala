@@ -17,7 +17,7 @@ class Model2CodeTest extends FunSpec with Matchers {
         s"""|package $packageName
             |
             |object AddAndPrint {
-            |  def execute(param1: Integer,param2: Integer): Unit = {
+            |  def execute(param2: Integer,param1: Integer): Unit = {
             |    ???
             |  }
             |}
