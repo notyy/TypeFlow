@@ -6,6 +6,7 @@ skinparam class {
     BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
     BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
     BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<FileOutputEndpoint>> BurlyWood
     BackgroundColor<<PureFunction>> LightBlue
     BackgroundColor<<AlternativePath>> Crimson
     BackgroundColor<<Resource>> Brown
@@ -17,8 +18,8 @@ class Add <<PureFunction>>
 class Print <<OutputEndpoint>>
 class Multi3 <<PureFunction>>
 class Accumulate <<PureFunction>>
-class LoadAccumulateValue <<OutputEndpoint>>
-class SaveAccumulateValue <<OutputEndpoint>>
+class LoadAccumulateValue <<FileOutputEndpoint>>
+class SaveAccumulateValue <<FileOutputEndpoint>>
 class AccumulateValueResource <<Resource>>
 class Dispatch <<PureFunction>>
 
