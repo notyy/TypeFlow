@@ -19,7 +19,6 @@ class $DefinitionName$Handler extends HttpRequestHandler{
 
     //TODO region should not be hardcoded
     val fcClient = new FunctionComputeClient("cn-shanghai", accountId, accessKey, accessSecretKey)
-    val ossClient: OSS = new OSSClientBuilder().build("oss-cn-shanghai-internal.aliyuncs.com", accessKey, accessSecretKey)
     val source = Source.fromInputStream(request.getInputStream)
     JSONUtil.fromJSON[Param[$Params$]](source.mkString).map{ input =>
 $CallingChain$
