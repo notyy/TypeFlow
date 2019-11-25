@@ -3,7 +3,7 @@ package com.github.notyy.typeflow.editor
 import com.github.notyy.typeflow.domain.Definition
 
 class GenAliyunlCallStatement(val serviceName: String) extends GenCallStatement {
-  override def execute(paramNames: Vector[String], resultNamesMap: Map[Int,String], targetDefinition: Definition): Vector[String] = {
+  override def execute(paramNames: Vector[String], resultNamesMap: Map[Int, String], targetDefinition: Definition): Vector[String] = {
     val executeStatement = genExecuteStatement(targetDefinition, paramNames)
     if (haveReturnType(targetDefinition)) {
       if (resultNamesMap.size == 1) {
@@ -11,8 +11,8 @@ class GenAliyunlCallStatement(val serviceName: String) extends GenCallStatement 
       } else {
         val tupleReturnName = resultNamesMap.head._2.init
         val returnLine = s"val $tupleReturnName  = $executeStatement.get"
-        val splitLines = resultNamesMap.toSeq.sortBy(_._1).map{
-          case (i,name) => s"val $name = $tupleReturnName._i"
+        val splitLines = resultNamesMap.toSeq.sortBy(_._1).map {
+          case (i, name) => s"val $name = $tupleReturnName._i"
         }
         Vector(splitLines.prepended(returnLine).mkString(System.lineSeparator()))
       }
@@ -31,6 +31,6 @@ class GenAliyunlCallStatement(val serviceName: String) extends GenCallStatement 
   }
 
   private def haveReturnType(targetDefinition: Definition) = {
-    targetDefinition.outputs.size == 1 && targetDefinition.outputs.head.outputType.name != "Unit"
+    targetDefinition.outputs.nonEmpty && targetDefinition.outputs.head.outputType.name != "Unit"
   }
 }
