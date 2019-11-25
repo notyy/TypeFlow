@@ -67,6 +67,12 @@ object PlantUML2Model {
           instanceToOutput.get(name).map(_.head.outputType).getOrElse(OutputType("Unit")), Vector.empty
         )
       }
+      case (name, "AliyunOSSOutputEndpoint") => {
+        AliyunOSSOutputEndpoint(name,
+          instanceFromInput(name),
+          instanceToOutput.get(name).map(_.head.outputType).getOrElse(OutputType("Unit")), Vector.empty
+        )
+      }
     }
 
     val instances: Vector[Instance] =
@@ -92,6 +98,7 @@ object PlantUML2Model {
               }
               case OutputEndpoint(name, inputs, outputs, errorOutputs) => 1
               case FileOutputEndpoint(name, inputs, outputs, errorOutputs) => 1
+              case AliyunOSSOutputEndpoint(name, inputs, outputs, errorOutputs) => 1
             }
             val conns: Vector[Connection] = {
               val instanceConnectedByInput: Map[ElementName, Vector[Input]] = instanceFromInput.filter {
@@ -121,6 +128,7 @@ object PlantUML2Model {
           case p: PureFunction => p.copy(inputs = cleanInputs, outputs = cleanOutputs)
           case o: OutputEndpoint => o.copy(inputs = cleanInputs, outputType = cleanOutputs.head.outputType)
           case fo: FileOutputEndpoint => fo.copy(inputs = cleanInputs, outputType = cleanOutputs.head.outputType)
+          case ao: AliyunOSSOutputEndpoint => ao.copy(inputs = cleanInputs, outputType = cleanOutputs.head.outputType)
         }
       }
 

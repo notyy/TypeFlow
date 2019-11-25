@@ -15,12 +15,13 @@ object GenCodeScript extends App {
       packageName = args(3), platform = args(4), codeUri = args(5))
   val result = ReadFile.execute(modelPath).map { puml =>
     val model = PlantUML2Model.execute(ModelPath2ModelName.execute(modelPath.value), puml)
-    val (pureFunctions, inputEndpoints, outputEndpoints, customTypes, fileOutputEndpoints) = DefinitionSorter.execute(model)
+    val (pureFunctions, inputEndpoints, outputEndpoints, customTypes, fileOutputEndpoints, aliyunOSSOutputEndpoints) = DefinitionSorter.execute(model)
     val genPureFunctions = new GenPureFunctions(new GenJavaPureFunction(new GenFormalParams))
     val genCommandLineInputEndpoints = new GenCommandLineInputEndpoints(new GenCommandLineInputEndpoint(new GenCallingChain(new GenLocalCallStatement)))
     val genFileInputEndpoints = new GenFileInputEndpoints(new GenFileInputEndpoint(new GenCallingChain(new GenLocalCallStatement)))
     val genOutputEndpoints = new GenOutputEndpoints(new GenJavaOutputEndpoint(new GenFormalParams))
     val genFileOutputEndpoints = new GenFileOutputEndpoints(new GenFileOutputEndpoint(new GenFormalParams))
+    val genAliyunOSSOutputEndpoints = new GenAliyunOSSOutputEndpoints(new GenAliyunOSSOutputEndpoint(new GenFormalParams, new GenWriteOut))
     val saveCodes = new SaveCodes(new SaveToFile, new QualifiedName2CodeStructurePath)
 
     val pureFunctionSaveRs = LoadPureFunctionCodeTemplate.execute(JAVA_LANG).flatMap { javaPureFunctionCodeTemplate =>
@@ -60,10 +61,12 @@ object GenCodeScript extends App {
     if(platform != Local) {
       val platformCodesRs = LoadAliyunHandlerCodeTemplate.execute().flatMap {
         aliyunHandlerCodeTemplate => {
-          LoadAliyunHttpInputEndpointCodeTemplate.execute().map {
+          LoadAliyunHttpInputEndpointCodeTemplate.execute().flatMap {
             aliyunHttpInputEndpointCodeTemplate => {
-              val genPlatformHandlers = new GenPlatformHandlers(new GenAliyunHandler(new GenJSonParamType), new GenAliyunHttpInputEndpointHandler(new GenJSonParamType4InputEndpoint, new GenCallingChain(new GenAliyunlCallStatement(model.name))))
-              genPlatformHandlers.execute(platform, aliyunHandlerCodeTemplate, aliyunHttpInputEndpointCodeTemplate, packageName, model)
+              LoadAliyunOSSOutputEndpointCodeTemplate.execute(SCALA_LANG).map { aliyunOSSOutputEndpointCodeTemplate =>
+                val genPlatformHandlers = new GenPlatformHandlers(new GenAliyunHandler(new GenJSonParamType, new GenWriteOut), new GenAliyunHttpInputEndpointHandler(new GenJSonParamType4InputEndpoint, new GenCallingChain(new GenAliyunlCallStatement(model.name))),new GenAliyunOSSOutputEndpoint(new GenFormalParams,new GenWriteOut))
+                genPlatformHandlers.execute(platform, aliyunHandlerCodeTemplate, aliyunHttpInputEndpointCodeTemplate,aliyunOSSOutputEndpointCodeTemplate, packageName, model)
+              }
             }
           }
           }.flatMap { platformCodes =>
@@ -76,6 +79,18 @@ object GenCodeScript extends App {
           logger.error(s"error when generating code for ${modelPath.value} ", exception)
         }
       }
+
+//      val aliyunOSSOutputEndpointSaveRs = LoadAliyunOSSOutputEndpointCodeTemplate.execute(SCALA_LANG).flatMap { aliyunOSSOutputEndpointCodeTemplate =>
+//        val aliyunOSSOutputEndpointCodes = genAliyunOSSOutputEndpoints.execute(SCALA_LANG, aliyunOSSOutputEndpoints, packageName, aliyunOSSOutputEndpointCodeTemplate)
+//        saveCodes.execute(aliyunOSSOutputEndpointCodes, outputPath)
+//      }
+//      aliyunOSSOutputEndpointSaveRs match {
+//        case Success(_) => println("platform code generation successfully")
+//        case Failure(exception) => {
+//          logger.error(s"error when generating code for ${modelPath.value} ", exception)
+//        }
+//      }
+
       GenAliyunTemplate.execute(model.name,model.definitions, codeUri, packageName, outputPath)
     }
 

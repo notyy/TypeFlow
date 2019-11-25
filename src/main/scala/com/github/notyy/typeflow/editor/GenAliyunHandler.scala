@@ -1,21 +1,19 @@
 package com.github.notyy.typeflow.editor
 
-import com.github.notyy.typeflow.domain.{Definition, Input, Output}
+import com.github.notyy.typeflow.domain.{Definition, Input}
 
-class GenAliyunHandler(val genJSonParamType: GenJSonParamType) {
+class GenAliyunHandler(val genJSonParamType: GenJSonParamType, val genWriteOut: GenWriteOut) {
   def execute(packageName: PackageName, definition: Definition, codeTemplate: CodeTemplate): ScalaCode = {
     val code = codeTemplate.value.replaceAllLiterally("$PackageName$", packageName.value).
       replaceAllLiterally("$DefinitionName$", definition.name).
       replaceAllLiterally("$Params$", genJSonParamType.execute(definition.inputs)).
       replaceAllLiterally("$Callee$", s"new ${definition.name}()").
-      replaceAllLiterally("$WriteOutput$", genWriteOutput(definition.outputs)).
+      replaceAllLiterally("$WriteOutput$", genWriteOut.execute(definition.outputs)).
       replaceAllLiterally("$ParamCall$", genParamCall(definition.inputs))
     ScalaCode(QualifiedName(s"${packageName.value}.aliyun.${definition.name}Handler"), code)
   }
 
-  def genWriteOutput(outputs: Vector[Output]): String = {
-    if (outputs.isEmpty || outputs.head.outputType.name == "Unit") "" else "output.write(JSONUtil.toJSON(Param(value)).getBytes)"
-  }
+
 
   private def genParamCall(inputs: Vector[Input]): String = {
     if (inputs.isEmpty) {
