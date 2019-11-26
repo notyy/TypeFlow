@@ -1,0 +1,44 @@
+
+@startuml
+
+skinparam class {
+	BackgroundColor<<CommandLineInputEndpoint>> BurlyWood
+    BackgroundColor<<CommandLineArgsInputEndpoint>> BurlyWood
+    BackgroundColor<<AliyunHttpInputEndpoint>> BurlyWood
+    BackgroundColor<<OutputEndpoint>> BurlyWood
+    BackgroundColor<<FileOutputEndpoint>> BurlyWood
+    BackgroundColor<<AliyunOSSOutputEndpoint>> BurlyWood
+    BackgroundColor<<PureFunction>> LightBlue
+    BackgroundColor<<AlternativePath>> Crimson
+    BackgroundColor<<ErrorPath>> Crimson
+    BackgroundColor<<Resource>> Brown
+}
+
+class 用户注册API <<AliyunHttpInputEndpoint>>
+class 注册请求校验 <<PureFunction>>
+class 注册 <<PureFunction>>
+class 信息包装 <<PureFunction>>
+class 保存用户信息 <<AliyunOSSOutputEndpoint>>
+class 用户名重复 <<AlternativePath>>
+class 保存用户异常 <<ErrorPath>>
+class 用户信息库 <<Resource>>
+class 登陆 <<PureFunction>>
+
+用户注册API --> 注册请求
+注册请求 --> 注册请求校验
+注册请求校验 --> "1" 通过校验的注册请求
+注册请求校验 --> "2" 注册请求校验失败
+注册请求校验失败 --> "1" 信息包装
+信息包装 --> 注册结果
+注册结果 --> 用户注册API
+通过校验的注册请求 --> 注册
+注册 --> 注册成功未保存的用户
+注册成功未保存的用户 --> 保存用户信息
+保存用户信息 --> "1" 已经保存的用户
+保存用户信息 --> "1" 用户名重复
+保存用户信息 --> "1" 保存用户异常
+保存用户信息 .. 用户信息库
+已经保存的用户 --> "1" 信息包装
+用户名重复 --> "1" 信息包装
+保存用户异常 --> "1" 信息包装
+@enduml
