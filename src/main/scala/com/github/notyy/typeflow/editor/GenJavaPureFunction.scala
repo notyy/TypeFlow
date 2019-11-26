@@ -12,7 +12,7 @@ class GenJavaPureFunction(val genFormalParams: GenFormalParams) {
   }
 
   private def genReturnType(pureFunction: PureFunction): String = {
-    val outputs = pureFunction.outputs
+    val outputs = pureFunction.outputs.filterNot(_.outputType.name == "Unit")
     if(outputs.size == 1) {
       outputs.head.outputType.name
     } else {
