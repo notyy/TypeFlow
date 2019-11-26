@@ -9,7 +9,7 @@ class GenAliyunOSSOutputEndpoint(val genFormalParams: GenFormalParams, val genWr
       replaceAllLiterally("$ReturnType$", replaceEmptyReturnTypeWithVoid(aliyunOSSOutEndpoint.outputs.head.outputType.name)).
       replaceAllLiterally("$WriteOutput$", genWriteOut.execute(aliyunOSSOutEndpoint.outputs)).
       replaceAllLiterally("$Params$", genFormalParams.execute(aliyunOSSOutEndpoint.inputs))
-    ScalaCode(QualifiedName(s"${packageName.value}.aliyun.${aliyunOSSOutEndpoint.name}"), code)
+    ScalaCode(QualifiedName(s"${packageName.value}.aliyun.${aliyunOSSOutEndpoint.name}Handler"), code)
   }
 
   def replaceEmptyReturnTypeWithVoid(returnType: String): String = {

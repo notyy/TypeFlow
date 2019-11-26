@@ -9,7 +9,7 @@ import com.github.notyy.typeflow.util.{JSONUtil, Param}
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-class $DefinitionName$ extends StreamRequestHandler {
+class $DefinitionName$Handler extends StreamRequestHandler {
   override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
     val accessKey = System.getenv("ACCESS_KEY")
     val accessSecretKey = System.getenv("SECRET_KEY")

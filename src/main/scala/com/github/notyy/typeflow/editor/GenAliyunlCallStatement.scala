@@ -22,10 +22,18 @@ class GenAliyunlCallStatement(val serviceName: String) extends GenCallStatement 
   }
 
   private def genExecuteStatement(targetDefinition: Definition, outputParamNames: Vector[String]): String = {
-    val params = if (outputParamNames.size == 1) {
-      outputParamNames.head
+    val params:Option[String] =
+      if(outputParamNames.isEmpty){
+        None
+      } else if (outputParamNames.size == 1) {
+        val outputParamName = outputParamNames.head
+        if(outputParamName.isEmpty || outputParamName == "Unit") {
+          None
+        } else {
+          Some(outputParamName)
+        }
     } else {
-      outputParamNames.reduce((param1, param2) => s"Param($param1.value,$param2.value)")
+      Some(outputParamNames.reduce((param1, param2) => s"Param($param1.value,$param2.value)"))
     }
     s"""AliyunUtil.callInstance(fcClient,$params,"$serviceName", "${targetDefinition.name}")"""
   }

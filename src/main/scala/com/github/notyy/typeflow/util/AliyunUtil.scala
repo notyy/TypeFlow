@@ -8,10 +8,10 @@ import scala.util.Try
 
 object AliyunUtil {
   private val logger = Logger("AliyunUtil")
-  def callInstance(fcClient:FunctionComputeClient, params: Param[Object], serviceName: String, functionName: String): Try[Param[Object]] = {
+  def callInstance[T](fcClient:FunctionComputeClient, params: Option[Param[T]], serviceName: String, functionName: String): Try[Param[Object]] = {
     logger.debug(s"calling $serviceName.$functionName with parameter '$params'")
     val invkReq = new InvokeFunctionRequest(serviceName, functionName)
-    val payload = JSONUtil.toJSON(params)
+    val payload = params.map(JSONUtil.toJSON(_)).getOrElse("")
     invkReq.setHeader("Content-Type", "application/json");
     invkReq.setPayload(payload.getBytes)
     val invokeResp = new String(fcClient.invokeFunction(invkReq).getPayload)
