@@ -8,6 +8,7 @@ localOutput/*
 /src/test/scala/com/github/notyy/typeflow/localtest/ModelPlayTool.scala
 externalJars/
 .gradle/
+.bsp/
 
 src/test/scala/runModel2Json.scala
 src/main/resources/TypeFlowEditorForMulti.typeflow

@@ -15,16 +15,16 @@ isSnapshot := true
 organization := "com.github.notyy"
 
 // set the Scala version used for the project
-scalaVersion := "2.13.0"
+scalaVersion := "2.13.6"
 
 resolvers ++= Seq(
-  "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases",
+  "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases",
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
 libraryDependencies ++= Seq(
   // "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
-  "org.pegdown" % "pegdown" % "1.6.0" % "test", //used in html report
+  // "org.pegdown" % "pegdown" % "1.6.0" % "test", //used in html report
   "org.scalactic" %% "scalactic" % "3.0.8",
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "org.slf4j" % "slf4j-api" % "1.7.7",
@@ -171,7 +171,7 @@ parallelExecution in Test := false
 
 // create beautiful scala test report
 testOptions in Test ++= Seq(
-  Tests.Argument(TestFrameworks.ScalaTest,"-h","target/html-unit-test-report"),
+  // Tests.Argument(TestFrameworks.ScalaTest,"-h","target/html-unit-test-report"),
   Tests.Argument(TestFrameworks.ScalaTest,"-u","target/unit-test-reports"),
   Tests.Argument(TestFrameworks.ScalaTest,"-o"),
   Tests.Argument(TestFrameworks.ScalaTest,"-l","FunctionTest")
